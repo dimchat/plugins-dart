@@ -1,16 +1,16 @@
 # DIM Plugins (Dart)
 
-[![License](https://img.shields.io/github/license/dimchat/sdk-dart)](https://github.com/dimchat/sdk-dart/blob/master/LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/dimchat/sdk-dart/pulls)
-[![Platform](https://img.shields.io/badge/Platform-Dart%203-brightgreen.svg)](https://github.com/dimchat/sdk-dart/wiki)
-[![Issues](https://img.shields.io/github/issues/dimchat/sdk-dart)](https://github.com/dimchat/sdk-dart/issues)
-[![Repo Size](https://img.shields.io/github/repo-size/dimchat/sdk-dart)](https://github.com/dimchat/sdk-dart/archive/refs/heads/main.zip)
-[![Tags](https://img.shields.io/github/tag/dimchat/sdk-dart)](https://github.com/dimchat/sdk-dart/tags)
+[![License](https://img.shields.io/github/license/dimchat/plugins-dart)](https://github.com/dimchat/plugins-dart/blob/master/LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/dimchat/plugins-dart/pulls)
+[![Platform](https://img.shields.io/badge/Platform-Dart%203-brightgreen.svg)](https://github.com/dimchat/plugins-dart/wiki)
+[![Issues](https://img.shields.io/github/issues/dimchat/plugins-dart)](https://github.com/dimchat/plugins-dart/issues)
+[![Repo Size](https://img.shields.io/github/repo-size/dimchat/plugins-dart)](https://github.com/dimchat/plugins-dart/archive/refs/heads/main.zip)
+[![Tags](https://img.shields.io/github/tag/dimchat/plugins-dart)](https://github.com/dimchat/plugins-dart/tags)
 [![Version](https://img.shields.io/pub/v/dim_plugins)](https://pub.dev/packages/dim_plugins)
 
-[![Watchers](https://img.shields.io/github/watchers/dimchat/sdk-dart)](https://github.com/dimchat/sdk-dart/watchers)
-[![Forks](https://img.shields.io/github/forks/dimchat/sdk-dart)](https://github.com/dimchat/sdk-dart/forks)
-[![Stars](https://img.shields.io/github/stars/dimchat/sdk-dart)](https://github.com/dimchat/sdk-dart/stargazers)
+[![Watchers](https://img.shields.io/github/watchers/dimchat/plugins-dart)](https://github.com/dimchat/plugins-dart/watchers)
+[![Forks](https://img.shields.io/github/forks/dimchat/plugins-dart)](https://github.com/dimchat/plugins-dart/forks)
+[![Stars](https://img.shields.io/github/stars/dimchat/plugins-dart)](https://github.com/dimchat/plugins-dart/stargazers)
 [![Followers](https://img.shields.io/github/followers/dimchat)](https://github.com/orgs/dimchat/followers)
 
 ## Plugins
@@ -265,5 +265,5 @@ You must ensure that every ```Address``` you extend has a ```Meta``` type that c
 
 ----
 
-Copyright &copy; 2023 Albert Moky
+Copyright &copy; 2023-2025 Albert Moky
 [![Followers](https://img.shields.io/github/followers/moky)](https://github.com/moky?tab=followers)

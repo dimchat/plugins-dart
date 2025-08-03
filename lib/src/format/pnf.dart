@@ -154,9 +154,9 @@ class BaseNetworkFileFactory implements PortableNetworkFileFactory {
 
   @override
   PortableNetworkFile? parsePortableNetworkFile(Map pnf) {
-    // check 'data', 'URL'
-    if (pnf['data'] == null && pnf['URL'] == null) {
-      // pnf.data and pnf.URL should not be empty at the same time
+    // check 'data', 'URL', 'filename'
+    if (pnf['data'] == null && pnf['URL'] == null && pnf['filename'] == null) {
+      // pnf.data and pnf.URL and pnf.filename should not be empty at the same time
       assert(false, 'PNF error: $pnf');
       return null;
     }
