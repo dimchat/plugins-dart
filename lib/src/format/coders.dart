@@ -26,8 +26,10 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:dimp/crypto.dart';
 import 'package:fast_base58/fast_base58.dart';
+
+import 'package:dimp/crypto.dart';
+
 
 /// UTF-8
 class UTF8Coder implements StringCoder {

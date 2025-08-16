@@ -25,8 +25,10 @@
  */
 import 'dart:typed_data';
 
-import 'package:dimp/crypto.dart';
 import 'package:pointycastle/export.dart';
+
+import 'package:dimp/crypto.dart';
+
 
 Uint8List _hash(Uint8List data, Digest digester) {
   digester.reset();

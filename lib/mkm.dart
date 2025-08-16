@@ -1,6 +1,6 @@
-/// Support for doing something awesome.
-///
-/// More dartdocs go here.
+/// Ming-Ke-Ming
+/// ~~~~~~~~~~~~
+/// Decentralized User Identity Authentication
 library dim_plugins;
 
 export 'src/mkm/btc.dart';

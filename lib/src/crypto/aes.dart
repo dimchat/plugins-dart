@@ -28,7 +28,7 @@ import 'dart:typed_data';
 
 import 'package:encrypt/encrypt.dart';
 
-import 'package:dimp/dimp.dart';
+import 'package:dimp/crypto.dart';
 
 ///  AES Key
 ///

@@ -28,8 +28,8 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:dimp/dimp.dart';
-import 'package:dimp/plugins.dart';
+import 'package:dimp/mkm.dart';
+import 'package:dimp/ext.dart';
 
 
 ///

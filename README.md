@@ -224,6 +224,39 @@ class PatchBase64Coder extends Base64Coder {
 }
 ```
 
+### ExtensionLoader
+
+```dart
+import 'package:dimsdk/plugins.dart';
+
+import '../../common/protocol/handshake.dart';
+
+
+/// Extensions Loader
+/// ~~~~~~~~~~~~~~~~~
+class CommonExtensionLoader extends ExtensionLoader {
+
+  @override
+  void registerCustomizedFactories() {
+    
+    // Application Customized
+    setContentFactory(ContentType.CUSTOMIZED, 'customized', creator: (dict) => AppCustomizedContent(dict));
+    setContentFactory(ContentType.APPLICATION, 'application', creator: (dict) => AppCustomizedContent(dict));
+    
+  }
+
+  @override
+  void registerCommandFactories() {
+    super.registerCommandFactories();
+
+    // Handshake
+    setCommandFactory(HandshakeCommand.HANDSHAKE, creator: (dict) => BaseHandshakeCommand(dict));
+
+  }
+
+}
+```
+
 ## Usage
 
 You must load all plugins before your business run:
@@ -236,7 +269,7 @@ import 'compat_loader.dart';
 
 class LibraryLoader {
   LibraryLoader({ExtensionLoader? extensionLoader, PluginLoader? pluginLoader}) {
-    this.extensionLoader = extensionLoader ?? ExtensionLoader();
+    this.extensionLoader = extensionLoader ?? CommonExtensionLoader();
     this.pluginLoader = pluginLoader ?? CompatiblePluginLoader();
   }
 

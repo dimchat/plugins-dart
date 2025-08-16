@@ -1,9 +1,8 @@
 import 'dart:typed_data';
 
-import 'package:dimp/crypto.dart';
-import 'package:dimp/mkm.dart';
-import 'package:dim_plugins/format.dart';
-import 'package:dim_plugins/plugins.dart';
+import 'package:dim_plugins/dimp.dart';
+import 'package:dim_plugins/crypto.dart';
+import 'package:dim_plugins/loader.dart';
 
 import 'address.dart';
 
@@ -40,6 +39,38 @@ class PatchBase64Coder extends Base64Coder {
       b64 = b64.replaceAll(' ', '');
     }
     return b64.trim();
+  }
+
+}
+
+
+class LibraryLoader {
+  LibraryLoader({ExtensionLoader? extensionLoader, PluginLoader? pluginLoader}) {
+    this.extensionLoader = extensionLoader ?? ExtensionLoader();
+    this.pluginLoader = pluginLoader ?? ClientPluginLoader();
+  }
+
+  late final ExtensionLoader extensionLoader;
+  late final PluginLoader pluginLoader;
+
+  bool _loaded = false;
+
+  void run() {
+    if (_loaded) {
+      // no need to load it again
+      return;
+    } else {
+      // mark it to loaded
+      _loaded = true;
+    }
+    // try to load all plugins
+    load();
+  }
+
+  // protected
+  void load() {
+    extensionLoader.load();
+    pluginLoader.load();
   }
 
 }

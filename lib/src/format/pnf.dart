@@ -25,7 +25,8 @@
  */
 import 'dart:typed_data';
 
-import 'package:dimp/dimp.dart';
+import 'package:dimp/crypto.dart';
+
 
 class BaseNetworkFile extends Dictionary implements PortableNetworkFile {
   BaseNetworkFile([super.dict]) {

@@ -1,9 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:dimp/dimp.dart';
+import 'package:dim_plugins/dimp.dart';
 import 'package:test/test.dart';
-
-import 'package:dimsdk/plugins.dart';
 
 import 'loader.dart';
 
@@ -249,9 +247,8 @@ void main() {
     setUp(() {
       // Additional setup goes here.
 
-      ExtensionLoader().run();
-
-      ClientPluginLoader().run();
+      var loader = LibraryLoader();
+      loader.run();
 
     });
 

@@ -42,21 +42,6 @@ import 'mkm/document.dart';
 
 class PluginLoader {
 
-  bool _loaded = false;
-
-  void run() {
-    if (_loaded) {
-      // no need to load it again
-      return;
-    } else {
-      // mark it to loaded
-      _loaded = true;
-    }
-    // try to load all plugins
-    load();
-  }
-
-  // protected
   void load() {
     /// Register plugins
 
@@ -66,10 +51,7 @@ class PluginLoader {
     registerSymmetricKeyFactories();
     registerAsymmetricKeyFactories();
 
-    registerIDFactory();
-    registerAddressFactory();
-    registerMetaFactories();
-    registerDocumentFactories();
+    registerEntityFactories();
 
   }
 
@@ -88,30 +70,37 @@ class PluginLoader {
     registerTEDFactory();
 
   }
+  // protected
   void registerBase58Coder() {
     /// Base58 coding
     Base58.coder = Base58Coder();
   }
+  // protected
   void registerBase64Coder() {
     /// Base64 coding
     Base64.coder = Base64Coder();
   }
+  // protected
   void registerHexCoder() {
     /// HEX coding
     Hex.coder = HexCoder();
   }
+  // protected
   void registerUTF8Coder() {
     /// UTF8
     UTF8.coder = UTF8Coder();
   }
+  // protected
   void registerJSONCoder() {
     /// JSON
     JSON.coder = JSONCoder();
   }
+  // protected
   void registerPNFFactory() {
     /// PNF
     PortableNetworkFile.setFactory(BaseNetworkFileFactory());
   }
+  // protected
   void registerTEDFactory() {
     /// TED
     var tedFactory = Base64DataFactory();
@@ -135,22 +124,27 @@ class PluginLoader {
     registerRIPEMD160Digester();
 
   }
+  // protected
   void registerMD5Digester() {
     /// MD5
     MD5.digester = MD5Digester();
   }
+  // protected
   void registerSHA1Digester() {
     /// SHA1
     SHA1.digester = SHA1Digester();
   }
+  // protected
   void registerSHA256Digester() {
     /// SHA256
     SHA256.digester = SHA256Digester();
   }
+  // protected
   void registerKeccak256Digester() {
     /// Keccak256
     Keccak256.digester = Keccak256Digester();
   }
+  // protected
   void registerRIPEMD160Digester() {
     /// RIPEMD160
     RIPEMD160.digester = RIPEMD160Digester();
@@ -165,6 +159,7 @@ class PluginLoader {
     registerPlainKeyFactory();
 
   }
+  // protected
   void registerAESKeyFactory() {
     /// AES
     var aes = AESKeyFactory();
@@ -172,6 +167,7 @@ class PluginLoader {
     SymmetricKey.setFactory(AESKey.AES_CBC_PKCS7, aes);
     // SymmetricKey.setFactory('AES/CBC/PKCS7Padding', aes);
   }
+  // protected
   void registerPlainKeyFactory() {
     /// Plain
     SymmetricKey.setFactory(SymmetricAlgorithms.PLAIN, PlainKeyFactory());
@@ -186,6 +182,7 @@ class PluginLoader {
     registerECCKeyFactories();
 
   }
+  // protected
   void registerRSAKeyFactories() {
     /// RSA
     var rsaPub = RSAPublicKeyFactory();
@@ -198,6 +195,7 @@ class PluginLoader {
     PrivateKey.setFactory('SHA256withRSA', rsaPri);
     PrivateKey.setFactory('RSA/ECB/PKCS1Padding', rsaPri);
   }
+  // protected
   void registerECCKeyFactories() {
     /// ECC
     var eccPub = ECCPublicKeyFactory();
@@ -210,41 +208,42 @@ class PluginLoader {
   }
 
   // protected
-  ///  ID factory
+  ///  ID, Address, Meta, Document parsers
+  void registerEntityFactories() {
+
+    registerIDFactory();
+    registerAddressFactory();
+    registerMetaFactories();
+    registerDocumentFactories();
+
+  }
+  // protected
   void registerIDFactory() {
     ID.setFactory(IdentifierFactory());
   }
-
   // protected
-  ///  Address factory
   void registerAddressFactory() {
     Address.setFactory(BaseAddressFactory());
   }
-
   // protected
-  ///  Meta factories
   void registerMetaFactories() {
     setMetaFactory(MetaType.MKM, 'mkm');
     setMetaFactory(MetaType.BTC, 'btc');
     setMetaFactory(MetaType.ETH, 'eth');
   }
-
   // protected
   void setMetaFactory(String type, String alias, {MetaFactory? factory}) {
     factory ??= BaseMetaFactory(type);
     Meta.setFactory(type, factory);
     Meta.setFactory(alias, factory);
   }
-
   // protected
-  ///  Document factories
   void registerDocumentFactories() {
     setDocumentFactory('*');
     setDocumentFactory(DocumentType.VISA);
     setDocumentFactory(DocumentType.PROFILE);
     setDocumentFactory(DocumentType.BULLETIN);
   }
-
   // protected
   void setDocumentFactory(String type, {DocumentFactory? factory}) {
     factory ??= GeneralDocumentFactory(type);

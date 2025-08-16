@@ -30,8 +30,9 @@
  */
 import 'dart:typed_data';
 
-import 'package:dimp/dimp.dart';
-import 'package:dimp/plugins.dart';
+import 'package:dimp/crypto.dart';
+import 'package:dimp/mkm.dart';
+import 'package:dimp/ext.dart';
 
 import 'btc.dart';
 import 'eth.dart';

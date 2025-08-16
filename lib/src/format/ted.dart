@@ -25,7 +25,8 @@
  */
 import 'dart:typed_data';
 
-import 'package:dimp/dimp.dart';
+import 'package:dimp/crypto.dart';
+
 
 class Base64Data extends Dictionary implements TransportableData {
   Base64Data([super.dict]);
