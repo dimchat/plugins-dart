@@ -75,7 +75,7 @@ class ETHAddress extends ConstantString implements Address {
     }
     assert(fingerprint.length == 64, 'key data error: ${fingerprint.length}');
     // 1. digest = keccak256(fingerprint);
-    Uint8List digest = Keccak256.digest(fingerprint);
+    Uint8List digest = KECCAK256.digest(fingerprint);
     // 2. address = hex_encode(digest.suffix(20));
     Uint8List tail = digest.sublist(digest.length - 20);
     String address = _ETH.eip55(Hex.encode(tail));
@@ -100,7 +100,7 @@ class _ETH {
   // https://eips.ethereum.org/EIPS/eip-55
   static String eip55(String hex) {
     StringBuffer sb = StringBuffer();
-    Uint8List hash = Keccak256.digest(UTF8.encode(hex));
+    Uint8List hash = KECCAK256.digest(UTF8.encode(hex));
     int ch;
     for (int i = 0; i < 40; ++i) {
       ch = hex.codeUnitAt(i);

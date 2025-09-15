@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:dim_plugins/dimp.dart';
 import 'package:test/test.dart';
 
+import 'digest.dart';
 import 'loader.dart';
 
 void debugAssert(bool cond, String msg) {
@@ -40,7 +41,7 @@ void testHash() {
   debugAssert(res == exp, 'SHA256 ($string) = "$res"');
 
   // Keccak256 (moky) = 96b07f3103d45cc7df2dd6e597922a17f48c86257dffe790d442bbd1ff46514d
-  hash = Keccak256.digest(data);
+  hash = KECCAK256.digest(data);
   res = Hex.encode(hash);
   exp = '96b07f3103d45cc7df2dd6e597922a17f48c86257dffe790d442bbd1ff46514d';
   debugAssert(res == exp, 'Keccak256 ($string) = "$res"');

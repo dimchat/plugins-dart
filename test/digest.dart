@@ -2,7 +2,7 @@
  * ==============================================================================
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Albert Moky
+ * Copyright (c) 2025 Albert Moky
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,11 +26,32 @@
 import 'dart:typed_data';
 
 import 'package:pointycastle/api.dart';
-import 'package:pointycastle/digests/keccak.dart';
-import 'package:pointycastle/digests/ripemd160.dart';
-import 'package:pointycastle/digests/sha256.dart';
+import 'package:pointycastle/digests/md5.dart';
+import 'package:pointycastle/digests/sha1.dart';
 
 import 'package:dimp/crypto.dart';
+
+
+class MD5 {
+
+  static Uint8List digest(Uint8List data) {
+    return digester!.digest(data);
+  }
+
+  static MessageDigester? digester;
+}
+
+class SHA1 {
+
+  static Uint8List digest(Uint8List data) {
+    return digester!.digest(data);
+  }
+
+  static MessageDigester? digester;
+}
+
+
+/// Implementation
 
 
 Uint8List _hash(Uint8List data, Digest digester) {
@@ -38,26 +59,19 @@ Uint8List _hash(Uint8List data, Digest digester) {
   return digester.process(data);
 }
 
-class SHA256Digester implements MessageDigester {
+
+class MD5Digester implements MessageDigester {
 
   @override
   Uint8List digest(Uint8List data) {
-    return _hash(data, SHA256Digest());
+    return _hash(data, MD5Digest());
   }
 }
 
-class KECCAK256Digester implements MessageDigester {
+class SHA1Digester implements MessageDigester {
 
   @override
   Uint8List digest(Uint8List data) {
-    return _hash(data, KeccakDigest(256));
-  }
-}
-
-class RIPEMD160Digester implements MessageDigester {
-
-  @override
-  Uint8List digest(Uint8List data) {
-    return _hash(data, RIPEMD160Digest());
+    return _hash(data, SHA1Digest());
   }
 }

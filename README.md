@@ -1,6 +1,6 @@
 # DIM Plugins (Dart)
 
-[![License](https://img.shields.io/github/license/dimchat/plugins-dart)](https://github.com/dimchat/plugins-dart/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/dimchat/plugins-dart)](https://github.com/dimchat/plugins-dart/blob/main/LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/dimchat/plugins-dart/pulls)
 [![Platform](https://img.shields.io/badge/Platform-Dart%203-brightgreen.svg)](https://github.com/dimchat/plugins-dart/wiki)
 [![Issues](https://img.shields.io/github/issues/dimchat/plugins-dart)](https://github.com/dimchat/plugins-dart/issues)
@@ -276,9 +276,24 @@ class LibraryLoader {
   late final ExtensionLoader extensionLoader;
   late final PluginLoader pluginLoader;
 
+  bool _loaded = false;
+
   void run() {
-    extensionLoader.run();
-    pluginLoader.run();
+     if (_loaded) {
+        // no need to load it again
+        return;
+     } else {
+        // mark it to loaded
+        _loaded = true;
+     }
+     // try to load all plugins
+     load();
+  }
+
+  // protected
+  void load() {
+     extensionLoader.load();
+     pluginLoader.load();
   }
 
 }

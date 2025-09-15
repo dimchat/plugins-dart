@@ -45,8 +45,8 @@ class PluginLoader {
   void load() {
     /// Register plugins
 
-    registerDataCoders();
-    registerDataDigesters();
+    registerCoders();
+    registerDigesters();
 
     registerSymmetricKeyFactories();
     registerAsymmetricKeyFactories();
@@ -56,7 +56,7 @@ class PluginLoader {
   }
 
   // protected
-  void registerDataCoders() {
+  void registerCoders() {
     ///  Data coders
 
     registerBase58Coder();
@@ -110,29 +110,15 @@ class PluginLoader {
   }
 
   // protected
-  ///  Data digesters
-  void registerDataDigesters() {
-
-    registerMD5Digester();
-
-    registerSHA1Digester();
+  ///  Message digesters
+  void registerDigesters() {
 
     registerSHA256Digester();
 
-    registerKeccak256Digester();
+    registerKECCAK256Digester();
 
     registerRIPEMD160Digester();
 
-  }
-  // protected
-  void registerMD5Digester() {
-    /// MD5
-    MD5.digester = MD5Digester();
-  }
-  // protected
-  void registerSHA1Digester() {
-    /// SHA1
-    SHA1.digester = SHA1Digester();
   }
   // protected
   void registerSHA256Digester() {
@@ -140,9 +126,9 @@ class PluginLoader {
     SHA256.digester = SHA256Digester();
   }
   // protected
-  void registerKeccak256Digester() {
+  void registerKECCAK256Digester() {
     /// Keccak256
-    Keccak256.digester = Keccak256Digester();
+    KECCAK256.digester = KECCAK256Digester();
   }
   // protected
   void registerRIPEMD160Digester() {

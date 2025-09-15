@@ -5,9 +5,28 @@ import 'package:dim_plugins/crypto.dart';
 import 'package:dim_plugins/loader.dart';
 
 import 'address.dart';
+import 'digest.dart';
 
 
 class ClientPluginLoader extends PluginLoader {
+
+  @override
+  void registerDigesters() {
+    super.registerDigesters();
+
+    registerMD5Digester();
+    registerSHA1Digester();
+  }
+  // protected
+  void registerMD5Digester() {
+    /// MD5
+    MD5.digester = MD5Digester();
+  }
+  // protected
+  void registerSHA1Digester() {
+    /// SHA1
+    SHA1.digester = SHA1Digester();
+  }
 
   @override
   void registerAddressFactory() {
