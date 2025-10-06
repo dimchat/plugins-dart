@@ -1,6 +1,6 @@
 name: dim_plugins
 description: Decentralized Instant Messaging Plugins
-version: 2.2.0
+version: 2.2.1
 homepage: https://github.com/dimchat/plugins-dart
 repository: https://github.com/dimchat/plugins-dart
 issue_tracker: https://github.com/dimchat/plugins-dart/issues

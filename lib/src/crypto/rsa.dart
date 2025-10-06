@@ -31,34 +31,31 @@ import 'rsa_utils.dart';
 
 ///  RSA Public Key
 ///
-///      keyInfo format: {
-///          algorithm : "RSA",
-///          data      : "..." // base64_encode()
+///      keyInfo format : {
+///          algorithm  : "RSA",
+///          data       : "..." // base64_encode()
 ///      }
 class RSAPublicKey extends BasePublicKey implements EncryptKey {
   RSAPublicKey([super.dict]);
 
-  @override
-  Uint8List get data {
-    var publicKey = RSAKeyUtils.decodePublicKey(_key());
-    return RSAKeyUtils.encodePublicKeyData(publicKey);
+  // protected
+  get rsaPubKey {
+    String data = getString('data') ?? '';
+    return RSAKeyUtils.decodePublicKey(data);
   }
 
-  String _key() {
-    return getString('data') ?? '';
-  }
+  @override
+  Uint8List get data => RSAKeyUtils.encodePublicKeyData(rsaPubKey);
 
   @override
   Uint8List encrypt(Uint8List plaintext, [Map? extra]) {
-    var publicKey = RSAKeyUtils.decodePublicKey(_key());
-    return RSAKeyUtils.encrypt(plaintext, publicKey);
+    return RSAKeyUtils.encrypt(plaintext, rsaPubKey);
   }
 
   @override
   bool verify(Uint8List data, Uint8List signature) {
     try {
-      var publicKey = RSAKeyUtils.decodePublicKey(_key());
-      return RSAKeyUtils.verify(data, signature, publicKey);
+      return RSAKeyUtils.verify(data, signature, rsaPubKey);
     } catch (e, st) {
       print('RSA: failed to verify: $e, $st');
       return false;
@@ -68,74 +65,72 @@ class RSAPublicKey extends BasePublicKey implements EncryptKey {
 
 ///  RSA Private Key
 ///
-///      keyInfo format: {
-///          algorithm : "RSA",
-///          data      : "..." // base64_encode()
+///      keyInfo format : {
+///          algorithm  : "RSA",
+///          data       : "..." // base64_encode()
 ///      }
 class RSAPrivateKey extends BasePrivateKey implements DecryptKey {
-  RSAPrivateKey([super.dict]) : _publicKey = null;
+  RSAPrivateKey([super.dict]) {
+    // lazy load
+    _publicKey = null;
+  }
 
   PublicKey? _publicKey;
+
+  factory RSAPrivateKey.newKey() {
+    var privateKey = RSAKeyUtils.generatePrivateKey();
+    String pem = RSAKeyUtils.encodeKey(privateKey: privateKey);
+    return RSAPrivateKey({
+      'algorithm': AsymmetricAlgorithms.RSA,
+      'data': pem,
+      'mode': 'ECB',
+      'padding': 'PKCS1',
+      'digest': 'SHA256',
+    });
+  }
+
+  // protected
+  get rsaPriKey {
+    String data = getString('data') ?? '';
+    return RSAKeyUtils.decodePrivateKey(data);
+  }
+
+  @override
+  Uint8List get data => RSAKeyUtils.encodePrivateKeyData(rsaPriKey);
 
   @override
   PublicKey get publicKey {
     PublicKey? pubKey = _publicKey;
     if (pubKey == null) {
-      var privateKey = RSAKeyUtils.decodePrivateKey(_key());
-      var publicKey = RSAKeyUtils.publicKeyFromPrivateKey(privateKey);
-      String pem = RSAKeyUtils.encodeKey(publicKey: publicKey);
+      var key = RSAKeyUtils.publicKeyFromPrivateKey(rsaPriKey);
+      String pem = RSAKeyUtils.encodeKey(publicKey: key);
       Map info = {
         'algorithm': AsymmetricAlgorithms.RSA,
         'data': pem,
         'mode': 'ECB',
         'padding': 'PKCS1',
-        'digest': 'SHA256'
+        'digest': 'SHA256',
       };
       pubKey = PublicKey.parse(info);
-      assert(pubKey != null, 'failed to get public key: $info');
+      assert(pubKey != null, 'failed to get RSA public key: $info');
       _publicKey = pubKey;
     }
     return pubKey!;
   }
 
   @override
-  Uint8List get data {
-    var privateKey = RSAKeyUtils.decodePrivateKey(_key());
-    return RSAKeyUtils.encodePrivateKeyData(privateKey);
-  }
-
-  String _key() {
-    String? pem = getString('data');
-    if (pem != null) {
-      return pem;
-    }
-
-    //
-    // key data empty? generate new key info
-    //
-
-    var privateKey = RSAKeyUtils.generatePrivateKey();
-    pem = RSAKeyUtils.encodeKey(privateKey: privateKey);
-    this['data'] = pem;
-
-    return pem;
+  Uint8List sign(Uint8List data) {
+    return RSAKeyUtils.sign(data, rsaPriKey);
   }
 
   @override
   Uint8List? decrypt(Uint8List ciphertext, [Map? params]) {
     try {
-      var privateKey = RSAKeyUtils.decodePrivateKey(_key());
-      return RSAKeyUtils.decrypt(ciphertext, privateKey);
+      return RSAKeyUtils.decrypt(ciphertext, rsaPriKey);
     } catch (e, st) {
       print('RSA: failed to decrypt: $e, $st');
       return null;
     }
-  }
-
-  @override
-  Uint8List sign(Uint8List data) {
-    var privateKey = RSAKeyUtils.decodePrivateKey(_key());
-    return RSAKeyUtils.sign(data, privateKey);
   }
 
   @override
@@ -166,8 +161,7 @@ class RSAPrivateKeyFactory implements PrivateKeyFactory {
 
   @override
   PrivateKey generatePrivateKey() {
-    Map key = {'algorithm': AsymmetricAlgorithms.RSA};
-    return RSAPrivateKey(key);
+    return RSAPrivateKey.newKey();
   }
 
   @override

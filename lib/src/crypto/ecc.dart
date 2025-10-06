@@ -31,30 +31,32 @@ import 'ecc_utils.dart';
 
 ///  ECC Public Key
 ///
-///      keyInfo format: {
-///          algorithm    : "ECC",
-///          curve        : "secp256k1",
-///          data         : "..." // base64_encode(),
-///          compressed   : 0
+///      keyInfo format : {
+///          algorithm  : "ECC",
+///          curve      : "secp256k1",
+///          data       : "...", // base64_encode(),
+///          compressed : 0
 ///      }
 class ECCPublicKey extends BasePublicKey {
   ECCPublicKey([super.dict]);
 
-  @override
-  Uint8List get data {
-    var publicKey = ECCKeyUtils.decodePublicKey(_key());
-    return ECCKeyUtils.encodePublicKeyData(publicKey, compressed: compressed);
-  }
-
   bool get compressed => getBool('compressed') ?? false;
 
-  String _key() => getString('data') ?? '';
+  // protected
+  get eccPubKey {
+    String data = getString('data') ?? '';
+    return ECCKeyUtils.decodePublicKey(data);
+  }
+
+  @override
+  Uint8List get data => ECCKeyUtils.encodePublicKeyData(eccPubKey,
+    compressed: compressed,
+  );
 
   @override
   bool verify(Uint8List data, Uint8List signature) {
     try {
-      var publicKey = ECCKeyUtils.decodePublicKey(_key());
-      return ECCKeyUtils.verify(data, signature, publicKey);
+      return ECCKeyUtils.verify(data, signature, eccPubKey);
     } catch (e, st) {
       print('ECC: failed to verify: $e, $st');
       return false;
@@ -64,63 +66,61 @@ class ECCPublicKey extends BasePublicKey {
 
 ///  ECC Private Key
 ///
-///      keyInfo format: {
-///          algorithm    : "ECC",
-///          curve        : "secp256k1",
-///          data         : "..." // base64_encode()
+///      keyInfo format : {
+///          algorithm  : "ECC",
+///          curve      : "secp256k1",
+///          data       : "..." // base64_encode()
 ///      }
 class ECCPrivateKey extends BasePrivateKey {
-  ECCPrivateKey([super.dict]) : _publicKey = null;
+  ECCPrivateKey([super.dict]) {
+    // lazy load
+    _publicKey = null;
+  }
 
   PublicKey? _publicKey;
+
+  factory ECCPrivateKey.newKey() {
+    var privateKey = ECCKeyUtils.generatePrivateKey();
+    String pem = ECCKeyUtils.encodeKey(privateKey: privateKey);
+    return ECCPrivateKey({
+      'algorithm': AsymmetricAlgorithms.ECC,
+      'data': pem,
+      'curve': 'SECP256k1',
+      'digest': 'SHA256',
+    });
+  }
+
+  // protected
+  get eccPriKey {
+    String data = getString('data') ?? '';
+    return ECCKeyUtils.decodePrivateKey(data);
+  }
+
+  @override
+  Uint8List get data => ECCKeyUtils.encodePrivateKeyData(eccPriKey);
 
   @override
   PublicKey get publicKey {
     PublicKey? pubKey = _publicKey;
     if (pubKey == null) {
-      var privateKey = ECCKeyUtils.decodePrivateKey(_key());
-      var publicKey = ECCKeyUtils.publicKeyFromPrivateKey(privateKey);
-      String pem = ECCKeyUtils.encodeKey(publicKey: publicKey);
+      var key = ECCKeyUtils.publicKeyFromPrivateKey(eccPriKey);
+      String pem = ECCKeyUtils.encodeKey(publicKey: key);
       Map info = {
         'algorithm': AsymmetricAlgorithms.ECC,
         'data': pem,
         'curve': 'SECP256k1',
-        'digest': 'SHA256'
+        'digest': 'SHA256',
       };
       pubKey = PublicKey.parse(info);
-      assert(pubKey != null, 'failed to get public key: $info');
+      assert(pubKey != null, 'failed to get ECC public key: $info');
       _publicKey = pubKey;
     }
     return pubKey!;
   }
 
   @override
-  Uint8List get data {
-    var privateKey = ECCKeyUtils.decodePrivateKey(_key());
-    return ECCKeyUtils.encodePrivateKeyData(privateKey);
-  }
-
-  String _key() {
-    String? pem = getString('data');
-    if (pem != null) {
-      return pem;
-    }
-
-    //
-    // key data empty? generate new key info
-    //
-
-    var privateKey = ECCKeyUtils.generatePrivateKey();
-    pem = ECCKeyUtils.encodeKey(privateKey: privateKey);
-    this['data'] = pem;
-
-    return pem;
-  }
-
-  @override
   Uint8List sign(Uint8List data) {
-    var privateKey = ECCKeyUtils.decodePrivateKey(_key());
-    return ECCKeyUtils.sign(data, privateKey);
+    return ECCKeyUtils.sign(data, eccPriKey);
   }
 }
 
@@ -146,8 +146,7 @@ class ECCPrivateKeyFactory implements PrivateKeyFactory {
 
   @override
   PrivateKey generatePrivateKey() {
-    Map key = {'algorithm': AsymmetricAlgorithms.ECC};
-    return ECCPrivateKey(key);
+    return ECCPrivateKey.newKey();
   }
 
   @override

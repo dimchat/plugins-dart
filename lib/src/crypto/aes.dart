@@ -35,7 +35,7 @@ import 'package:dimp/crypto.dart';
 ///      keyInfo format: {
 ///          algorithm: "AES",
 ///          keySize  : 32,                // optional
-///          data     : "{BASE64_ENCODE}}" // password data
+///          data     : "{BASE64_ENCODE}}" // key data
 ///      }
 class AESKey extends BaseSymmetricKey {
   AESKey([super.dict]) {
@@ -43,14 +43,8 @@ class AESKey extends BaseSymmetricKey {
     // 1. check mode = 'CBC'
     // 2. check padding = 'PKCS7Padding'
 
-    // check key data
-    if (containsKey('data')) {
-      // lazy load
-      _keyData = null;
-    } else {
-      // new key
-      _keyData = generateKeyData();
-    }
+    // lazy load
+    _keyData = null;
   }
 
   // ignore: constant_identifier_names
@@ -58,20 +52,17 @@ class AESKey extends BaseSymmetricKey {
 
   TransportableData? _keyData;
 
-  // protected
-  TransportableData generateKeyData() {
-    // random key data
-    int keySize = getKeySize();
-    var pwd = _randomData(keySize);
-    var ted = TransportableData.create(pwd);
-
-    this['data'] = ted.toObject();
-    /**
-    // this['mod'] = 'CBC';
-    // this['padding'] = 'PKCS7';
-    **/
-
-    return ted;
+  factory AESKey.newKey([int size = 32]) {
+    var data = _randomData(size);
+    var ted = TransportableData.create(data);
+    var key = AESKey({
+      'algorithm': SymmetricAlgorithms.AES,
+      'data': ted.toObject(),
+      // 'mod': 'CBC',
+      // 'padding': 'PKCS7',
+    });
+    key._keyData = ted;
+    return key;
   }
 
   // protected
@@ -195,8 +186,7 @@ class AESKeyFactory implements SymmetricKeyFactory {
 
   @override
   SymmetricKey generateSymmetricKey() {
-    Map key = {'algorithm': SymmetricAlgorithms.AES};
-    return AESKey(key);
+    return AESKey.newKey();
   }
 
   @override

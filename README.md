@@ -113,7 +113,7 @@ class UnknownAddress extends ConstantString implements Address {
 ```dart
 import 'package:dimp/crypto.dart';
 import 'package:dimp/mkm.dart';
-import 'package:dimp/plugins.dart';
+import 'package:dimp/ext.dart';
 import 'package:dim_plugins/mkm.dart';
 
 
@@ -227,7 +227,7 @@ class PatchBase64Coder extends Base64Coder {
 ### ExtensionLoader
 
 ```dart
-import 'package:dimsdk/plugins.dart';
+import 'package:dimp/ext.dart';
 
 import '../../common/protocol/handshake.dart';
 
@@ -262,7 +262,7 @@ class CommonExtensionLoader extends ExtensionLoader {
 You must load all plugins before your business run:
 
 ```dart
-import 'package:dimsdk/plugins.dart';
+import 'package:dimp/ext.dart';
 
 import 'compat_loader.dart';
 
