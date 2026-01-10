@@ -237,10 +237,6 @@ class ExtensionLoader {
     /// 'query' is deprecated
     //setCommandFactory(GroupCommand.QUERY, creator: (dict) => QueryGroupCommand(dict));
     setCommandFactory(GroupCommand.RESET,   creator: (dict) => ResetGroupCommand(dict));
-    // Group Admin Commands
-    setCommandFactory(GroupCommand.HIRE,    creator: (dict) => HireGroupCommand(dict));
-    setCommandFactory(GroupCommand.FIRE,    creator: (dict) => FireGroupCommand(dict));
-    setCommandFactory(GroupCommand.RESIGN,  creator: (dict) => ResignGroupCommand(dict));
 
   }
 

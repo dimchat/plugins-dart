@@ -41,13 +41,13 @@ class IdentifierFactory implements IDFactory {
   final Map<String, ID> identifiers = {};
 
   @override
-  ID generateIdentifier(Meta meta, int? network, {String? terminal}) {
+  ID generateID(Meta meta, int? network, {String? terminal}) {
     Address address = Address.generate(meta, network);
     return ID.create(name: meta.seed, address: address, terminal: terminal);
   }
 
   @override
-  ID createIdentifier({String? name, required Address address, String? terminal}) {
+  ID createID({String? name, required Address address, String? terminal}) {
     String identifier = Identifier.concat(name: name, address: address, terminal: terminal);
     ID? did = identifiers[identifier];
     if (did == null) {
@@ -58,7 +58,7 @@ class IdentifierFactory implements IDFactory {
   }
 
   @override
-  ID? parseIdentifier(String identifier) {
+  ID? parseID(String identifier) {
     ID? did = identifiers[identifier];
     if (did == null) {
       did = parse(identifier);

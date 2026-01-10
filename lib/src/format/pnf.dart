@@ -64,7 +64,7 @@ class BaseNetworkFile extends Dictionary implements PortableNetworkFile {
   Uint8List? get data => _wrapper.data?.data;
 
   @override
-  set data(Uint8List? binary) => _wrapper.setDate(binary);
+  set data(Uint8List? binary) => _wrapper.setBinary(binary);
 
   ///
   /// file name

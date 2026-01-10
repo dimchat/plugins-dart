@@ -41,71 +41,51 @@ class GeneralDocumentFactory implements DocumentFactory {
   // protected
   final String type;
 
-  // protected
-  String getType(String docType, ID identifier) {
-    assert(docType.isNotEmpty, 'document type empty');
-    if (docType != '*') {
-      return docType;
-    } else if (identifier.isGroup) {
-      return DocumentType.BULLETIN;
-    } else if (identifier.isUser) {
-      return DocumentType.VISA;
-    } else {
-      return DocumentType.PROFILE;
-    }
-  }
-
   @override
-  Document createDocument(ID identifier, {String? data, TransportableData? signature}) {
-    String docType = getType(type, identifier);
+  Document createDocument({String? data, TransportableData? signature}) {
+    String docType = type;
     if (data == null || data.isEmpty) {
-      assert(signature == null, 'document error: $identifier, data: $data, signature: $signature');
-      // create empty document
-      switch (docType) {
-
-        case DocumentType.VISA:
-          return BaseVisa.from(identifier);
-
-        case DocumentType.BULLETIN:
-          return BaseBulletin.from(identifier);
-
-        default:
-          return BaseDocument.from(identifier, docType);
-      }
+      assert(signature == null, 'document error: $data, signature: $signature');
+      // 1. create empty document
     } else {
-      assert(signature != null, 'document error: $identifier, data: $data, signature: $signature');
-      // create document with data & signature from local storage
-      switch (docType) {
-
-        case DocumentType.VISA:
-          return BaseVisa.from(identifier, data: data, signature: signature);
-
-        case DocumentType.BULLETIN:
-          return BaseBulletin.from(identifier, data: data, signature: signature);
-
-        default:
-          return BaseDocument.from(identifier, docType, data: data, signature: signature);
-      }
+      assert(signature != null, 'document error: $data, signature: $signature');
+      // 2. create document with data & signature from local storage
     }
+    Document out;
+    switch (docType) {
+
+      case DocumentType.VISA:
+        out = BaseVisa.fromData(data: data, signature: signature);
+        break;
+
+      case DocumentType.BULLETIN:
+        out = BaseBulletin.fromData(data: data, signature: signature);
+        break;
+
+      default:
+        out = BaseDocument.fromType(docType, data: data, signature: signature);
+    }
+    assert(data == null || out.isValid, 'document error: $out');
+    return out;
   }
 
   @override
   Document? parseDocument(Map doc) {
     // check 'did', 'data', 'signature'
-    ID? identifier = ID.parse(doc['did']);
-    if (identifier == null) {
-      assert(false, 'document ID not found: $doc');
-      return null;
-    } else if (doc['data'] == null || doc['signature'] == null) {
+    if (doc['data'] == null || doc['signature'] == null) {
       // doc.data should not be empty
       // doc.signature should not be empty
       assert(false, 'document error: $doc');
       return null;
+    // } else if (doc['did'] == null) {
+    //   // doc.did should not be empty
+    //   assert(false, 'document error: $doc');
+    //   return null;
     }
+
+    // create document for type
     var ext = SharedAccountExtensions();
-    String? docType = ext.helper!.getDocumentType(doc, null);
-    docType ??= getType('*', identifier);
-    // create with document type
+    String? docType = ext.helper?.getDocumentType(doc, null);
     switch (docType) {
 
       case DocumentType.VISA:

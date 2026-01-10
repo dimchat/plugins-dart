@@ -52,7 +52,7 @@ class DefaultMeta extends BaseMeta {
   DefaultMeta([super.dict]);
 
   DefaultMeta.from(String type, VerifyKey key, String seed, TransportableData fingerprint)
-      : super.from(type, key, seed: seed, fingerprint: fingerprint);
+      : super.fromType(type, key, seed: seed, fingerprint: fingerprint);
 
   @override
   bool get hasSeed => true;
@@ -93,7 +93,7 @@ class BTCMeta extends BaseMeta {
   BTCMeta([super.dict]);
 
   BTCMeta.from(String type, VerifyKey key, {String? seed, TransportableData? fingerprint})
-      : super.from(type, key, seed: seed, fingerprint: fingerprint);
+      : super.fromType(type, key, seed: seed, fingerprint: fingerprint);
 
   @override
   bool get hasSeed => false;
@@ -133,7 +133,7 @@ class ETHMeta extends BaseMeta {
   ETHMeta([super.dict]);
 
   ETHMeta.from(String type, VerifyKey key, {String? seed, TransportableData? fingerprint})
-      : super.from(type, key, seed: seed, fingerprint: fingerprint);
+      : super.fromType(type, key, seed: seed, fingerprint: fingerprint);
 
   @override
   bool get hasSeed => false;

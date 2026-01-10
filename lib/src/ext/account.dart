@@ -34,7 +34,7 @@ import 'package:dimp/ext.dart';
 
 /// Account GeneralFactory
 class AccountGeneralFactory implements GeneralAccountHelper,
-                                       AddressHelper, IdentifierHelper,
+                                       AddressHelper, IDHelper,
                                        MetaHelper, DocumentHelper {
 
   AddressFactory?                    _addressFactory;
@@ -112,17 +112,17 @@ class AccountGeneralFactory implements GeneralAccountHelper,
   ///
 
   @override
-  void setIdentifierFactory(IDFactory factory) {
+  void setIDFactory(IDFactory factory) {
     _idFactory = factory;
   }
 
   @override
-  IDFactory? getIdentifierFactory() {
+  IDFactory? getIDFactory() {
     return _idFactory;
   }
 
   @override
-  ID? parseIdentifier(Object? identifier) {
+  ID? parseID(Object? identifier) {
     if (identifier == null) {
       return null;
     } else if (identifier is ID) {
@@ -133,23 +133,23 @@ class AccountGeneralFactory implements GeneralAccountHelper,
       assert(false, 'ID error: $identifier');
       return null;
     }
-    IDFactory? factory = getIdentifierFactory();
+    IDFactory? factory = getIDFactory();
     assert(factory != null, 'ID factory not ready');
-    return factory?.parseIdentifier(str);
+    return factory?.parseID(str);
   }
 
   @override
-  ID createIdentifier({String? name, required Address address, String? terminal}) {
-    IDFactory? factory = getIdentifierFactory();
+  ID createID({String? name, required Address address, String? terminal}) {
+    IDFactory? factory = getIDFactory();
     assert(factory != null, 'ID factory not ready');
-    return factory!.createIdentifier(name: name, address: address, terminal: terminal);
+    return factory!.createID(name: name, address: address, terminal: terminal);
   }
 
   @override
-  ID generateIdentifier(Meta meta, int? network, {String? terminal}) {
-    IDFactory? factory = getIdentifierFactory();
+  ID generateID(Meta meta, int? network, {String? terminal}) {
+    IDFactory? factory = getIDFactory();
     assert(factory != null, 'ID factory not ready');
-    return factory!.generateIdentifier(meta, network, terminal: terminal);
+    return factory!.generateID(meta, network, terminal: terminal);
   }
 
   ///
@@ -218,10 +218,10 @@ class AccountGeneralFactory implements GeneralAccountHelper,
   }
 
   @override
-  Document createDocument(String docType, ID identifier, {String? data, TransportableData? signature}) {
+  Document createDocument(String docType, {String? data, TransportableData? signature}) {
     DocumentFactory? factory = getDocumentFactory(docType);
     assert(factory != null, 'document type not supported: $docType');
-    return factory!.createDocument(identifier, data: data, signature: signature);
+    return factory!.createDocument(data: data, signature: signature);
   }
 
   @override
