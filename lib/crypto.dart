@@ -28,3 +28,4 @@ export 'src/crypto/digest.dart';
 export 'src/format/coders.dart';
 export 'src/format/pnf.dart';
 export 'src/format/ted.dart';
+export 'src/format/uri.dart';

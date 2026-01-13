@@ -27,33 +27,49 @@ import 'dart:typed_data';
 
 import 'package:dimp/crypto.dart';
 
+import 'uri.dart';
+
 
 class BaseNetworkFile extends Dictionary implements PortableNetworkFile {
   BaseNetworkFile([super.dict]) {
-    _wrapper = BaseFileWrapper(toMap());
+    _wrapper = createWrapper();
   }
 
-  late final BaseFileWrapper _wrapper;
+  late final PortableNetworkFileWrapper _wrapper;
 
-  BaseNetworkFile.from(TransportableData? data, String? filename,
+  // protected
+  PortableNetworkFileWrapper createWrapper() {
+    var factory = SharedNetworkFormatAccess().pnfWrapperFactory;
+    return factory.createPortableNetworkFileWrapper(super.toMap());
+  }
+
+  factory BaseNetworkFile.fromData(TransportableData? data, String? filename,
       Uri? url, DecryptKey? password) {
-    _wrapper = BaseFileWrapper(toMap());
+    var pnf = BaseNetworkFile();
     // file data
     if (data != null) {
-      _wrapper.data = data;
+      pnf._wrapper.data = data;
     }
     // file name
     if (filename != null) {
-      _wrapper.filename = filename;
+      pnf._wrapper.filename = filename;
     }
     // remote URL
     if (url != null) {
-      _wrapper.url = url;
+      pnf._wrapper.url = url;
     }
     // decrypt key
     if (password != null) {
-      _wrapper.password = password;
+      pnf._wrapper.password = password;
     }
+    return pnf;
+  }
+
+  @override
+  Map toMap() {
+    // serialize data
+    _wrapper.toMap();
+    return super.toMap();
   }
 
   ///
@@ -102,10 +118,12 @@ class BaseNetworkFile extends Dictionary implements PortableNetworkFile {
 
   @override
   String toString() {
-    String? urlString = _getURLString();
-    if (urlString != null) {
-      // only contains 'URL', return the URL string directly
-      return urlString;
+    Map info = toMap();
+    String? text = getURLString(info);
+    if (text != null) {
+      // only contains 'URL',
+      // or this info can be built to a data URI
+      return text;
     }
     // not a single URL, encode the entire dictionary
     return JSONMap.encode(toMap());
@@ -113,44 +131,57 @@ class BaseNetworkFile extends Dictionary implements PortableNetworkFile {
 
   @override
   Object toObject() {
-    String? urlString = _getURLString();
-    if (urlString != null) {
-      // only contains 'URL', return the URL string directly
-      return urlString;
+    Map info = toMap();
+    String? text = getURLString(info);
+    if (text != null) {
+      // only contains 'URL',
+      // or this info can be built to a data URI
+      return text;
     }
     // not a single URL, return the entire dictionary
-    return toMap();
-  }
-
-  String? _getURLString() {
-    String? urlString = getString(r'URL');
-    if (urlString == null) {
-      return null;
-    } else if (urlString.startsWith(r'data:')) {
-      // 'data:...;...,...'
-      return urlString;
-    }
-    int count = length;
-    if (count == 1) {
-      // if only contains 'URL' field, return the URL string directly
-      return urlString;
-    } else if (count == 2 && containsKey(r'filename')) {
-      // ignore 'filename' field
-      return urlString;
-    } else {
-      // not a single URL
-      return null;
-    }
+    return info;
   }
 
 }
+
+// private static
+String? getURLString(Map info) {
+  //
+  //  check URL
+  //
+  String? urlString = Converter.getString(info['URL']);
+  if (urlString == null) {
+    //
+    //  check data URI
+    //
+    return DataURI.build(info);
+  } else if (urlString.startsWith(r'data:')) {
+    // 'data:...;...,...'
+    return urlString;
+  }
+  //
+  //  check extra params
+  //
+  int count = info.length;
+  if (count == 1) {
+    // if only contains 'URL' field, return the URL string directly
+    return urlString;
+  } else if (count == 2 && info.containsKey(r'filename')) {
+    // ignore 'filename' field
+    return urlString;
+  } else {
+    // not a single URL
+    return null;
+  }
+}
+
 
 class BaseNetworkFileFactory implements PortableNetworkFileFactory {
 
   @override
   PortableNetworkFile createPortableNetworkFile(TransportableData? data, String? filename,
                                                 Uri? url, DecryptKey? password) {
-    return BaseNetworkFile.from(data, filename, url, password);
+    return BaseNetworkFile.fromData(data, filename, url, password);
   }
 
   @override

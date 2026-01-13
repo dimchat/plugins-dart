@@ -33,6 +33,8 @@ import 'dart:typed_data';
 import 'package:dimp/crypto.dart';
 import 'package:dimp/ext.dart';
 
+import '../format/uri.dart';
+
 /// Format GeneralFactory
 /// ~~~~~~~~~~~~~~~~~~~~~
 class FormatGeneralFactory implements GeneralFormatHelper,
@@ -42,74 +44,6 @@ class FormatGeneralFactory implements GeneralFormatHelper,
   final Map<String, TransportableDataFactory> _tedFactories = {};
 
   PortableNetworkFileFactory? _pnfFactory;
-
-  /// split text string to array: ["{TEXT}", "{algorithm}", "{content-type}"]
-  List<String> split(String text) {
-    // "{TEXT}", or
-    // "base64,{BASE64_ENCODE}", or
-    // "data:image/png;base64,{BASE64_ENCODE}"
-    int pos1 = text.indexOf('://');
-    if (pos1 > 0) {
-      // [URL]
-      return [text];
-    } else {
-      // skip 'data:'
-      pos1 = text.indexOf(':') + 1;
-    }
-    List<String> array = [];
-    // seeking for 'content-type'
-    int pos2 = text.indexOf(';', pos1);
-    if (pos2 > pos1) {
-      array.add(text.substring(pos1, pos2));
-      pos1 = pos2 + 1;
-    }
-    // seeking for 'algorithm'
-    pos2 = text.indexOf(',', pos1);
-    if (pos2 > pos1) {
-      array.insert(0, text.substring(pos1, pos2));
-      pos1 = pos2 + 1;
-    }
-    if (pos1 == 0) {
-      // [data]
-      array.insert(0, text);
-    } else {
-      // [data, algorithm, type]
-      array.insert(0, text.substring(pos1));
-    }
-    return array;
-  }
-
-  Map? decode(Object data, {required String defaultKey}) {
-    if (data is Mapper) {
-      return data.toMap();
-    } else if (data is Map) {
-      return data;
-    }
-    String text = data is String ? data : data.toString();
-    if (text.isEmpty) {
-      return null;
-    } else if (text.startsWith('{') && text.endsWith('}')) {
-      return JSONMap.decode(text);
-    }
-    Map info = {};
-    List<String> array = split(text);
-    int size = array.length;
-    if (size == 1) {
-      info[defaultKey] = array[0];
-    } else {
-      assert(size > 1, 'split error: $text => $array');
-      info['data'] = array[0];
-      info['algorithm'] = array[1];
-      if (size > 2) {
-        // 'data:...;...,...'
-        info['content-type'] = array[2];
-        if (text.startsWith('data:')) {
-          info['URL'] = text;
-        }
-      }
-    }
-    return info;
-  }
 
   @override
   String? getFormatAlgorithm(Map ted, [String? defaultValue]) {
@@ -146,7 +80,7 @@ class FormatGeneralFactory implements GeneralFormatHelper,
       return ted;
     }
     // unwrap
-    Map? info = decode(ted, defaultKey: 'data');
+    Map? info = parseData(ted);
     if (info == null) {
       // assert(false, 'TED error: $ted');
       return null;
@@ -192,7 +126,7 @@ class FormatGeneralFactory implements GeneralFormatHelper,
       return pnf;
     }
     // unwrap
-    Map? info = decode(pnf, defaultKey: 'URL');
+    Map? info = parseURL(pnf);
     if (info == null) {
       // assert(false, 'PNF error: $pnf');
       return null;
@@ -200,6 +134,79 @@ class FormatGeneralFactory implements GeneralFormatHelper,
     PortableNetworkFileFactory? factory = getPortableNetworkFileFactory();
     assert(factory != null, 'PNF factory not ready');
     return factory?.parsePortableNetworkFile(info);
+  }
+
+  //
+  //  Convenience
+  //
+
+  ///  Parse PNF
+  // protected
+  Map? parseURL(Object? pnf) {
+    Map? info = getMap(pnf);
+    if (info == null) {
+      // parse data URI from text string
+      String? text = Converter.getString(pnf);
+      info = parseDataURI(text);
+      if (info != null) {
+        // data URI
+        assert(text?.contains('://') != true, 'PNF data error: $pnf');
+        // if (text?.startsWith('://') == true) {
+        //   info['URI'] = text;
+        // }
+      } else if (text?.contains('://') == true) {
+        // [URL]
+        info = {
+          'URL': text,
+        };
+      }
+    }
+    return info;
+  }
+
+  ///  Parse TED
+  // protected
+  Map? parseData(Object? ted) {
+    Map? info = getMap(ted);
+    if (info == null) {
+      // parse data URI from text string
+      String? text = Converter.getString(ted);
+      info = parseDataURI(text);
+      if (info == null) {
+        assert(text?.contains('://') != true, 'TED data error: $ted');
+        // [TEXT]
+        info = {
+          'data': text,
+        };
+      }
+    }
+    return info;
+  }
+
+  // protected
+  Map? getMap(Object? value) {
+    if (value == null) {
+      return null;
+    } else if (value is Mapper) {
+      return value.toMap();
+    } else if (value is Map) {
+      return value;
+    }
+    String? text = Converter.getString(value);
+    if (text == null || text.length < 8) {
+      return null;
+    } else if (text.startsWith('{') && text.endsWith('}')) {
+      // from JSON string
+      return JSONMap.decode(text);
+    } else {
+      return null;
+    }
+  }
+
+  // protected
+  Map? parseDataURI(String? text) {
+    DataURI? uri = DataURI.parse(text);
+    return uri?.toMap();
   }
 
 }

@@ -29,17 +29,34 @@ import 'package:dimp/crypto.dart';
 
 
 class Base64Data extends Dictionary implements TransportableData {
-  Base64Data([super.dict]);
+  Base64Data([super.dict]) {
+    _wrapper = createWrapper();
+  }
 
-  late final BaseDataWrapper _wrapper = BaseDataWrapper(toMap());
+  late final TransportableDataWrapper _wrapper;
 
-  Base64Data.fromData(Uint8List binary) {
+  // protected
+  TransportableDataWrapper createWrapper() {
+    var factory = SharedNetworkFormatAccess().tedWrapperFactory;
+    return factory.createTransportableDataWrapper(super.toMap());
+  }
+
+  factory Base64Data.fromData(Uint8List binary) {
+    var ted = Base64Data();
     // encode algorithm
-    _wrapper.algorithm = EncodeAlgorithms.BASE_64;
+    ted._wrapper.algorithm = EncodeAlgorithms.BASE_64;
     // binary data
     if (binary.isNotEmpty) {
-      _wrapper.data = binary;
+      ted._wrapper.data = binary;
     }
+    return ted;
+  }
+
+  @override
+  Map toMap() {
+    // serialize data
+    _wrapper.toString();
+    return super.toMap();
   }
 
   ///
@@ -65,6 +82,7 @@ class Base64Data extends Dictionary implements TransportableData {
 
   // 0. "{BASE64_ENCODE}"
   // 1. "base64,{BASE64_ENCODE}"
+  // 2. "data:image/png;base64,{BASE64_ENCODE}"
   @override
   String toString() => _wrapper.toString();
 
