@@ -191,9 +191,10 @@ class AESKeyFactory implements SymmetricKeyFactory {
 
   @override
   SymmetricKey? parseSymmetricKey(Map key) {
-    // check 'data'
-    if (key['data'] == null) {
+    // check 'data', 'algorithm'
+    if (key['data'] == null || key['algorithm'] == null) {
       // key.data should not be empty
+      // key.algorithm should not be empty
       assert(false, 'AES key error: $key');
       return null;
     }

@@ -1,3 +1,7 @@
+## 2.2.1
+
+- Data URI.
+
 ## 2.2.0
 
 - Mapper forEach.

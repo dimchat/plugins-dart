@@ -92,6 +92,10 @@ class DataURI {
     return DataURI(body, encoding: encoding, mimeType: mimeType);
   }
 
+  ///  Build data URI
+  ///
+  ///      format: "data:image/png;base64,{BASE64_ENCODE}"
+  ///
   static String? build(Map info) {
     //
     //  1. check encoded data & content type

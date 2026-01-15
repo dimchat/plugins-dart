@@ -61,6 +61,13 @@ class PlainKeyFactory implements SymmetricKeyFactory {
 
   @override
   SymmetricKey? parseSymmetricKey(Map key) {
+    // check 'algorithm'
+    String algorithm = BaseKey.getKeyAlgorithm(key);
+    if (algorithm != SymmetricAlgorithms.PLAIN) {
+      // algorithm not matched
+      assert(false, 'Plain key error: $key');
+      return null;
+    }
     return PlainKey.getInstance();
   }
 }

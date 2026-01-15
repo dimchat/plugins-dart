@@ -151,7 +151,7 @@ class FormatGeneralFactory implements GeneralFormatHelper,
       if (info != null) {
         // data URI
         assert(text?.contains('://') != true, 'PNF data error: $pnf');
-        // if (text?.startsWith('://') == true) {
+        // if (text?.contains('://') == true) {
         //   info['URI'] = text;
         // }
       } else if (text?.contains('://') == true) {

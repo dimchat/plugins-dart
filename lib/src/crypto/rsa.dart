@@ -147,9 +147,10 @@ class RSAPublicKeyFactory implements PublicKeyFactory {
 
   @override
   PublicKey? parsePublicKey(Map key) {
-    // check 'data'
-    if (key['data'] == null) {
+    // check 'data', 'algorithm'
+    if (key['data'] == null || key['algorithm'] == null) {
       // key.data should not be empty
+      // key.algorithm should not be empty
       assert(false, 'RSA key error: $key');
       return null;
     }
@@ -166,9 +167,10 @@ class RSAPrivateKeyFactory implements PrivateKeyFactory {
 
   @override
   PrivateKey? parsePrivateKey(Map key) {
-    // check 'data'
-    if (key['data'] == null) {
+    // check 'data', 'algorithm'
+    if (key['data'] == null || key['algorithm'] == null) {
       // key.data should not be empty
+      // key.algorithm should not be empty
       assert(false, 'RSA key error: $key');
       return null;
     }

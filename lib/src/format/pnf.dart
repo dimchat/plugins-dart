@@ -126,7 +126,7 @@ class BaseNetworkFile extends Dictionary implements PortableNetworkFile {
       return text;
     }
     // not a single URL, encode the entire dictionary
-    return JSONMap.encode(toMap());
+    return JSONMap.encode(info);
   }
 
   @override
