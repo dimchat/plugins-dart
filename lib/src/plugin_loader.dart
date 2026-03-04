@@ -70,44 +70,6 @@ class PluginLoader {
     registerTEDFactory();
 
   }
-  // protected
-  void registerBase58Coder() {
-    /// Base58 coding
-    Base58.coder = Base58Coder();
-  }
-  // protected
-  void registerBase64Coder() {
-    /// Base64 coding
-    Base64.coder = Base64Coder();
-  }
-  // protected
-  void registerHexCoder() {
-    /// HEX coding
-    Hex.coder = HexCoder();
-  }
-  // protected
-  void registerUTF8Coder() {
-    /// UTF8
-    UTF8.coder = UTF8Coder();
-  }
-  // protected
-  void registerJSONCoder() {
-    /// JSON
-    JSON.coder = JSONCoder();
-  }
-  // protected
-  void registerPNFFactory() {
-    /// PNF
-    PortableNetworkFile.setFactory(BaseNetworkFileFactory());
-  }
-  // protected
-  void registerTEDFactory() {
-    /// TED
-    var tedFactory = Base64DataFactory();
-    TransportableData.setFactory(EncodeAlgorithms.BASE_64, tedFactory);
-    // TransportableData.setFactory(EncodeAlgorithms.DEFAULT, tedFactory);
-    TransportableData.setFactory('*', tedFactory);
-  }
 
   // protected
   ///  Message digesters
@@ -119,21 +81,6 @@ class PluginLoader {
 
     registerRIPEMD160Digester();
 
-  }
-  // protected
-  void registerSHA256Digester() {
-    /// SHA256
-    SHA256.digester = SHA256Digester();
-  }
-  // protected
-  void registerKECCAK256Digester() {
-    /// Keccak256
-    KECCAK256.digester = KECCAK256Digester();
-  }
-  // protected
-  void registerRIPEMD160Digester() {
-    /// RIPEMD160
-    RIPEMD160.digester = RIPEMD160Digester();
   }
 
   // protected

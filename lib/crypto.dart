@@ -8,6 +8,8 @@ library dim_plugins;
 //
 //  Keys
 //
+export 'src/crypto/keys.dart';
+
 export 'src/crypto/aes.dart';
 export 'src/crypto/plain.dart';
 

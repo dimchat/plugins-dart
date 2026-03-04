@@ -56,7 +56,7 @@ class AccountGeneralFactory implements GeneralAccountHelper,
       return defaultValue;
     }
     // get type for did
-    var did = ID.parse(doc['did']);
+    var did = getDocumentID(doc);
     if (did == null) {
       assert(false, 'document error: $doc');
       return null;
@@ -67,6 +67,11 @@ class AccountGeneralFactory implements GeneralAccountHelper,
     } else {
       return DocumentType.PROFILE;
     }
+  }
+
+  @override
+  ID? getDocumentID(Map doc) {
+    return ID.parse(doc['did']);
   }
 
   ///

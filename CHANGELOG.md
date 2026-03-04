@@ -1,3 +1,7 @@
+## 2.3.0
+
+- Upgrade factories.
+
 ## 2.2.1
 
 - Data URI.

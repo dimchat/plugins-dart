@@ -27,7 +27,9 @@ import 'dart:typed_data';
 
 import 'package:dimp/crypto.dart';
 
+import 'keys.dart';
 import 'rsa_utils.dart';
+
 
 ///  RSA Public Key
 ///
@@ -45,7 +47,10 @@ class RSAPublicKey extends BasePublicKey implements EncryptKey {
   }
 
   @override
-  Uint8List get data => RSAKeyUtils.encodePublicKeyData(rsaPubKey);
+  TransportableData get data {
+    Uint8List bytes = RSAKeyUtils.encodePublicKeyData(rsaPubKey);
+    return PlainData.createWithBytes(bytes);
+  }
 
   @override
   Uint8List encrypt(Uint8List plaintext, [Map? extra]) {
@@ -96,7 +101,10 @@ class RSAPrivateKey extends BasePrivateKey implements DecryptKey {
   }
 
   @override
-  Uint8List get data => RSAKeyUtils.encodePrivateKeyData(rsaPriKey);
+  TransportableData get data {
+    Uint8List bytes = RSAKeyUtils.encodePrivateKeyData(rsaPriKey);
+    return PlainData.createWithBytes(bytes);
+  }
 
   @override
   PublicKey get publicKey {
@@ -148,7 +156,7 @@ class RSAPublicKeyFactory implements PublicKeyFactory {
   @override
   PublicKey? parsePublicKey(Map key) {
     // check 'data', 'algorithm'
-    if (key['data'] == null || key['algorithm'] == null) {
+    if (!key.containsKey('data') || !key.containsKey('algorithm')) {
       // key.data should not be empty
       // key.algorithm should not be empty
       assert(false, 'RSA key error: $key');
@@ -168,7 +176,7 @@ class RSAPrivateKeyFactory implements PrivateKeyFactory {
   @override
   PrivateKey? parsePrivateKey(Map key) {
     // check 'data', 'algorithm'
-    if (key['data'] == null || key['algorithm'] == null) {
+    if (!key.containsKey('data') || !key.containsKey('algorithm')) {
       // key.data should not be empty
       // key.algorithm should not be empty
       assert(false, 'RSA key error: $key');

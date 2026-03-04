@@ -23,176 +23,39 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'dart:typed_data';
-
 import 'package:dimp/crypto.dart';
 
-import 'uri.dart';
 
+class BaseNetworkFileFactory implements TransportableFileFactory {
 
-class BaseNetworkFile extends Dictionary implements PortableNetworkFile {
-  BaseNetworkFile([super.dict]) {
-    _wrapper = createWrapper();
-  }
-
-  late final PortableNetworkFileWrapper _wrapper;
-
-  // protected
-  PortableNetworkFileWrapper createWrapper() {
-    var factory = SharedNetworkFormatAccess().pnfWrapperFactory;
-    return factory.createPortableNetworkFileWrapper(super.toMap());
-  }
-
-  factory BaseNetworkFile.fromData(TransportableData? data, String? filename,
-      Uri? url, DecryptKey? password) {
-    var pnf = BaseNetworkFile();
-    // file data
-    if (data != null) {
-      pnf._wrapper.data = data;
-    }
-    // file name
-    if (filename != null) {
-      pnf._wrapper.filename = filename;
-    }
-    // remote URL
-    if (url != null) {
-      pnf._wrapper.url = url;
-    }
-    // decrypt key
-    if (password != null) {
-      pnf._wrapper.password = password;
-    }
-    return pnf;
+  @override
+  TransportableFile createTransportableFile(TransportableData? data, String? filename,
+                                            Uri? url, DecryptKey? password) {
+    return PortableNetworkFile({},
+      data: data, filename: filename,
+      url: url, password: password,
+    );
   }
 
   @override
-  Map toMap() {
-    // serialize data
-    _wrapper.toMap();
-    return super.toMap();
-  }
-
-  ///
-  /// file data
-  ///
-
-  @override
-  Uint8List? get data => _wrapper.data?.data;
-
-  @override
-  set data(Uint8List? binary) => _wrapper.setBinary(binary);
-
-  ///
-  /// file name
-  ///
-
-  @override
-  String? get filename => _wrapper.filename;
-
-  @override
-  set filename(String? name) => _wrapper.filename = name;
-
-  ///
-  /// download URL
-  ///
-
-  @override
-  Uri? get url => _wrapper.url;
-
-  @override
-  set url(Uri? remote) => _wrapper.url = remote;
-
-  ///
-  /// decrypt key
-  ///
-
-  @override
-  DecryptKey? get password => _wrapper.password;
-
-  @override
-  set password(DecryptKey? key) => _wrapper.password = key;
-
-  ///
-  /// encoding
-  ///
-
-  @override
-  String toString() {
-    Map info = toMap();
-    String? text = getURLString(info);
-    if (text != null) {
-      // only contains 'URL',
-      // or this info can be built to a data URI
-      return text;
-    }
-    // not a single URL, encode the entire dictionary
-    return JSONMap.encode(info);
-  }
-
-  @override
-  Object toObject() {
-    Map info = toMap();
-    String? text = getURLString(info);
-    if (text != null) {
-      // only contains 'URL',
-      // or this info can be built to a data URI
-      return text;
-    }
-    // not a single URL, return the entire dictionary
-    return info;
-  }
-
-}
-
-// private static
-String? getURLString(Map info) {
-  //
-  //  check URL
-  //
-  String? urlString = Converter.getString(info['URL']);
-  if (urlString == null) {
-    //
-    //  check data URI
-    //
-    return DataURI.build(info);
-  } else if (urlString.startsWith(r'data:')) {
-    // 'data:...;...,...'
-    return urlString;
-  }
-  //
-  //  check extra params
-  //
-  int count = info.length;
-  if (count == 1) {
-    // if only contains 'URL' field, return the URL string directly
-    return urlString;
-  } else if (count == 2 && info.containsKey(r'filename')) {
-    // ignore 'filename' field
-    return urlString;
-  } else {
-    // not a single URL
-    return null;
-  }
-}
-
-
-class BaseNetworkFileFactory implements PortableNetworkFileFactory {
-
-  @override
-  PortableNetworkFile createPortableNetworkFile(TransportableData? data, String? filename,
-                                                Uri? url, DecryptKey? password) {
-    return BaseNetworkFile.fromData(data, filename, url, password);
-  }
-
-  @override
-  PortableNetworkFile? parsePortableNetworkFile(Map pnf) {
+  TransportableFile? parseTransportableFile(Map pnf) {
     // check 'data', 'URL', 'filename'
-    if (pnf['data'] == null && pnf['URL'] == null && pnf['filename'] == null) {
+    if (!pnf.containsKey('data') && !pnf.containsKey('URL') && !pnf.containsKey('filename')) {
       // pnf.data and pnf.URL and pnf.filename should not be empty at the same time
       assert(false, 'PNF error: $pnf');
       return null;
     }
-    return BaseNetworkFile(pnf);
+    return PortableNetworkFile(pnf);
   }
+
+}
+
+
+/// set PNF factory
+void registerPNFFactory() {
+
+  var pnf = BaseNetworkFileFactory();
+
+  TransportableFile.setFactory(pnf);
 
 }

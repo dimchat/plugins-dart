@@ -27,6 +27,8 @@ import 'dart:typed_data';
 
 import 'package:dimp/crypto.dart';
 
+import 'keys.dart';
+
 
 ///  Symmetric key for broadcast message,
 ///  which will do nothing when en/decoding message data
@@ -34,7 +36,7 @@ class PlainKey extends BaseSymmetricKey {
   PlainKey([super.dict]);
 
   @override
-  Uint8List get data => Uint8List(0);
+  TransportableData get data => PlainData.zero();
 
   @override
   Uint8List? decrypt(Uint8List ciphertext, [Map? params]) {

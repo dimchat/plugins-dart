@@ -178,10 +178,10 @@ void testRSA() {
 
 void _checkKeys(PrivateKey sKey, PublicKey pKey) {
   debugLog('private key: $sKey');
-  debugLog('secret data: ${Hex.encode(sKey.data)}');
+  debugLog('secret data: ${Hex.encode(sKey.data.bytes!)}');
 
   debugLog('public key: $pKey');
-  debugLog('pub data: ${Hex.encode(pKey.data)}');
+  debugLog('pub data: ${Hex.encode(pKey.data.bytes!)}');
   
   final String text = 'moky';
   final Uint8List data = UTF8.encode(text);
@@ -230,7 +230,7 @@ void testECC() {
       '7cDZh80ybe7umXESk2c4PvjypfKEfKgJznjG6WqQGz8aYVHkxLTrEA==\n'
       '-----END PUBLIC KEY-----');
   debugLog('pub2: $pKey');
-  debugLog('pub2 data: ${Hex.encode(pKey.data)}');
+  debugLog('pub2 data: ${Hex.encode(pKey.data.bytes!)}');
 }
 
 void testSymmetric() {

@@ -28,6 +28,8 @@ import 'dart:typed_data';
 import 'package:dimp/crypto.dart';
 
 import 'ecc_utils.dart';
+import 'keys.dart';
+
 
 ///  ECC Public Key
 ///
@@ -49,9 +51,12 @@ class ECCPublicKey extends BasePublicKey {
   }
 
   @override
-  Uint8List get data => ECCKeyUtils.encodePublicKeyData(eccPubKey,
-    compressed: compressed,
-  );
+  TransportableData get data {
+    Uint8List bytes = ECCKeyUtils.encodePublicKeyData(eccPubKey,
+      compressed: compressed,
+    );
+    return PlainData.createWithBytes(bytes);
+  }
 
   @override
   bool verify(Uint8List data, Uint8List signature) {
@@ -100,7 +105,10 @@ class ECCPrivateKey extends BasePrivateKey {
   }
 
   @override
-  Uint8List get data => ECCKeyUtils.encodePrivateKeyData(eccPriKey);
+  TransportableData get data {
+    Uint8List bytes = ECCKeyUtils.encodePrivateKeyData(eccPriKey);
+    return PlainData.createWithBytes(bytes);
+  }
 
   @override
   PublicKey get publicKey {
@@ -136,7 +144,7 @@ class ECCPublicKeyFactory implements PublicKeyFactory {
   @override
   PublicKey? parsePublicKey(Map key) {
     // check 'data', 'algorithm'
-    if (key['data'] == null || key['algorithm'] == null) {
+    if (!key.containsKey('data') || !key.containsKey('algorithm')) {
       // key.data should not be empty
       // key.algorithm should not be empty
       assert(false, 'ECC key error: $key');
@@ -156,7 +164,7 @@ class ECCPrivateKeyFactory implements PrivateKeyFactory {
   @override
   PrivateKey? parsePrivateKey(Map key) {
     // check 'data', 'algorithm'
-    if (key['data'] == null || key['algorithm'] == null) {
+    if (!key.containsKey('data') || !key.containsKey('algorithm')) {
       // key.data should not be empty
       // key.algorithm should not be empty
       assert(false, 'ECC key error: $key');

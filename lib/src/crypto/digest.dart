@@ -61,3 +61,25 @@ class RIPEMD160Digester implements MessageDigester {
     return _hash(data, RIPEMD160Digest());
   }
 }
+
+
+/// set SHA-256 digester
+void registerSHA256Digester() {
+
+  SHA256.digester = SHA256Digester();
+
+}
+
+/// set Keccak-256 digester
+void registerKECCAK256Digester() {
+
+  KECCAK256.digester = KECCAK256Digester();
+
+}
+
+/// set RipeMD-160 digester
+void registerRIPEMD160Digester() {
+
+  RIPEMD160.digester = RIPEMD160Digester();
+
+}

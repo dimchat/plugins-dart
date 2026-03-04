@@ -28,48 +28,31 @@
  * SOFTWARE.
  * =============================================================================
  */
-import 'dart:typed_data';
-
 import 'package:dimp/crypto.dart';
 import 'package:dimp/ext.dart';
 
-import '../format/uri.dart';
 
 /// Format GeneralFactory
 /// ~~~~~~~~~~~~~~~~~~~~~
-class FormatGeneralFactory implements GeneralFormatHelper,
-                                      PortableNetworkFileHelper,
+class FormatGeneralFactory implements TransportableFileHelper,
                                       TransportableDataHelper {
 
-  final Map<String, TransportableDataFactory> _tedFactories = {};
+  TransportableDataFactory? _tedFactory;
 
-  PortableNetworkFileFactory? _pnfFactory;
-
-  @override
-  String? getFormatAlgorithm(Map ted, [String? defaultValue]) {
-    return Converter.getString(ted['algorithm'], defaultValue);
-  }
+  TransportableFileFactory? _pnfFactory;
 
   ///
   ///   TED - Transportable Encoded Data
   ///
 
   @override
-  void setTransportableDataFactory(String algorithm, TransportableDataFactory factory) {
-    _tedFactories[algorithm] = factory;
+  void setTransportableDataFactory(TransportableDataFactory factory) {
+    _tedFactory = factory;
   }
 
   @override
-  TransportableDataFactory? getTransportableDataFactory(String algorithm) {
-    return _tedFactories[algorithm];
-  }
-
-  @override
-  TransportableData createTransportableData(Uint8List data, String? algorithm) {
-    algorithm ??= EncodeAlgorithms.DEFAULT;
-    TransportableDataFactory? factory = getTransportableDataFactory(algorithm);
-    assert(factory != null, 'TED algorithm not support: $algorithm');
-    return factory!.createTransportableData(data);
+  TransportableDataFactory? getTransportableDataFactory() {
+    return _tedFactory;
   }
 
   @override
@@ -80,20 +63,14 @@ class FormatGeneralFactory implements GeneralFormatHelper,
       return ted;
     }
     // unwrap
-    Map? info = parseData(ted);
-    if (info == null) {
-      // assert(false, 'TED error: $ted');
+    String? str = Wrapper.getString(ted);
+    if (str == null) {
+      assert(false, 'TED error: $ted');
       return null;
     }
-    String? algo = getFormatAlgorithm(info);
-    // assert(algo != null, 'TED error: $ted');
-    var factory = algo == null ? null : getTransportableDataFactory(algo);
-    if (factory == null) {
-      // unknown algorithm, get default factory
-      factory = getTransportableDataFactory('*');  // unknown
-      assert(factory != null, 'default TED factory not found');
-    }
-    return factory?.parseTransportableData(info);
+    var factory = getTransportableDataFactory();
+    assert(factory != null, 'default TED factory not found');
+    return factory?.parseTransportableData(str);
   }
 
   ///
@@ -101,112 +78,79 @@ class FormatGeneralFactory implements GeneralFormatHelper,
   ///
 
   @override
-  void setPortableNetworkFileFactory(PortableNetworkFileFactory factory) {
+  void setTransportableFileFactory(TransportableFileFactory factory) {
     _pnfFactory = factory;
   }
 
   @override
-  PortableNetworkFileFactory? getPortableNetworkFileFactory() {
+  TransportableFileFactory? getTransportableFileFactory() {
     return _pnfFactory;
   }
 
   @override
-  PortableNetworkFile createPortableNetworkFile(TransportableData? data, String? filename,
-      Uri? url, DecryptKey? password) {
-    PortableNetworkFileFactory? factory = getPortableNetworkFileFactory();
+  TransportableFile createTransportableFile(TransportableData? data, String? filename,
+                                            Uri? url, DecryptKey? password) {
+    TransportableFileFactory? factory = getTransportableFileFactory();
     assert(factory != null, 'PNF factory not ready');
-    return factory!.createPortableNetworkFile(data, filename, url, password);
+    return factory!.createTransportableFile(data, filename, url, password);
   }
 
   @override
-  PortableNetworkFile? parsePortableNetworkFile(Object? pnf) {
+  TransportableFile? parseTransportableFile(Object? pnf) {
     if (pnf == null) {
       return null;
-    } else if (pnf is PortableNetworkFile) {
+    } else if (pnf is TransportableFile) {
       return pnf;
     }
     // unwrap
-    Map? info = parseURL(pnf);
+    Map? info = getTransportableFileContent(pnf);
     if (info == null) {
-      // assert(false, 'PNF error: $pnf');
+      assert(false, 'PNF error: $pnf');
       return null;
     }
-    PortableNetworkFileFactory? factory = getPortableNetworkFileFactory();
+    TransportableFileFactory? factory = getTransportableFileFactory();
     assert(factory != null, 'PNF factory not ready');
-    return factory?.parsePortableNetworkFile(info);
-  }
-
-  //
-  //  Convenience
-  //
-
-  ///  Parse PNF
-  // protected
-  Map? parseURL(Object? pnf) {
-    Map? info = getMap(pnf);
-    if (info == null) {
-      // parse data URI from text string
-      String? text = Converter.getString(pnf);
-      info = parseDataURI(text);
-      if (info != null) {
-        // data URI
-        assert(text?.contains('://') != true, 'PNF data error: $pnf');
-        // if (text?.contains('://') == true) {
-        //   info['URI'] = text;
-        // }
-      } else if (text?.contains('://') == true) {
-        // [URL]
-        info = {
-          'URL': text,
-        };
-      }
-    }
-    return info;
-  }
-
-  ///  Parse TED
-  // protected
-  Map? parseData(Object? ted) {
-    Map? info = getMap(ted);
-    if (info == null) {
-      // parse data URI from text string
-      String? text = Converter.getString(ted);
-      info = parseDataURI(text);
-      if (info == null) {
-        assert(text?.contains('://') != true, 'TED data error: $ted');
-        // [TEXT]
-        info = {
-          'data': text,
-        };
-      }
-    }
-    return info;
+    return factory?.parseTransportableFile(info);
   }
 
   // protected
-  Map? getMap(Object? value) {
-    if (value == null) {
-      return null;
-    } else if (value is Mapper) {
-      return value.toMap();
-    } else if (value is Map) {
-      return value;
+  Map? getTransportableFileContent(Object pnf) {
+    if (pnf is Mapper) {
+      return pnf.toMap();
+    } else if (pnf is Map) {
+      return pnf;
     }
-    String? text = Converter.getString(value);
+    String? text = Wrapper.getString(pnf);
     if (text == null || text.length < 8) {
+      assert(false, 'PNF error: $pnf');
       return null;
-    } else if (text.startsWith('{') && text.endsWith('}')) {
-      // from JSON string
+    } else if (text.startsWith('{')) {
+      // decode JSON string
+      assert(text.endsWith('}'), 'PNF json error: $pnf');
       return JSONMap.decode(text);
-    } else {
-      return null;
     }
-  }
+    Map content = {};
 
-  // protected
-  Map? parseDataURI(String? text) {
-    DataURI? uri = DataURI.parse(text);
-    return uri?.toMap();
+    // 1. check for URL: 'http://...'
+    int pos = text.indexOf('://');
+    if (0 < pos && pos < 8) {
+      content['URL'] = text;
+      return content;
+    }
+
+    content['data'] = text;
+    // 2. check for data URI: 'data:image/jpeg;base64,...'
+    UriData? uri = UriData.parse(text);
+    // if (uri != null) {
+      String? filename = uri.parameters['filename'];
+      if (filename != null) {
+        content['filename'] = filename;
+      }
+    // } else {
+    //   // 3. check for Base-64 encoded string?
+    // }
+
+    return content;
   }
 
 }

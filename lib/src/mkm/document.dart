@@ -43,14 +43,42 @@ class GeneralDocumentFactory implements DocumentFactory {
 
   @override
   Document createDocument({String? data, TransportableData? signature}) {
-    String docType = type;
     if (data == null || data.isEmpty) {
       assert(signature == null, 'document error: $data, signature: $signature');
       // 1. create empty document
-    } else {
-      assert(signature != null, 'document error: $data, signature: $signature');
-      // 2. create document with data & signature from local storage
+      return createEmptyDocument();
+    } else if (signature == null || signature.isEmpty) {
+      assert(false, 'document error: $data, signature: $signature');
+      return createEmptyDocument();
     }
+    // 2. create document with data & signature from local storage
+    return createValidDocument(data, signature);
+  }
+
+  // protected
+  Document createEmptyDocument() {
+    String docType = type;
+    Document out;
+    switch (docType) {
+
+      case DocumentType.VISA:
+        out = BaseVisa.empty();
+        break;
+
+      case DocumentType.BULLETIN:
+        out = BaseBulletin.empty();
+        break;
+
+      default:
+        out = BaseDocument.fromType(docType);
+        break;
+    }
+    return out;
+  }
+
+  // protected
+  Document createValidDocument(String data, TransportableData signature) {
+    String docType = type;
     Document out;
     switch (docType) {
 
@@ -65,19 +93,19 @@ class GeneralDocumentFactory implements DocumentFactory {
       default:
         out = BaseDocument.fromType(docType, data: data, signature: signature);
     }
-    assert(data == null || out.isValid, 'document error: $out');
+    assert(out.isValid, 'document error: $out');
     return out;
   }
 
   @override
   Document? parseDocument(Map doc) {
     // check 'did', 'data', 'signature'
-    if (doc['data'] == null || doc['signature'] == null) {
+    if (!doc.containsKey('data') || !doc.containsKey('signature')) {
       // doc.data should not be empty
       // doc.signature should not be empty
       assert(false, 'document error: $doc');
       return null;
-    // } else if (doc['did'] == null) {
+    // } else if (!doc.containsKey('did'])) {
     //   // doc.did should not be empty
     //   assert(false, 'document error: $doc');
     //   return null;

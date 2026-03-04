@@ -68,7 +68,7 @@ class DefaultMeta extends BaseMeta {
     Address? cached = _cachedAddresses[network];
     if (cached == null) {
       // generate and cache it
-      var data = fingerprint;
+      var data = fingerprint?.bytes;
       assert(data != null && data.isNotEmpty, 'meta.fingerprint empty');
       cached = BTCAddress.generate(data!, network!);
       _cachedAddresses[network] = cached;
@@ -110,9 +110,10 @@ class BTCMeta extends BaseMeta {
     if (cached == null) {
       // TODO: compress public key?
       VerifyKey key = publicKey;
-      Uint8List data = key.data;
+      var data = key.data.bytes;
+      assert(data != null && data.isNotEmpty, 'key data empty');
       // generate and cache it
-      cached = BTCAddress.generate(data, network!);
+      cached = BTCAddress.generate(data!, network!);
       _cachedAddresses[network] = cached;
     }
     return cached;
@@ -150,9 +151,10 @@ class ETHMeta extends BaseMeta {
     if (cached == null/* || cached.type != network*/) {
       // 64 bytes key data without prefix 0x04
       VerifyKey key = publicKey;
-      Uint8List data = key.data;
+      var data = key.data.bytes;
+      assert(data != null && data.isNotEmpty, 'key data empty');
       // generate and cache it
-      cached = ETHAddress.generate(data);
+      cached = ETHAddress.generate(data!);
       _cachedAddress = cached;
     }
     return cached;
@@ -176,7 +178,7 @@ class BaseMetaFactory implements MetaFactory {
     } else {
       Uint8List data = UTF8.encode(seed);
       Uint8List sig = sKey.sign(data);
-      fingerprint = TransportableData.create(sig);
+      fingerprint = Base64Data.createWithBytes(sig);
     }
     VerifyKey pKey = (sKey as PrivateKey).publicKey;
     return createMeta(pKey, seed: seed, fingerprint: fingerprint);
@@ -188,17 +190,14 @@ class BaseMetaFactory implements MetaFactory {
     switch (type) {
 
       case MetaType.MKM:
-      case 'mkm':
         out = DefaultMeta.from(type, pKey, seed!, fingerprint!);
         break;
 
       case MetaType.BTC:
-      case 'btc':
         out = BTCMeta.from(type, pKey);
         break;
 
       case MetaType.ETH:
-      case 'eth':
         out = ETHMeta.from(type, pKey);
         break;
 
@@ -211,38 +210,35 @@ class BaseMetaFactory implements MetaFactory {
 
   @override
   Meta? parseMeta(Map meta) {
-    // // check 'type', 'key', 'seed', 'fingerprint'
-    // if (meta['type'] == null || meta['key'] == null) {
-    //   // meta.type should not be empty
-    //   // meta.key should not be empty
-    //   assert(false, 'meta error: $meta');
-    //   return null;
-    // } else if (meta['seed'] == null) {
-    //   if (meta['fingerprint'] != null) {
-    //     assert(false, 'meta error: $meta');
-    //     return null;
-    //   }
-    // } else if (meta['fingerprint'] == null) {
-    //   assert(false, 'meta error: $meta');
-    //   return null;
-    // }
+    // check 'type', 'key', 'seed', 'fingerprint'
+    if (!meta.containsKey('type') || !meta.containsKey('key')) {
+      // meta.type should not be empty
+      // meta.key should not be empty
+      assert(false, 'meta error: $meta');
+      return null;
+    } else if (!meta.containsKey('seed')) {
+      if (meta.containsKey('fingerprint')) {
+        assert(false, 'meta error: $meta');
+        return null;
+      }
+    } else if (!meta.containsKey('fingerprint')) {
+      assert(false, 'meta error: $meta');
+      return null;
+    }
     Meta out;
     var ext = SharedAccountExtensions();
     String? version = ext.helper!.getMetaType(meta, '');
     switch (version) {
 
       case MetaType.MKM:
-      case 'mkm':
         out = DefaultMeta(meta);
         break;
 
       case MetaType.BTC:
-      case 'btc':
         out = BTCMeta(meta);
         break;
 
       case MetaType.ETH:
-      case 'eth':
         out = ETHMeta(meta);
         break;
 

@@ -23,93 +23,32 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'dart:typed_data';
-
 import 'package:dimp/crypto.dart';
 
 
-class Base64Data extends Dictionary implements TransportableData {
-  Base64Data([super.dict]) {
-    _wrapper = createWrapper();
-  }
+class BaseNetworkDataFactory implements TransportableDataFactory {
 
-  late final TransportableDataWrapper _wrapper;
-
-  // protected
-  TransportableDataWrapper createWrapper() {
-    var factory = SharedNetworkFormatAccess().tedWrapperFactory;
-    return factory.createTransportableDataWrapper(super.toMap());
-  }
-
-  factory Base64Data.fromData(Uint8List binary) {
-    var ted = Base64Data();
-    // encode algorithm
-    ted._wrapper.algorithm = EncodeAlgorithms.BASE_64;
-    // binary data
-    if (binary.isNotEmpty) {
-      ted._wrapper.data = binary;
+  @override
+  TransportableData? parseTransportableData(String ted) {
+    // check data uri
+    if (ted.startsWith('data:')) {
+      // "data:image/jpeg;base64,..."
+      var uri = UriData.parse(ted);
+      return EmbedData.createWithUri(uri);
     }
-    return ted;
+    // TODO: check Base-64 format
+    // "{BASE64_ENCODED}"
+    return Base64Data.createWithString(ted);
   }
-
-  @override
-  Map toMap() {
-    // serialize data
-    _wrapper.toString();
-    return super.toMap();
-  }
-
-  ///
-  /// Encode Algorithm
-  ///
-
-  @override
-  String? get algorithm => _wrapper.algorithm;
-
-  ///
-  /// Binary Data
-  ///
-
-  @override
-  Uint8List? get data => _wrapper.data;
-
-  ///
-  /// Encoding
-  ///
-
-  @override
-  Object toObject() => toString();
-
-  // 0. "{BASE64_ENCODE}"
-  // 1. "base64,{BASE64_ENCODE}"
-  // 2. "data:image/png;base64,{BASE64_ENCODE}"
-  @override
-  String toString() => _wrapper.toString();
-
-  /// Encode with 'Content-Type'
-  // 2. "data:image/png;base64,{BASE64_ENCODE}"
-  String encode(String mimeType) => _wrapper.encode(mimeType);
 
 }
 
-class Base64DataFactory implements TransportableDataFactory {
 
-  @override
-  TransportableData createTransportableData(Uint8List data) {
-    return Base64Data.fromData(data);
-  }
+/// set TED factory
+void registerTEDFactory() {
 
-  @override
-  TransportableData? parseTransportableData(Map ted) {
-    // check 'data'
-    if (ted['data'] == null) {
-      // ted.data should not be empty
-      assert(false, 'TED error: $ted');
-      return null;
-    }
-    // TODO: 1. check algorithm
-    //       2. check data format
-    return Base64Data(ted);
-  }
+  var ted = BaseNetworkDataFactory();
+
+  TransportableData.setFactory(ted);
 
 }

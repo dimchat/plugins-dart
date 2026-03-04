@@ -84,7 +84,6 @@ class ExtensionLoader {
     var ext = SharedFormatExtensions();
     ext.pnfHelper = formatHelper;
     ext.tedHelper = formatHelper;
-    ext.helper    = formatHelper;
   }
   void registerAccountHelpers() {
     // mkm
@@ -135,72 +134,58 @@ class ExtensionLoader {
   void registerContentFactories() {
 
     // Text
-    setContentFactory(ContentType.TEXT, 'text', creator: (dict) => BaseTextContent(dict));
+    setContentFactory(ContentType.TEXT, creator: (dict) => BaseTextContent(dict));
 
     // File
-    setContentFactory(ContentType.FILE, 'file', creator: (dict) => BaseFileContent(dict));
+    setContentFactory(ContentType.FILE, creator: (dict) => BaseFileContent(dict));
     // Image
-    setContentFactory(ContentType.IMAGE, 'image', creator: (dict) => ImageFileContent(dict));
+    setContentFactory(ContentType.IMAGE, creator: (dict) => ImageFileContent(dict));
     // Audio
-    setContentFactory(ContentType.AUDIO, 'audio', creator: (dict) => AudioFileContent(dict));
+    setContentFactory(ContentType.AUDIO, creator: (dict) => AudioFileContent(dict));
     // Video
-    setContentFactory(ContentType.VIDEO, 'video', creator: (dict) => VideoFileContent(dict));
+    setContentFactory(ContentType.VIDEO, creator: (dict) => VideoFileContent(dict));
 
     // Web Page
-    setContentFactory(ContentType.PAGE, 'page', creator: (dict) => WebPageContent(dict));
+    setContentFactory(ContentType.PAGE, creator: (dict) => WebPageContent(dict));
 
     // Name Card
-    setContentFactory(ContentType.NAME_CARD, 'card', creator: (dict) => NameCardContent(dict));
+    setContentFactory(ContentType.NAME_CARD, creator: (dict) => NameCardContent(dict));
 
     // Quote
-    setContentFactory(ContentType.QUOTE, 'quote', creator: (dict) => BaseQuoteContent(dict));
+    setContentFactory(ContentType.QUOTE, creator: (dict) => BaseQuoteContent(dict));
 
     // Money
-    setContentFactory(ContentType.MONEY, 'money', creator: (dict) => BaseMoneyContent(dict));
-    setContentFactory(ContentType.TRANSFER, 'transfer', creator: (dict) => TransferMoneyContent(dict));
+    setContentFactory(ContentType.MONEY, creator: (dict) => BaseMoneyContent(dict));
+    setContentFactory(ContentType.TRANSFER, creator: (dict) => TransferMoneyContent(dict));
     // ...
 
     // Command
-    setContentFactory(ContentType.COMMAND, 'command', factory: GeneralCommandFactory());
+    setContentFactory(ContentType.COMMAND, factory: GeneralCommandFactory());
 
     // History Command
-    setContentFactory(ContentType.HISTORY, 'history', factory: HistoryCommandFactory());
+    setContentFactory(ContentType.HISTORY, factory: HistoryCommandFactory());
 
     // Content Array
-    setContentFactory(ContentType.ARRAY, 'array', creator: (dict) => ListContent(dict));
+    setContentFactory(ContentType.ARRAY, creator: (dict) => ListContent(dict));
 
     // Combine and Forward
-    setContentFactory(ContentType.COMBINE_FORWARD, 'combine', creator: (dict) => CombineForwardContent(dict));
+    setContentFactory(ContentType.COMBINE_FORWARD, creator: (dict) => CombineForwardContent(dict));
 
     // Top-Secret
-    setContentFactory(ContentType.FORWARD, 'forward', creator: (dict) => SecretContent(dict));
+    setContentFactory(ContentType.FORWARD, creator: (dict) => SecretContent(dict));
 
     // unknown content type
-    setContentFactory(ContentType.ANY, '*', creator: (dict) => BaseContent(dict));
-
-    // Application Customized Content
-    registerCustomizedFactories();
-  }
-
-  /// Customized content factories
-  // protected
-  void registerCustomizedFactories() {
-
-    // Application Customized
-    setContentFactory(ContentType.CUSTOMIZED, 'customized', creator: (dict) => AppCustomizedContent(dict));
-    //setContentFactory(ContentType.APPLICATION, 'application', creator: (dict) => AppCustomizedContent(dict));
+    setContentFactory(ContentType.ANY, creator: (dict) => BaseContent(dict));
 
   }
 
   // protected
-  void setContentFactory(String msgType, String alias, {ContentFactory? factory, ContentCreator? creator}) {
+  void setContentFactory(String msgType, {ContentFactory? factory, ContentCreator? creator}) {
     if (factory != null) {
       Content.setFactory(msgType, factory);
-      Content.setFactory(alias, factory);
     }
     if (creator != null) {
       Content.setFactory(msgType, ContentParser(creator));
-      Content.setFactory(alias, ContentParser(creator));
     }
   }
 
@@ -219,13 +204,11 @@ class ExtensionLoader {
   void registerCommandFactories() {
 
     // Meta Command
-    setCommandFactory(Command.META, creator: (dict) => BaseMetaCommand(dict));
-
+    setCommandFactory(Command.META,      creator: (dict) => BaseMetaCommand(dict));
     // Document Command
     setCommandFactory(Command.DOCUMENTS, creator: (dict) => BaseDocumentCommand(dict));
-
     // Receipt Command
-    setCommandFactory(Command.RECEIPT, creator: (dict) => BaseReceiptCommand(dict));
+    setCommandFactory(Command.RECEIPT,   creator: (dict) => BaseReceiptCommand(dict));
 
     // Group Commands
     setCommandFactory('group', factory: GroupCommandFactory());
@@ -253,7 +236,7 @@ class ContentParser implements ContentFactory {
   @override
   Content? parseContent(Map content) {
     // check 'sn'
-    if (content['sn'] == null) {
+    if (!content.containsKey('sn')) {
       // content.sn should not be empty
       assert(false, 'content error: $content');
       return null;
@@ -270,7 +253,7 @@ class CommandParser implements CommandFactory {
   @override
   Command? parseCommand(Map content) {
     // check 'sn', 'command'
-    if (content['sn'] == null || content['command'] == null) {
+    if (!content.containsKey('sn') || !content.containsKey('command')) {
       // content.sn should not be empty
       // content.command should not be empty
       assert(false, 'command error: $content');
