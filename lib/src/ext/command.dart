@@ -83,9 +83,8 @@ class CommandGeneralFactory implements GeneralCommandHelper, CommandHelper {
   }
 
   static CommandFactory? _defaultFactory(Map info) {
-    var ext = SharedMessageExtensions();
-    GeneralMessageHelper? helper = ext.helper;
-    ContentHelper? contentHelper = ext.contentHelper;
+    GeneralMessageHelper? helper = sharedMessageExtensions.helper;
+    ContentHelper? contentHelper = sharedMessageExtensions.contentHelper;
     // get factory by content type
     String? type = helper?.getContentType(info);
     if (type != null) {

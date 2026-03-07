@@ -1,3 +1,7 @@
+## 2.3.1
+
+- Extensions.
+
 ## 2.3.0
 
 - Upgrade factories.

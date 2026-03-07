@@ -123,8 +123,8 @@ class CompatibleMetaFactory extends BaseMetaFactory {
   @override
   Meta? parseMeta(Map meta) {
     Meta out;
-    var ext = SharedAccountExtensions();
-    String? version = ext.helper!.getMetaType(meta);
+    var helper = sharedAccountExtensions.helper;
+    String? version = helper?.getMetaType(meta);
     switch (version) {
 
       case 'MKM':
@@ -173,11 +173,14 @@ class CompatiblePluginLoader extends PluginLoader {
 
   @override
   void registerAddressFactory() {
+
     Address.setFactory(CompatibleAddressFactory());
+
   }
 
   @override
   void registerMetaFactories() {
+
     var mkm = CompatibleMetaFactory(Meta.MKM);
     var btc = CompatibleMetaFactory(Meta.BTC);
     var eth = CompatibleMetaFactory(Meta.ETH);
@@ -193,13 +196,17 @@ class CompatiblePluginLoader extends PluginLoader {
     Meta.setFactory('MKM', mkm);
     Meta.setFactory('BTC', btc);
     Meta.setFactory('ETH', eth);
+
   }
 
   @override
   void registerBase64Coder() {
+
     /// Base64 coding
     Base64.coder = PatchBase64Coder();
+
   }
+
 }
 
 
@@ -237,11 +244,19 @@ import '../../common/protocol/handshake.dart';
 class CommonExtensionLoader extends ExtensionLoader {
 
   @override
+  void registerContentFactories() {
+    super.registerContentFactories();
+
+    registerCustomizedFactories();
+
+  }
+
   void registerCustomizedFactories() {
-    
+
     // Application Customized
-    setContentFactory(ContentType.CUSTOMIZED, 'customized', creator: (dict) => AppCustomizedContent(dict));
-    setContentFactory(ContentType.APPLICATION, 'application', creator: (dict) => AppCustomizedContent(dict));
+    var factory = ContentParser((dict) => AppCustomizedContent(dict));
+    setContentFactory(ContentType.APPLICATION, factory: factory);
+    setContentFactory(ContentType.CUSTOMIZED, factory: factory);
     
   }
 
@@ -313,5 +328,5 @@ You must ensure that every ```Address``` you extend has a ```Meta``` type that c
 
 ----
 
-Copyright &copy; 2023-2025 Albert Moky
+Copyright &copy; 2023-2026 Albert Moky
 [![Followers](https://img.shields.io/github/followers/moky)](https://github.com/moky?tab=followers)

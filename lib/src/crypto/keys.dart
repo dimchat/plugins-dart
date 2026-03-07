@@ -40,8 +40,8 @@ abstract class BaseKey extends Dictionary implements CryptographyKey {
   //
 
   static String getKeyAlgorithm(Map key) {
-    var ext = SharedCryptoExtensions();
-    return ext.helper!.getKeyAlgorithm(key) ?? '';
+    var helper = sharedCryptoExtensions.helper;
+    return helper!.getKeyAlgorithm(key) ?? '';
   }
 
   static bool matchEncryptKey(EncryptKey pKey, DecryptKey sKey) {

@@ -105,7 +105,7 @@ class FormatGeneralFactory implements TransportableFileHelper,
     // unwrap
     Map? info = getTransportableFileContent(pnf);
     if (info == null) {
-      assert(false, 'PNF error: $pnf');
+      // assert(false, 'PNF error: $pnf');
       return null;
     }
     TransportableFileFactory? factory = getTransportableFileFactory();
@@ -122,7 +122,7 @@ class FormatGeneralFactory implements TransportableFileHelper,
     }
     String? text = Wrapper.getString(pnf);
     if (text == null || text.length < 8) {
-      assert(false, 'PNF error: $pnf');
+      // assert(false, 'PNF error: $pnf');
       return null;
     } else if (text.startsWith('{')) {
       // decode JSON string

@@ -226,8 +226,8 @@ class BaseMetaFactory implements MetaFactory {
       return null;
     }
     Meta out;
-    var ext = SharedAccountExtensions();
-    String? version = ext.helper!.getMetaType(meta, '');
+    var helper = sharedAccountExtensions.helper;
+    String? version = helper?.getMetaType(meta, '');
     switch (version) {
 
       case MetaType.MKM:

@@ -65,7 +65,7 @@ class MessageFactory implements EnvelopeFactory, InstantMessageFactory, SecureMe
   @override
   Envelope? parseEnvelope(Map env) {
     // check 'sender'
-    if (env['sender'] == null) {
+    if (!env.containsKey('sender')) {
       // env.sender should not empty
       assert(false, 'envelope error: $env');
       return null;
@@ -93,7 +93,7 @@ class MessageFactory implements EnvelopeFactory, InstantMessageFactory, SecureMe
   @override
   InstantMessage? parseInstantMessage(Map msg) {
     // check 'sender', 'content'
-    if (msg['sender'] == null || msg['content'] == null) {
+    if (!msg.containsKey('sender') || !msg.containsKey('content')) {
       // msg.sender should not be empty
       // msg.content should not be empty
       assert(false, 'message error: $msg');
@@ -109,14 +109,14 @@ class MessageFactory implements EnvelopeFactory, InstantMessageFactory, SecureMe
   @override
   SecureMessage? parseSecureMessage(Map msg) {
     // check 'sender', 'data'
-    if (msg['sender'] == null || msg['data'] == null) {
+    if (!msg.containsKey('sender') || !msg.containsKey('data')) {
       // msg.sender should not be empty
       // msg.data should not be empty
       assert(false, 'message error: $msg');
       return null;
     }
     // check 'signature'
-    if (msg['signature'] != null) {
+    if (msg.containsKey('signature')) {
       return NetworkMessage(msg);
     }
     return EncryptedMessage(msg);
@@ -129,7 +129,7 @@ class MessageFactory implements EnvelopeFactory, InstantMessageFactory, SecureMe
   @override
   ReliableMessage? parseReliableMessage(Map msg) {
     // check 'sender', 'data', 'signature',
-    if (msg['sender'] == null || msg['data'] == null || msg['signature'] == null) {
+    if (!msg.containsKey('sender') || !msg.containsKey('data') || !msg.containsKey('signature')) {
       // msg.sender should not be empty
       // msg.data should not be empty
       // msg.signature should not be empty

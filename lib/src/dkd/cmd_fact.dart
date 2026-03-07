@@ -38,9 +38,8 @@ class GeneralCommandFactory implements ContentFactory, CommandFactory {
 
   @override
   Content? parseContent(Map content) {
-    var ext = SharedCommandExtensions();
-    GeneralCommandHelper? helper = ext.helper;
-    CommandHelper? cmdHelper = ext.cmdHelper;
+    GeneralCommandHelper? helper = sharedMessageExtensions.cmdHelper;
+    CommandHelper? cmdHelper = sharedMessageExtensions.commandHelper;
     // get factory by command name
     String? cmd = helper?.getCmd(content);
     CommandFactory? factory = cmd == null ? null : cmdHelper?.getCommandFactory(cmd);
@@ -57,7 +56,7 @@ class GeneralCommandFactory implements ContentFactory, CommandFactory {
   @override
   Command? parseCommand(Map content) {
     // check 'sn', 'command'
-    if (content['sn'] == null || content['command'] == null) {
+    if (!content.containsKey('sn') || !content.containsKey('command')) {
       // content.sn should not be empty
       // content.command should not be empty
       assert(false, 'command error: $content');
@@ -74,7 +73,7 @@ class HistoryCommandFactory extends GeneralCommandFactory {
   @override
   Command? parseCommand(Map content) {
     // check 'sn', 'command', 'time'
-    if (content['sn'] == null || content['command'] == null || content['time'] == null) {
+    if (!content.containsKey('sn') || !content.containsKey('command') || !content.containsKey('time')) {
       // content.sn should not be empty
       // content.command should not be empty
       // content.time should not be empty
@@ -91,9 +90,8 @@ class GroupCommandFactory extends HistoryCommandFactory {
 
   @override
   Content? parseContent(Map content) {
-    var ext = SharedCommandExtensions();
-    GeneralCommandHelper? helper = ext.helper;
-    CommandHelper? cmdHelper = ext.cmdHelper;
+    GeneralCommandHelper? helper = sharedMessageExtensions.cmdHelper;
+    CommandHelper? cmdHelper = sharedMessageExtensions.commandHelper;
     // get factory by command name
     String? cmd = helper?.getCmd(content);
     CommandFactory? factory = cmd == null ? null : cmdHelper?.getCommandFactory(cmd);
@@ -104,7 +102,7 @@ class GroupCommandFactory extends HistoryCommandFactory {
   @override
   Command? parseCommand(Map content) {
     // check 'sn', 'command', 'group'
-    if (content['sn'] == null || content['command'] == null || content['group'] == null) {
+    if (!content.containsKey('sn') || !content.containsKey('command') || !content.containsKey('group')) {
       // content.sn should not be empty
       // content.command should not be empty
       // content.group should not be empty

@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:dim_plugins/dimp.dart';
 import 'package:dim_plugins/crypto.dart';
-import 'package:dim_plugins/loader.dart';
+import 'package:dim_plugins/ext.dart';
 
 import 'address.dart';
 import 'digest.dart';
@@ -33,7 +33,7 @@ class ClientPluginLoader extends PluginLoader {
     Address.setFactory(CompatibleAddressFactory());
   }
 
-  @override
+  // @override
   void registerBase64Coder() {
     /// Base64 coding
     Base64.coder = PatchBase64Coder();

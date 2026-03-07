@@ -3,6 +3,8 @@
 /// Universal Message Module
 library dim_plugins;
 
+export 'package:dimp/dkd.dart';
+
 //
 //  Command
 //

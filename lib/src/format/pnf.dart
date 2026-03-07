@@ -31,7 +31,7 @@ class BaseNetworkFileFactory implements TransportableFileFactory {
   @override
   TransportableFile createTransportableFile(TransportableData? data, String? filename,
                                             Uri? url, DecryptKey? password) {
-    return PortableNetworkFile({},
+    return PortableNetworkFile(null,
       data: data, filename: filename,
       url: url, password: password,
     );

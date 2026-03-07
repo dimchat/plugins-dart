@@ -5,6 +5,8 @@
 /// 3. Data Format
 library dim_plugins;
 
+export 'package:dimp/crypto.dart';
+
 //
 //  Keys
 //

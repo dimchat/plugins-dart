@@ -28,6 +28,7 @@
  * SOFTWARE.
  * ==============================================================================
  */
+import 'package:dimp/crypto.dart';
 import 'package:dimp/mkm.dart';
 import 'package:dimp/ext.dart';
 
@@ -112,8 +113,8 @@ class GeneralDocumentFactory implements DocumentFactory {
     }
 
     // create document for type
-    var ext = SharedAccountExtensions();
-    String? docType = ext.helper?.getDocumentType(doc, null);
+    var helper = sharedAccountExtensions.helper;
+    String? docType = helper?.getDocumentType(doc, null);
     switch (docType) {
 
       case DocumentType.VISA:

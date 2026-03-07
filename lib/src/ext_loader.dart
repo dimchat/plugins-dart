@@ -72,46 +72,41 @@ class ExtensionLoader {
   void registerCryptoHelpers() {
     // crypto
     var cryptoHelper = CryptoKeyGeneralFactory();
-    var ext = SharedCryptoExtensions();
-    ext.symmetricHelper = cryptoHelper;
-    ext.privateHelper   = cryptoHelper;
-    ext.publicHelper    = cryptoHelper;
-    ext.helper          = cryptoHelper;
+    sharedCryptoExtensions.symmetricHelper = cryptoHelper;
+    sharedCryptoExtensions.privateHelper   = cryptoHelper;
+    sharedCryptoExtensions.publicHelper    = cryptoHelper;
+    sharedCryptoExtensions.helper          = cryptoHelper;
   }
   void registerFormatHelpers() {
     // format
     var formatHelper = FormatGeneralFactory();
-    var ext = SharedFormatExtensions();
-    ext.pnfHelper = formatHelper;
-    ext.tedHelper = formatHelper;
+    sharedFormatExtensions.pnfHelper = formatHelper;
+    sharedFormatExtensions.tedHelper = formatHelper;
   }
   void registerAccountHelpers() {
     // mkm
     var accountHelper = AccountGeneralFactory();
-    var ext = SharedAccountExtensions();
-    ext.addressHelper = accountHelper;
-    ext.idHelper      = accountHelper;
-    ext.metaHelper    = accountHelper;
-    ext.docHelper     = accountHelper;
-    ext.helper        = accountHelper;
+    sharedAccountExtensions.addressHelper = accountHelper;
+    sharedAccountExtensions.idHelper      = accountHelper;
+    sharedAccountExtensions.metaHelper    = accountHelper;
+    sharedAccountExtensions.docHelper     = accountHelper;
+    sharedAccountExtensions.helper        = accountHelper;
   }
   void registerMessageHelpers() {
     // dkd
     var msgHelper = MessageGeneralFactory();
-    var ext = SharedMessageExtensions();
-    ext.contentHelper  = msgHelper;
-    ext.envelopeHelper = msgHelper;
-    ext.instantHelper  = msgHelper;
-    ext.secureHelper   = msgHelper;
-    ext.reliableHelper = msgHelper;
-    ext.helper         = msgHelper;
+    sharedMessageExtensions.contentHelper  = msgHelper;
+    sharedMessageExtensions.envelopeHelper = msgHelper;
+    sharedMessageExtensions.instantHelper  = msgHelper;
+    sharedMessageExtensions.secureHelper   = msgHelper;
+    sharedMessageExtensions.reliableHelper = msgHelper;
+    sharedMessageExtensions.helper         = msgHelper;
   }
   void registerCommandHelpers() {
     // cmd
     var cmdHelper = CommandGeneralFactory();
-    var ext = SharedCommandExtensions();
-    ext.cmdHelper = cmdHelper;
-    ext.helper    = cmdHelper;
+    sharedMessageExtensions.cmdHelper     = cmdHelper;
+    sharedMessageExtensions.commandHelper = cmdHelper;
   }
 
   ///  Message factories
