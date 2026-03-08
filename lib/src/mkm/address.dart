@@ -29,6 +29,9 @@
  * ==============================================================================
  */
 import 'package:dimp/mkm.dart';
+import 'package:dimp/ext.dart';
+
+import '../mem/ext.dart';
 
 import 'btc.dart';
 import 'eth.dart';
@@ -38,23 +41,22 @@ import 'eth.dart';
 ///  ~~~~~~~~~~~~~~~~~~~~
 class BaseAddressFactory implements AddressFactory {
 
-  // protected
-  final Map<String, Address> addresses = {};
-
   @override
   Address generateAddress(Meta meta, int? network) {
     Address address = meta.generateAddress(network);
-    addresses[address.toString()] = address;
+    var cache = sharedAccountExtensions.addressCache;
+    cache.put(address.toString(), address);
     return address;
   }
 
   @override
   Address? parseAddress(String address) {
-    Address? res = addresses[address];
+    var cache = sharedAccountExtensions.addressCache;
+    Address? res = cache.get(address);
     if (res == null) {
       res = parse(address);
       if (res != null) {
-        addresses[address] = res;
+        cache.put(address, res);
       }
     }
     return res;

@@ -1,3 +1,7 @@
+## 2.3.2
+
+- Memory cache.
+
 ## 2.3.1
 
 - Extensions.

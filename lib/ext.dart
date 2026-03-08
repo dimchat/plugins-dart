@@ -6,6 +6,12 @@ library dim_plugins;
 export 'package:dimp/ext.dart';
 
 //
+//  Memory Cache
+//
+export 'src/mem/cache.dart';
+export 'src/mem/ext.dart';
+
+//
 //  Extensions
 //
 export 'src/ext/account.dart';

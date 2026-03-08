@@ -29,6 +29,9 @@
  * ==============================================================================
  */
 import 'package:dimp/mkm.dart';
+import 'package:dimp/ext.dart';
+
+import '../mem/ext.dart';
 
 
 ///
@@ -36,9 +39,6 @@ import 'package:dimp/mkm.dart';
 /// ~~~~~~~~~~~~~~~~~~
 ///
 class IdentifierFactory implements IDFactory {
-
-  // protected
-  final Map<String, ID> identifiers = {};
 
   @override
   ID generateID(Meta meta, int? network, {String? terminal}) {
@@ -49,21 +49,23 @@ class IdentifierFactory implements IDFactory {
   @override
   ID createID({String? name, required Address address, String? terminal}) {
     String identifier = Identifier.concat(name: name, address: address, terminal: terminal);
-    ID? did = identifiers[identifier];
+    var cache = sharedAccountExtensions.idCache;
+    ID? did = cache.get(identifier);
     if (did == null) {
       did = newID(identifier, name: name, address: address, terminal: terminal);
-      identifiers[identifier] = did;
+      cache.put(identifier, did);
     }
     return did;
   }
 
   @override
   ID? parseID(String identifier) {
-    ID? did = identifiers[identifier];
+    var cache = sharedAccountExtensions.idCache;
+    ID? did = cache.get(identifier);
     if (did == null) {
       did = parse(identifier);
       if (did != null) {
-        identifiers[identifier] = did;
+        cache.put(identifier, did);
       }
     }
     return did;
