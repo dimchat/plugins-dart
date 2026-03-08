@@ -138,37 +138,41 @@ class Base64Coder implements DataCoder {
 }
 
 
-/// set UTF-8 coder
-void registerUTF8Coder() {
+mixin CoderPlugins {
 
-  UTF8.coder = UTF8Coder();
+  /// set UTF-8 coder
+  void registerUTF8Coder() {
 
-}
+    UTF8.coder = UTF8Coder();
 
-/// set JSON coder
-void registerJSONCoder() {
+  }
 
-  JSON.coder = JSONCoder();
+  /// set JSON coder
+  void registerJSONCoder() {
 
-}
+    JSON.coder = JSONCoder();
 
-/// set HEX coder
-void registerHexCoder() {
+  }
 
-  Hex.coder = HexCoder();
+  /// set HEX coder
+  void registerHexCoder() {
 
-}
+    Hex.coder = HexCoder();
 
-/// set Base-58 coder
-void registerBase58Coder() {
+  }
 
-  Base58.coder = Base58Coder();
+  /// set Base-58 coder
+  void registerBase58Coder() {
 
-}
+    Base58.coder = Base58Coder();
 
-/// set Base-64 coder
-void registerBase64Coder() {
+  }
 
-  Base64.coder = Base64Coder();
+  /// set Base-64 coder
+  void registerBase64Coder() {
+
+    Base64.coder = Base64Coder();
+
+  }
 
 }

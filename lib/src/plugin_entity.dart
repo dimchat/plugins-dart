@@ -2,7 +2,7 @@
  * ==============================================================================
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Albert Moky
+ * Copyright (c) 2026 Albert Moky
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,32 +23,47 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:dimp/crypto.dart';
+import 'package:dimp/mkm.dart';
+
+import 'mkm/address.dart';
+import 'mkm/document.dart';
+import 'mkm/identifier.dart';
+import 'mkm/meta.dart';
 
 
-class BaseNetworkDataFactory implements TransportableDataFactory {
+mixin EntityPlugins {
 
-  @override
-  TransportableData? parseTransportableData(String ted) {
-    // check data uri
-    if (ted.startsWith('data:')) {
-      // "data:image/jpeg;base64,..."
-      var uri = UriData.parse(ted);
-      return EmbedData.createWithUri(uri);
-    }
-    // TODO: check Base-64 format
-    // "{BASE64_ENCODED}"
-    return Base64Data.createWithString(ted);
+
+  void registerIDFactory() {
+    ID.setFactory(IdentifierFactory());
   }
 
-}
+  void registerAddressFactory() {
+    Address.setFactory(BaseAddressFactory());
+  }
 
+  void registerMetaFactories() {
+    setMetaFactory(MetaType.MKM, 'mkm');
+    setMetaFactory(MetaType.BTC, 'btc');
+    setMetaFactory(MetaType.ETH, 'eth');
+  }
 
-/// set TED factory
-void registerTEDFactory() {
+  void setMetaFactory(String type, String alias, {MetaFactory? factory}) {
+    factory ??= BaseMetaFactory(type);
+    Meta.setFactory(type, factory);
+    Meta.setFactory(alias, factory);
+  }
 
-  var ted = BaseNetworkDataFactory();
+  void registerDocumentFactories() {
+    setDocumentFactory('*');
+    setDocumentFactory(DocumentType.VISA);
+    setDocumentFactory(DocumentType.PROFILE);
+    setDocumentFactory(DocumentType.BULLETIN);
+  }
 
-  TransportableData.setFactory(ted);
+  void setDocumentFactory(String type, {DocumentFactory? factory}) {
+    factory ??= GeneralDocumentFactory(type);
+    Document.setFactory(type, factory);
+  }
 
 }

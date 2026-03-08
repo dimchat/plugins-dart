@@ -1,9 +1,4 @@
 /* license: https://mit-license.org
- *
- *  DIM-SDK : Decentralized Instant Messaging Software Development Kit
- *
- *                               Written in 2023 by Moky <albert.moky@gmail.com>
- *
  * =============================================================================
  * The MIT License (MIT)
  *
@@ -30,7 +25,6 @@
  */
 import 'package:dimp/dimp.dart';
 
-import 'dkd/cmd_fact.dart';
 import 'dkd/factory.dart';
 
 import 'ext/account.dart';
@@ -38,11 +32,12 @@ import 'ext/command.dart';
 import 'ext/crypto.dart';
 import 'ext/format.dart';
 import 'ext/message.dart';
+import 'ext_content.dart';
 
 
 /// Core Extensions Loader
 /// ~~~~~~~~~~~~~~~~~~~~~~
-class ExtensionLoader {
+class ExtensionLoader with ContentFactoryPlugins {
 
   /// Register core factories
   void load() {
@@ -122,139 +117,6 @@ class ExtensionLoader {
     SecureMessage.setFactory(factory);
     ReliableMessage.setFactory(factory);
 
-  }
-
-  ///  Core content factories
-  // protected
-  void registerContentFactories() {
-
-    // Text
-    setContentFactory(ContentType.TEXT, creator: (dict) => BaseTextContent(dict));
-
-    // File
-    setContentFactory(ContentType.FILE, creator: (dict) => BaseFileContent(dict));
-    // Image
-    setContentFactory(ContentType.IMAGE, creator: (dict) => ImageFileContent(dict));
-    // Audio
-    setContentFactory(ContentType.AUDIO, creator: (dict) => AudioFileContent(dict));
-    // Video
-    setContentFactory(ContentType.VIDEO, creator: (dict) => VideoFileContent(dict));
-
-    // Web Page
-    setContentFactory(ContentType.PAGE, creator: (dict) => WebPageContent(dict));
-
-    // Name Card
-    setContentFactory(ContentType.NAME_CARD, creator: (dict) => NameCardContent(dict));
-
-    // Quote
-    setContentFactory(ContentType.QUOTE, creator: (dict) => BaseQuoteContent(dict));
-
-    // Money
-    setContentFactory(ContentType.MONEY, creator: (dict) => BaseMoneyContent(dict));
-    setContentFactory(ContentType.TRANSFER, creator: (dict) => TransferMoneyContent(dict));
-    // ...
-
-    // Command
-    setContentFactory(ContentType.COMMAND, factory: GeneralCommandFactory());
-
-    // History Command
-    setContentFactory(ContentType.HISTORY, factory: HistoryCommandFactory());
-
-    // Content Array
-    setContentFactory(ContentType.ARRAY, creator: (dict) => ListContent(dict));
-
-    // Combine and Forward
-    setContentFactory(ContentType.COMBINE_FORWARD, creator: (dict) => CombineForwardContent(dict));
-
-    // Top-Secret
-    setContentFactory(ContentType.FORWARD, creator: (dict) => SecretContent(dict));
-
-    // unknown content type
-    setContentFactory(ContentType.ANY, creator: (dict) => BaseContent(dict));
-
-  }
-
-  // protected
-  void setContentFactory(String msgType, {ContentFactory? factory, ContentCreator? creator}) {
-    if (factory != null) {
-      Content.setFactory(msgType, factory);
-    }
-    if (creator != null) {
-      Content.setFactory(msgType, ContentParser(creator));
-    }
-  }
-
-  // protected
-  void setCommandFactory(String cmd, {CommandFactory? factory, CommandCreator? creator}) {
-    if (factory != null) {
-      Command.setFactory(cmd, factory);
-    }
-    if (creator != null) {
-      Command.setFactory(cmd, CommandParser(creator));
-    }
-  }
-
-  ///  Core command factories
-  // protected
-  void registerCommandFactories() {
-
-    // Meta Command
-    setCommandFactory(Command.META,      creator: (dict) => BaseMetaCommand(dict));
-    // Document Command
-    setCommandFactory(Command.DOCUMENTS, creator: (dict) => BaseDocumentCommand(dict));
-    // Receipt Command
-    setCommandFactory(Command.RECEIPT,   creator: (dict) => BaseReceiptCommand(dict));
-
-    // Group Commands
-    setCommandFactory('group', factory: GroupCommandFactory());
-    setCommandFactory(GroupCommand.INVITE,  creator: (dict) => InviteGroupCommand(dict));
-    /// 'expel' is deprecated (use 'reset' instead)
-    setCommandFactory(GroupCommand.EXPEL,   creator: (dict) => ExpelGroupCommand(dict));
-    setCommandFactory(GroupCommand.JOIN,    creator: (dict) => JoinGroupCommand(dict));
-    setCommandFactory(GroupCommand.QUIT,    creator: (dict) => QuitGroupCommand(dict));
-    /// 'query' is deprecated
-    //setCommandFactory(GroupCommand.QUERY, creator: (dict) => QueryGroupCommand(dict));
-    setCommandFactory(GroupCommand.RESET,   creator: (dict) => ResetGroupCommand(dict));
-
-  }
-
-}
-
-
-typedef ContentCreator = Content? Function(Map dict);
-typedef CommandCreator = Command? Function(Map dict);
-
-class ContentParser implements ContentFactory {
-  ContentParser(this._builder);
-  final ContentCreator _builder;
-
-  @override
-  Content? parseContent(Map content) {
-    // check 'sn'
-    if (!content.containsKey('sn')) {
-      // content.sn should not be empty
-      assert(false, 'content error: $content');
-      return null;
-    }
-    return _builder(content);
-  }
-
-}
-
-class CommandParser implements CommandFactory {
-  CommandParser(this._builder);
-  final CommandCreator _builder;
-
-  @override
-  Command? parseCommand(Map content) {
-    // check 'sn', 'command'
-    if (!content.containsKey('sn') || !content.containsKey('command')) {
-      // content.sn should not be empty
-      // content.command should not be empty
-      assert(false, 'command error: $content');
-      return null;
-    }
-    return _builder(content);
   }
 
 }

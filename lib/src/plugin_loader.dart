@@ -23,24 +23,15 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:dimp/dimp.dart';
-
-import 'crypto/aes.dart';
 import 'crypto/digest.dart';
-import 'crypto/ecc.dart';
-import 'crypto/plain.dart';
-import 'crypto/rsa.dart';
 import 'format/coders.dart';
-import 'format/pnf.dart';
-import 'format/ted.dart';
+import 'format/trans.dart';
 
-import 'mkm/address.dart';
-import 'mkm/identifier.dart';
-import 'mkm/meta.dart';
-import 'mkm/document.dart';
+import 'plugin_entity.dart';
+import 'plugin_keys.dart';
 
 
-class PluginLoader {
+class PluginLoader with CoderPlugins, TransportablePlugins, DigestPlugins, CryptoPlugins, EntityPlugins {
 
   void load() {
     /// Register plugins
@@ -92,19 +83,6 @@ class PluginLoader {
     registerPlainKeyFactory();
 
   }
-  // protected
-  void registerAESKeyFactory() {
-    /// AES
-    var aes = AESKeyFactory();
-    SymmetricKey.setFactory(SymmetricAlgorithms.AES, aes);
-    SymmetricKey.setFactory(AESKey.AES_CBC_PKCS7, aes);
-    // SymmetricKey.setFactory('AES/CBC/PKCS7Padding', aes);
-  }
-  // protected
-  void registerPlainKeyFactory() {
-    /// Plain
-    SymmetricKey.setFactory(SymmetricAlgorithms.PLAIN, PlainKeyFactory());
-  }
 
   // protected
   ///  Asymmetric key parsers
@@ -115,72 +93,19 @@ class PluginLoader {
     registerECCKeyFactories();
 
   }
-  // protected
-  void registerRSAKeyFactories() {
-    /// RSA
-    var rsaPub = RSAPublicKeyFactory();
-    PublicKey.setFactory(AsymmetricAlgorithms.RSA, rsaPub);
-    PublicKey.setFactory('SHA256withRSA', rsaPub);
-    PublicKey.setFactory('RSA/ECB/PKCS1Padding', rsaPub);
-
-    var rsaPri = RSAPrivateKeyFactory();
-    PrivateKey.setFactory(AsymmetricAlgorithms.RSA, rsaPri);
-    PrivateKey.setFactory('SHA256withRSA', rsaPri);
-    PrivateKey.setFactory('RSA/ECB/PKCS1Padding', rsaPri);
-  }
-  // protected
-  void registerECCKeyFactories() {
-    /// ECC
-    var eccPub = ECCPublicKeyFactory();
-    PublicKey.setFactory(AsymmetricAlgorithms.ECC, eccPub);
-    PublicKey.setFactory('SHA256withECDSA', eccPub);
-
-    var eccPri = ECCPrivateKeyFactory();
-    PrivateKey.setFactory(AsymmetricAlgorithms.ECC, eccPri);
-    PrivateKey.setFactory('SHA256withECDSA', eccPri);
-  }
 
   // protected
   ///  ID, Address, Meta, Document parsers
   void registerEntityFactories() {
 
     registerIDFactory();
+
     registerAddressFactory();
+
     registerMetaFactories();
+
     registerDocumentFactories();
 
-  }
-  // protected
-  void registerIDFactory() {
-    ID.setFactory(IdentifierFactory());
-  }
-  // protected
-  void registerAddressFactory() {
-    Address.setFactory(BaseAddressFactory());
-  }
-  // protected
-  void registerMetaFactories() {
-    setMetaFactory(MetaType.MKM, 'mkm');
-    setMetaFactory(MetaType.BTC, 'btc');
-    setMetaFactory(MetaType.ETH, 'eth');
-  }
-  // protected
-  void setMetaFactory(String type, String alias, {MetaFactory? factory}) {
-    factory ??= BaseMetaFactory(type);
-    Meta.setFactory(type, factory);
-    Meta.setFactory(alias, factory);
-  }
-  // protected
-  void registerDocumentFactories() {
-    setDocumentFactory('*');
-    setDocumentFactory(DocumentType.VISA);
-    setDocumentFactory(DocumentType.PROFILE);
-    setDocumentFactory(DocumentType.BULLETIN);
-  }
-  // protected
-  void setDocumentFactory(String type, {DocumentFactory? factory}) {
-    factory ??= GeneralDocumentFactory(type);
-    Document.setFactory(type, factory);
   }
 
 }

@@ -2,7 +2,7 @@
  * ==============================================================================
  * The MIT License (MIT)
  *
- * Copyright (c) 2023 Albert Moky
+ * Copyright (c) 2026 Albert Moky
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,66 +23,58 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'dart:typed_data';
-
-import 'package:pointycastle/api.dart';
-import 'package:pointycastle/digests/keccak.dart';
-import 'package:pointycastle/digests/ripemd160.dart';
-import 'package:pointycastle/digests/sha256.dart';
-
 import 'package:dimp/crypto.dart';
 
-
-Uint8List _hash(Uint8List data, Digest digester) {
-  digester.reset();
-  return digester.process(data);
-}
-
-class SHA256Digester implements MessageDigester {
-
-  @override
-  Uint8List digest(Uint8List data) {
-    return _hash(data, SHA256Digest());
-  }
-}
-
-class KECCAK256Digester implements MessageDigester {
-
-  @override
-  Uint8List digest(Uint8List data) {
-    return _hash(data, KeccakDigest(256));
-  }
-}
-
-class RIPEMD160Digester implements MessageDigester {
-
-  @override
-  Uint8List digest(Uint8List data) {
-    return _hash(data, RIPEMD160Digest());
-  }
-}
+import 'crypto/aes.dart';
+import 'crypto/ecc.dart';
+import 'crypto/plain.dart';
+import 'crypto/rsa.dart';
 
 
-mixin DigestPlugins {
+mixin CryptoPlugins {
 
-  /// set SHA-256 digester
-  void registerSHA256Digester() {
+  void registerAESKeyFactory() {
 
-    SHA256.digester = SHA256Digester();
+    /// AES
+    var aes = AESKeyFactory();
+    SymmetricKey.setFactory(SymmetricAlgorithms.AES, aes);
+    SymmetricKey.setFactory(AESKey.AES_CBC_PKCS7, aes);
+    // SymmetricKey.setFactory('AES/CBC/PKCS7Padding', aes);
 
   }
 
-  /// set Keccak-256 digester
-  void registerKECCAK256Digester() {
+  void registerPlainKeyFactory() {
 
-    KECCAK256.digester = KECCAK256Digester();
+    /// Plain
+    SymmetricKey.setFactory(SymmetricAlgorithms.PLAIN, PlainKeyFactory());
 
   }
 
-  /// set RipeMD-160 digester
-  void registerRIPEMD160Digester() {
+  void registerRSAKeyFactories() {
 
-    RIPEMD160.digester = RIPEMD160Digester();
+    /// RSA
+    var rsaPub = RSAPublicKeyFactory();
+    PublicKey.setFactory(AsymmetricAlgorithms.RSA, rsaPub);
+    PublicKey.setFactory('SHA256withRSA', rsaPub);
+    PublicKey.setFactory('RSA/ECB/PKCS1Padding', rsaPub);
+
+    var rsaPri = RSAPrivateKeyFactory();
+    PrivateKey.setFactory(AsymmetricAlgorithms.RSA, rsaPri);
+    PrivateKey.setFactory('SHA256withRSA', rsaPri);
+    PrivateKey.setFactory('RSA/ECB/PKCS1Padding', rsaPri);
+
+  }
+
+  void registerECCKeyFactories() {
+
+    /// ECC
+    var eccPub = ECCPublicKeyFactory();
+    PublicKey.setFactory(AsymmetricAlgorithms.ECC, eccPub);
+    PublicKey.setFactory('SHA256withECDSA', eccPub);
+
+    var eccPri = ECCPrivateKeyFactory();
+    PrivateKey.setFactory(AsymmetricAlgorithms.ECC, eccPri);
+    PrivateKey.setFactory('SHA256withECDSA', eccPri);
 
   }
 

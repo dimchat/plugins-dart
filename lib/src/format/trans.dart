@@ -26,11 +26,29 @@
 import 'package:dimp/crypto.dart';
 
 
+class BaseNetworkDataFactory implements TransportableDataFactory {
+
+  @override
+  TransportableData? parseTransportableData(String ted) {
+    // check data uri
+    if (ted.startsWith('data:')) {
+      // "data:image/jpeg;base64,..."
+      var uri = UriData.parse(ted);
+      return EmbedData.createWithUri(uri);
+    }
+    // TODO: check Base-64 format
+    // "{BASE64_ENCODED}"
+    return Base64Data.createWithString(ted);
+  }
+
+}
+
+
 class BaseNetworkFileFactory implements TransportableFileFactory {
 
   @override
   TransportableFile createTransportableFile(TransportableData? data, String? filename,
-                                            Uri? url, DecryptKey? password) {
+      Uri? url, DecryptKey? password) {
     return PortableNetworkFile(null,
       data: data, filename: filename,
       url: url, password: password,
@@ -51,11 +69,22 @@ class BaseNetworkFileFactory implements TransportableFileFactory {
 }
 
 
-/// set PNF factory
-void registerPNFFactory() {
+mixin TransportablePlugins {
 
-  var pnf = BaseNetworkFileFactory();
+  /// set TED factory
+  void registerTEDFactory() {
 
-  TransportableFile.setFactory(pnf);
+    var ted = BaseNetworkDataFactory();
+    TransportableData.setFactory(ted);
+
+  }
+
+  /// set PNF factory
+  void registerPNFFactory() {
+
+    var pnf = BaseNetworkFileFactory();
+    TransportableFile.setFactory(pnf);
+
+  }
 
 }
