@@ -1,6 +1,6 @@
 /* license: https://mit-license.org
  *
- *  DIM-SDK : Decentralized Instant Messaging Software Development Kit
+ *  Dao-Ke-Dao: Universal Message Module
  *
  *                               Written in 2023 by Moky <albert.moky@gmail.com>
  *
@@ -34,6 +34,7 @@ import 'package:dimp/ext.dart';
 
 ///  General Command Factory
 ///  ~~~~~~~~~~~~~~~~~~~~~~~
+
 class GeneralCommandFactory implements ContentFactory, CommandFactory {
 
   @override

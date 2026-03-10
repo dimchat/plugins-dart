@@ -1,9 +1,4 @@
 /* license: https://mit-license.org
- *
- *  Ming-Ke-Ming : Decentralized User Identity Authentication
- *
- *                                Written in 2023 by Moky <albert.moky@gmail.com>
- *
  * =============================================================================
  * The MIT License (MIT)
  *
@@ -34,6 +29,7 @@ import 'package:dimp/ext.dart';
 
 /// Format GeneralFactory
 /// ~~~~~~~~~~~~~~~~~~~~~
+
 class FormatGeneralFactory implements TransportableFileHelper,
                                       TransportableDataHelper {
 

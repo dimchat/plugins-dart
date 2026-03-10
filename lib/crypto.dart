@@ -31,4 +31,3 @@ export 'src/crypto/digest.dart';
 //
 export 'src/format/coders.dart';
 export 'src/format/trans.dart';
-export 'src/format/uri.dart';

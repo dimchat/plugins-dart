@@ -1,6 +1,6 @@
 /* license: https://mit-license.org
  *
- *  DIMP : Decentralized Instant Messaging Protocol
+ *  Dao-Ke-Dao: Universal Message Module
  *
  *                                Written in 2023 by Moky <albert.moky@gmail.com>
  *
@@ -34,6 +34,7 @@ import 'package:dimp/ext.dart';
 
 ///  Command GeneralFactory
 ///  ~~~~~~~~~~~~~~~~~~~~~~
+
 class CommandGeneralFactory implements GeneralCommandHelper, CommandHelper {
 
   final Map<String, CommandFactory> _commandFactories = {};

@@ -1,6 +1,6 @@
 /* license: https://mit-license.org
  *
- *  DIMP : Decentralized Instant Messaging Protocol
+ *  Dao-Ke-Dao: Universal Message Module
  *
  *                                Written in 2023 by Moky <albert.moky@gmail.com>
  *
@@ -31,6 +31,10 @@
 import 'dart:math';
 
 import 'package:dimp/dimp.dart';
+
+
+///  Message Factory
+///  ~~~~~~~~~~~~~~~
 
 class MessageFactory implements EnvelopeFactory, InstantMessageFactory, SecureMessageFactory, ReliableMessageFactory {
   MessageFactory() {
