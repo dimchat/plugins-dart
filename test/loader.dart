@@ -8,11 +8,21 @@ import 'address.dart';
 import 'digest.dart';
 
 
+class ClientExtensionLoader extends ExtensionLoader {
+
+  @override
+  void registerAddressFactory() {
+    Address.setFactory(CompatibleAddressFactory());
+  }
+
+}
+
+
 class ClientPluginLoader extends PluginLoader {
 
   @override
-  void registerDigesters() {
-    super.registerDigesters();
+  void loadDigesters() {
+    super.loadDigesters();
 
     registerMD5Digester();
     registerSHA1Digester();
@@ -29,11 +39,6 @@ class ClientPluginLoader extends PluginLoader {
   }
 
   @override
-  void registerAddressFactory() {
-    Address.setFactory(CompatibleAddressFactory());
-  }
-
-  // @override
   void registerBase64Coder() {
     /// Base64 coding
     Base64.coder = PatchBase64Coder();
@@ -65,7 +70,7 @@ class PatchBase64Coder extends Base64Coder {
 
 class LibraryLoader {
   LibraryLoader({ExtensionLoader? extensionLoader, PluginLoader? pluginLoader}) {
-    this.extensionLoader = extensionLoader ?? ExtensionLoader();
+    this.extensionLoader = extensionLoader ?? ClientExtensionLoader();
     this.pluginLoader = pluginLoader ?? ClientPluginLoader();
   }
 

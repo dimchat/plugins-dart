@@ -23,37 +23,29 @@
  * SOFTWARE.
  * =============================================================================
  */
-import 'package:dimp/dimp.dart';
-
-import 'dkd/factory.dart';
-
-import 'ext/account.dart';
-import 'ext/command.dart';
-import 'ext/crypto.dart';
-import 'ext/format.dart';
-import 'ext/message.dart';
-import 'ext_content.dart';
+import 'ext_core.dart';
+import 'ext_entity.dart';
+import 'ext_msg.dart';
 
 
 /// Core Extensions Loader
 /// ~~~~~~~~~~~~~~~~~~~~~~
-class ExtensionLoader with ContentFactoryPlugins {
+class ExtensionLoader with CoreExtensions, EntityExtensions, MessageFactoryExtensions {
 
   /// Register core factories
   void load() {
 
-    registerCoreHelpers();
+    loadCoreHelpers();
 
-    registerMessageFactories();
+    loadEntityFactories();
 
-    registerContentFactories();
-    registerCommandFactories();
+    loadMessageFactories();
 
   }
 
   ///  Core extensions
   // protected
-  void registerCoreHelpers() {
+  void loadCoreHelpers() {
 
     registerCryptoHelpers();
     registerFormatHelpers();
@@ -64,58 +56,28 @@ class ExtensionLoader with ContentFactoryPlugins {
     registerCommandHelpers();
 
   }
-  void registerCryptoHelpers() {
-    // crypto
-    var cryptoHelper = CryptoKeyGeneralFactory();
-    sharedCryptoExtensions.symmetricHelper = cryptoHelper;
-    sharedCryptoExtensions.privateHelper   = cryptoHelper;
-    sharedCryptoExtensions.publicHelper    = cryptoHelper;
-    sharedCryptoExtensions.helper          = cryptoHelper;
-  }
-  void registerFormatHelpers() {
-    // format
-    var formatHelper = FormatGeneralFactory();
-    sharedFormatExtensions.pnfHelper = formatHelper;
-    sharedFormatExtensions.tedHelper = formatHelper;
-  }
-  void registerAccountHelpers() {
-    // mkm
-    var accountHelper = AccountGeneralFactory();
-    sharedAccountExtensions.addressHelper = accountHelper;
-    sharedAccountExtensions.idHelper      = accountHelper;
-    sharedAccountExtensions.metaHelper    = accountHelper;
-    sharedAccountExtensions.docHelper     = accountHelper;
-    sharedAccountExtensions.helper        = accountHelper;
-  }
-  void registerMessageHelpers() {
-    // dkd
-    var msgHelper = MessageGeneralFactory();
-    sharedMessageExtensions.contentHelper  = msgHelper;
-    sharedMessageExtensions.envelopeHelper = msgHelper;
-    sharedMessageExtensions.instantHelper  = msgHelper;
-    sharedMessageExtensions.secureHelper   = msgHelper;
-    sharedMessageExtensions.reliableHelper = msgHelper;
-    sharedMessageExtensions.helper         = msgHelper;
-  }
-  void registerCommandHelpers() {
-    // cmd
-    var cmdHelper = CommandGeneralFactory();
-    sharedMessageExtensions.cmdHelper     = cmdHelper;
-    sharedMessageExtensions.commandHelper = cmdHelper;
-  }
 
-  ///  Message factories
+  ///  ID, Address, Meta, Document parsers
   // protected
-  void registerMessageFactories() {
+  void loadEntityFactories() {
 
-    // Envelope factory
-    MessageFactory factory = MessageFactory();
-    Envelope.setFactory(factory);
+    registerIDFactory();
+    registerAddressFactory();
 
-    // Message factories
-    InstantMessage.setFactory(factory);
-    SecureMessage.setFactory(factory);
-    ReliableMessage.setFactory(factory);
+    registerMetaFactories();
+
+    registerDocumentFactories();
+
+  }
+
+  /// Message Factories
+  // protected
+  void loadMessageFactories() {
+
+    registerMessageFactories();
+
+    registerContentFactories();
+    registerCommandFactories();
 
   }
 

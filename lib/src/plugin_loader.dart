@@ -27,28 +27,25 @@ import 'crypto/digest.dart';
 import 'format/coders.dart';
 import 'format/trans.dart';
 
-import 'plugin_entity.dart';
 import 'plugin_keys.dart';
 
 
-class PluginLoader with CoderPlugins, TransportablePlugins, DigestPlugins, CryptoPlugins, EntityPlugins {
+class PluginLoader with CoderPlugins, TransportablePlugins, DigestPlugins, CryptoPlugins {
 
+  /// Register plugins
   void load() {
-    /// Register plugins
 
-    registerCoders();
-    registerDigesters();
+    loadCoders();
 
-    registerSymmetricKeyFactories();
-    registerAsymmetricKeyFactories();
+    loadDigesters();
 
-    registerEntityFactories();
+    loadCryptoKeyFactories();
 
   }
 
+  ///  Data coders
   // protected
-  void registerCoders() {
-    ///  Data coders
+  void loadCoders() {
 
     registerBase58Coder();
     registerBase64Coder();
@@ -62,9 +59,9 @@ class PluginLoader with CoderPlugins, TransportablePlugins, DigestPlugins, Crypt
 
   }
 
-  // protected
   ///  Message digesters
-  void registerDigesters() {
+  // protected
+  void loadDigesters() {
 
     registerSHA256Digester();
 
@@ -74,37 +71,17 @@ class PluginLoader with CoderPlugins, TransportablePlugins, DigestPlugins, Crypt
 
   }
 
+  ///  Crypto key parsers
   // protected
-  ///  Symmetric key parsers
-  void registerSymmetricKeyFactories() {
+  void loadCryptoKeyFactories() {
 
+    // Symmetric keys
     registerAESKeyFactory();
-
     registerPlainKeyFactory();
 
-  }
-
-  // protected
-  ///  Asymmetric key parsers
-  void registerAsymmetricKeyFactories() {
-
+    // Asymmetric keys
     registerRSAKeyFactories();
-
     registerECCKeyFactories();
-
-  }
-
-  // protected
-  ///  ID, Address, Meta, Document parsers
-  void registerEntityFactories() {
-
-    registerIDFactory();
-
-    registerAddressFactory();
-
-    registerMetaFactories();
-
-    registerDocumentFactories();
 
   }
 

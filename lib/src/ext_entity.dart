@@ -31,36 +31,48 @@ import 'mkm/identifier.dart';
 import 'mkm/meta.dart';
 
 
-mixin EntityPlugins {
+mixin EntityExtensions {
 
-
+  // protected
   void registerIDFactory() {
+
     ID.setFactory(IdentifierFactory());
+
   }
 
+  // protected
   void registerAddressFactory() {
+
     Address.setFactory(BaseAddressFactory());
+
   }
 
+  // protected
   void registerMetaFactories() {
-    setMetaFactory(MetaType.MKM, 'mkm');
-    setMetaFactory(MetaType.BTC, 'btc');
-    setMetaFactory(MetaType.ETH, 'eth');
+
+    setMetaFactory(MetaType.MKM);
+    setMetaFactory(MetaType.BTC);
+    setMetaFactory(MetaType.ETH);
+
   }
 
-  void setMetaFactory(String type, String alias, {MetaFactory? factory}) {
+  // protected
+  void setMetaFactory(String type, {MetaFactory? factory}) {
     factory ??= BaseMetaFactory(type);
     Meta.setFactory(type, factory);
-    Meta.setFactory(alias, factory);
   }
 
+  // protected
   void registerDocumentFactories() {
+
     setDocumentFactory('*');
     setDocumentFactory(DocumentType.VISA);
     setDocumentFactory(DocumentType.PROFILE);
     setDocumentFactory(DocumentType.BULLETIN);
+
   }
 
+  // protected
   void setDocumentFactory(String type, {DocumentFactory? factory}) {
     factory ??= GeneralDocumentFactory(type);
     Document.setFactory(type, factory);

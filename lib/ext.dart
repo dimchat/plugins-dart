@@ -23,9 +23,10 @@ export 'src/ext/message.dart';
 //
 //  Loaders
 //
-export 'src/ext_content.dart';
+export 'src/ext_core.dart';
+export 'src/ext_entity.dart';
+export 'src/ext_msg.dart';
 export 'src/ext_loader.dart';
 
 export 'src/plugin_keys.dart';
-export 'src/plugin_entity.dart';
 export 'src/plugin_loader.dart';

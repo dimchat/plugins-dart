@@ -23,12 +23,28 @@
  * SOFTWARE.
  * =============================================================================
  */
-import 'package:dimp/dimp.dart';
+import 'package:dimp/dkd.dart';
 
 import 'dkd/cmd_fact.dart';
+import 'dkd/factory.dart';
 
 
-mixin ContentFactoryPlugins {
+mixin MessageFactoryExtensions {
+
+  ///  Message factories
+  // protected
+  void registerMessageFactories() {
+
+    // Envelope factory
+    MessageFactory factory = MessageFactory();
+    Envelope.setFactory(factory);
+
+    // Message factories
+    InstantMessage.setFactory(factory);
+    SecureMessage.setFactory(factory);
+    ReliableMessage.setFactory(factory);
+
+  }
 
   ///  Core content factories
   // protected
