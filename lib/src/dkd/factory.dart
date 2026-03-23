@@ -30,7 +30,8 @@
  */
 import 'dart:math';
 
-import 'package:dimp/dimp.dart';
+import 'package:dimp/protocol.dart';
+import 'package:dimp/dkd.dart';
 
 
 ///  Message Factory

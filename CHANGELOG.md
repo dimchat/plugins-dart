@@ -1,3 +1,7 @@
+## 2.3.3
+
+- Entity Extensions.
+
 ## 2.3.2
 
 - Memory cache.

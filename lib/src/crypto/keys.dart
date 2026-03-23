@@ -23,7 +23,8 @@
  * SOFTWARE.
  * ==============================================================================
  */
-import 'package:dimp/dimp.dart';
+import 'package:dimp/crypto.dart';
+import 'package:dimp/ext.dart';
 
 ///
 /// Base Keys
