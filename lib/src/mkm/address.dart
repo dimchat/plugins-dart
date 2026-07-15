@@ -65,10 +65,10 @@ class BaseAddressFactory implements AddressFactory {
   // protected
   Address? parse(String address) {
     int len = address.length;
-    if (len == 0) {
-      assert(false, 'address should not be empty');
-      return null;
-    } else if (len == 8) {
+    //
+    //  check broadcast address
+    //
+    if (len == 8) {
       // "anywhere"
       if (address.toLowerCase() == Address.ANYWHERE.toString()) {
         return Address.ANYWHERE;
@@ -79,20 +79,21 @@ class BaseAddressFactory implements AddressFactory {
         return Address.EVERYWHERE;
       }
     }
-    Address? res;
+    //
+    //  checking normal address
+    //
     if (26 <= len && len <= 35) {
       // BTC
-      res = BTCAddress.parse(address);
+      return BTCAddress.parse(address);
     } else if (len == 42) {
       // ETH
-      res = ETHAddress.parse(address);
-    } else {
-      assert(false, 'invalid address: $address');
-      res = null;
+      return ETHAddress.parse(address);
     }
+    //
     // TODO: other types of address
-    assert(res != null, 'invalid address: $address');
-    return res;
+    //
+    assert(false, 'invalid address: $address');
+    return null;
   }
 
 }

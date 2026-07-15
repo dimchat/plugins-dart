@@ -79,37 +79,16 @@ class IdentifierFactory implements IDFactory {
 
   // protected
   ID? parse(String identifier) {
-    String? name;
-    Address? address;
-    String? terminal;
-    // split ID string
+    // split for "terminal"
     List<String> pair = identifier.split('/');
-    assert(pair.first.isNotEmpty, 'ID error: $identifier');
-    // terminal
-    if (pair.length == 1) {
-      // no terminal
-      terminal = null;
-    } else {
-      // got terminal
-      assert(pair.length == 2, 'ID error: $identifier');
-      terminal = pair.last;
-      assert(terminal.isNotEmpty, 'ID.terminal error: $identifier');
-    }
-    // name @ address
+    int cnt = pair.length;
+    String? terminal = cnt == 1 ? null : pair.last;
+    // split for "name" @ "address"
     pair = pair.first.split('@');
-    assert(pair.first.isNotEmpty, 'ID error: $identifier');
-    if (pair.length == 1) {
-      // got address without name
-      name = null;
-      address = Address.parse(pair.last);
-    } else if (pair.length == 2) {
-      // got name & address
-      name = pair.first;
-      address = Address.parse(pair.last);
-    } else {
-      assert(false, 'ID error: $identifier');
-      return null;
-    }
+    cnt = pair.length;
+    String? name = cnt == 1 ? null : pair.first;
+    Address? address = Address.parse(pair.last);
+    // done
     if (address == null) {
       assert(false, 'cannot get address from ID: $identifier');
       return null;
