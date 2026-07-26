@@ -209,7 +209,7 @@ class BaseMetaFactory implements MetaFactory {
   }
 
   @override
-  Meta? parseMeta(Map meta) {
+  Meta? parseMeta(Mapping meta) {
     // check 'type', 'key', 'seed', 'fingerprint'
     if (!meta.containsKey('type') || !meta.containsKey('key')) {
       // meta.type should not be empty

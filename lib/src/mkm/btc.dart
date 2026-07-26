@@ -47,7 +47,7 @@ import 'package:dimp/mkm.dart';
 ///          code        = sha256(sha256(network + digest)).prefix(4);
 ///          address     = base58_encode(network + digest + code);
 ///
-class BTCAddress extends ConstantString implements Address {
+final class BTCAddress extends ConstantString implements Address {
   BTCAddress(super.string, int network) : _type = network;
 
   final int _type;

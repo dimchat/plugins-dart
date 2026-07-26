@@ -99,7 +99,7 @@ class FormatGeneralFactory implements TransportableFileHelper,
       return pnf;
     }
     // unwrap
-    Map? info = getTransportableFileContent(pnf);
+    Mapping? info = getTransportableFileContent(pnf);
     if (info == null) {
       // assert(false, 'PNF error: $pnf');
       return null;
@@ -110,11 +110,11 @@ class FormatGeneralFactory implements TransportableFileHelper,
   }
 
   // protected
-  Map? getTransportableFileContent(Object pnf) {
+  Mapping? getTransportableFileContent(Object pnf) {
     if (pnf is Mapper) {
       return pnf.toMap();
     } else if (pnf is Map) {
-      return pnf;
+      return pnf.asMapping();
     }
     String? text = Wrapper.getString(pnf);
     if (text == null || text.length < 8) {
@@ -123,7 +123,8 @@ class FormatGeneralFactory implements TransportableFileHelper,
     } else if (text.startsWith('{')) {
       // decode JSON string
       assert(text.endsWith('}'), 'PNF json error: $pnf');
-      return JSONMap.decode(text);
+      Map? info = JSONMap.decode(text);
+      return info?.asMapping();
     }
     Map content = {};
 
@@ -131,7 +132,7 @@ class FormatGeneralFactory implements TransportableFileHelper,
     int pos = text.indexOf('://');
     if (0 < pos && pos < 8) {
       content['URL'] = text;
-      return content;
+      return content.asMapping();
     }
 
     content['data'] = text;
@@ -146,7 +147,7 @@ class FormatGeneralFactory implements TransportableFileHelper,
     //   // 3. check for Base-64 encoded string?
     // }
 
-    return content;
+    return content.asMapping();
   }
 
 }

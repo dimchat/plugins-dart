@@ -28,6 +28,7 @@
  * SOFTWARE.
  * =============================================================================
  */
+import 'package:dimp/crypto.dart';
 import 'package:dimp/dkd.dart';
 import 'package:dimp/ext.dart';
 
@@ -38,7 +39,7 @@ import 'package:dimp/ext.dart';
 class GeneralCommandFactory implements ContentFactory, CommandFactory {
 
   @override
-  Content? parseContent(Map content) {
+  Content? parseContent(Mapping content) {
     GeneralCommandHelper? helper = sharedMessageExtensions.cmdHelper;
     CommandHelper? cmdHelper = sharedMessageExtensions.commandHelper;
     // get factory by command name
@@ -55,7 +56,7 @@ class GeneralCommandFactory implements ContentFactory, CommandFactory {
   }
 
   @override
-  Command? parseCommand(Map content) {
+  Command? parseCommand(Mapping content) {
     // check 'sn', 'command'
     if (!content.containsKey('sn') || !content.containsKey('command')) {
       // content.sn should not be empty
@@ -72,7 +73,7 @@ class GeneralCommandFactory implements ContentFactory, CommandFactory {
 class HistoryCommandFactory extends GeneralCommandFactory {
 
   @override
-  Command? parseCommand(Map content) {
+  Command? parseCommand(Mapping content) {
     // check 'sn', 'command', 'time'
     if (!content.containsKey('sn') || !content.containsKey('command') || !content.containsKey('time')) {
       // content.sn should not be empty
@@ -90,7 +91,7 @@ class HistoryCommandFactory extends GeneralCommandFactory {
 class GroupCommandFactory extends HistoryCommandFactory {
 
   @override
-  Content? parseContent(Map content) {
+  Content? parseContent(Mapping content) {
     GeneralCommandHelper? helper = sharedMessageExtensions.cmdHelper;
     CommandHelper? cmdHelper = sharedMessageExtensions.commandHelper;
     // get factory by command name
@@ -101,7 +102,7 @@ class GroupCommandFactory extends HistoryCommandFactory {
   }
 
   @override
-  Command? parseCommand(Map content) {
+  Command? parseCommand(Mapping content) {
     // check 'sn', 'command', 'group'
     if (!content.containsKey('sn') || !content.containsKey('command') || !content.containsKey('group')) {
       // content.sn should not be empty

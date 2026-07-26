@@ -56,7 +56,7 @@ class BaseNetworkFileFactory implements TransportableFileFactory {
   }
 
   @override
-  TransportableFile? parseTransportableFile(Map pnf) {
+  TransportableFile? parseTransportableFile(Mapping pnf) {
     // check 'data', 'URL', 'filename'
     if (!pnf.containsKey('data') && !pnf.containsKey('URL') && !pnf.containsKey('filename')) {
       // pnf.data and pnf.URL and pnf.filename should not be empty at the same time
@@ -72,6 +72,7 @@ class BaseNetworkFileFactory implements TransportableFileFactory {
 mixin TransportablePlugins {
 
   /// set TED factory
+  // protected
   void registerTEDFactory() {
 
     var ted = BaseNetworkDataFactory();
@@ -80,6 +81,7 @@ mixin TransportablePlugins {
   }
 
   /// set PNF factory
+  // protected
   void registerPNFFactory() {
 
     var pnf = BaseNetworkFileFactory();

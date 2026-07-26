@@ -63,7 +63,7 @@ class AESKey extends BaseSymmetricKey {
       'data': ted.serialize(),
       // 'mod': 'CBC',
       // 'padding': 'PKCS7',
-    });
+    }.asMapping());
     key._keyData = ted;
     return key;
   }
@@ -97,7 +97,7 @@ class AESKey extends BaseSymmetricKey {
 
   /// get IV from params
   // protected
-  IV? getInitVector(Map? params) {
+  IV? getInitVector(Mapping? params) {
     // get base64 encoded IV from params
     String? base64;
     if (params == null) {
@@ -128,7 +128,7 @@ class AESKey extends BaseSymmetricKey {
     return IV(ivData);
   }
   // protected
-  IV newInitVector(Map? extra) {
+  IV newInitVector(MutableMapping? extra) {
     // random IV data
     int blockSize = getBlockSize();
     Uint8List ivData = _randomData(blockSize);
@@ -144,7 +144,7 @@ class AESKey extends BaseSymmetricKey {
   }
 
   @override
-  Uint8List encrypt(Uint8List plaintext, [Map? extra]) {
+  Uint8List encrypt(Uint8List plaintext, [MutableMapping? extra]) {
     // 1. if 'IV' not found in extra params, new a random 'IV'
     IV? iv = getInitVector(extra);
     iv ??= newInitVector(extra);
@@ -156,7 +156,7 @@ class AESKey extends BaseSymmetricKey {
   }
 
   @override
-  Uint8List? decrypt(Uint8List ciphertext, [Map? params]) {
+  Uint8List? decrypt(Uint8List ciphertext, [Mapping? params]) {
     // 1. if 'IV' not found in extra params, use an empty 'IV'
     IV? iv = getInitVector(params);
     iv ??= zeroInitVector();
@@ -193,7 +193,7 @@ class AESKeyFactory implements SymmetricKeyFactory {
   }
 
   @override
-  SymmetricKey? parseSymmetricKey(Map key) {
+  SymmetricKey? parseSymmetricKey(Mapping key) {
     // check 'data', 'algorithm'
     if (!key.containsKey('data') || !key.containsKey('algorithm')) {
       // key.data should not be empty

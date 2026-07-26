@@ -92,7 +92,7 @@ class ECCPrivateKey extends BasePrivateKey {
       'data': pem,
       'curve': 'SECP256k1',
       'digest': 'SHA256',
-    });
+    }.asMapping());
   }
 
   // private
@@ -142,7 +142,7 @@ class ECCPrivateKey extends BasePrivateKey {
 class ECCPublicKeyFactory implements PublicKeyFactory {
 
   @override
-  PublicKey? parsePublicKey(Map key) {
+  PublicKey? parsePublicKey(Mapping key) {
     // check 'data', 'algorithm'
     if (!key.containsKey('data') || !key.containsKey('algorithm')) {
       // key.data should not be empty
@@ -162,7 +162,7 @@ class ECCPrivateKeyFactory implements PrivateKeyFactory {
   }
 
   @override
-  PrivateKey? parsePrivateKey(Map key) {
+  PrivateKey? parsePrivateKey(Mapping key) {
     // check 'data', 'algorithm'
     if (!key.containsKey('data') || !key.containsKey('algorithm')) {
       // key.data should not be empty

@@ -43,7 +43,7 @@ import 'package:dimp/mkm.dart';
 ///          digest      = keccak256(fingerprint);
 ///          address     = hex_encode(digest.suffix(20));
 ///
-class ETHAddress extends ConstantString implements Address {
+final class ETHAddress extends ConstantString implements Address {
   ETHAddress(super.string);
 
   @override
@@ -95,7 +95,8 @@ class ETHAddress extends ConstantString implements Address {
   }
 }
 
-class _ETH {
+final class _ETH {
+  _ETH._();
 
   // https://eips.ethereum.org/EIPS/eip-55
   static String eip55(String hex) {

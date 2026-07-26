@@ -53,7 +53,7 @@ class RSAPublicKey extends BasePublicKey implements EncryptKey {
   }
 
   @override
-  Uint8List encrypt(Uint8List plaintext, [Map? extra]) {
+  Uint8List encrypt(Uint8List plaintext, [MutableMapping? extra]) {
     return RSAKeyUtils.encrypt(plaintext, rsaPubKey);
   }
 
@@ -91,7 +91,7 @@ class RSAPrivateKey extends BasePrivateKey implements DecryptKey {
       'mode': 'ECB',
       'padding': 'PKCS1',
       'digest': 'SHA256',
-    });
+    }.asMapping());
   }
 
   // protected
@@ -132,7 +132,7 @@ class RSAPrivateKey extends BasePrivateKey implements DecryptKey {
   }
 
   @override
-  Uint8List? decrypt(Uint8List ciphertext, [Map? params]) {
+  Uint8List? decrypt(Uint8List ciphertext, [Mapping? params]) {
     try {
       return RSAKeyUtils.decrypt(ciphertext, rsaPriKey);
     } catch (e, st) {
@@ -154,7 +154,7 @@ class RSAPrivateKey extends BasePrivateKey implements DecryptKey {
 class RSAPublicKeyFactory implements PublicKeyFactory {
 
   @override
-  PublicKey? parsePublicKey(Map key) {
+  PublicKey? parsePublicKey(Mapping key) {
     // check 'data', 'algorithm'
     if (!key.containsKey('data') || !key.containsKey('algorithm')) {
       // key.data should not be empty
@@ -174,7 +174,7 @@ class RSAPrivateKeyFactory implements PrivateKeyFactory {
   }
 
   @override
-  PrivateKey? parsePrivateKey(Map key) {
+  PrivateKey? parsePrivateKey(Mapping key) {
     // check 'data', 'algorithm'
     if (!key.containsKey('data') || !key.containsKey('algorithm')) {
       // key.data should not be empty

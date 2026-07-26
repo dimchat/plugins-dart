@@ -33,7 +33,8 @@ import 'package:pointycastle/export.dart' as pc;
 import 'package:dimp/crypto.dart' as dim;
 
 
-class ECCKeyUtils {
+final class ECCKeyUtils {
+  ECCKeyUtils._();
 
   static bool verify(Uint8List data, Uint8List signature, ECPublicKey publicKey) {
     var params = pc.PublicKeyParameter(publicKey);

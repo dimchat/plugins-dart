@@ -43,12 +43,12 @@ class AccountGeneralFactory implements GeneralAccountHelper,
   final Map<String, DocumentFactory> _docsFactories = {};
 
   @override
-  String? getMetaType(Map meta, [String? defaultValue]) {
+  String? getMetaType(Mapping meta, [String? defaultValue]) {
     return Converter.getString(meta['type'], defaultValue);
   }
 
   @override
-  String? getDocumentType(Map doc, [String? defaultValue]) {
+  String? getDocumentType(Mapping doc, [String? defaultValue]) {
     var docType = doc['type'];
     if (docType != null) {
       return Converter.getString(docType, defaultValue);
@@ -70,7 +70,7 @@ class AccountGeneralFactory implements GeneralAccountHelper,
   }
 
   @override
-  ID? getDocumentID(Map doc) {
+  ID? getDocumentID(Mapping doc) {
     return ID.parse(doc['did']);
   }
 
@@ -192,7 +192,7 @@ class AccountGeneralFactory implements GeneralAccountHelper,
     } else if (meta is Meta) {
       return meta;
     }
-    Map? info = Wrapper.getMap(meta);
+    MutableMapping? info = Wrapper.getMap(meta);
     if (info == null) {
       assert(false, 'meta error: $meta');
       return null;
@@ -236,7 +236,7 @@ class AccountGeneralFactory implements GeneralAccountHelper,
     } else if (doc is Document) {
       return doc;
     }
-    Map? info = Wrapper.getMap(doc);
+    MutableMapping? info = Wrapper.getMap(doc);
     if (info == null) {
       assert(false, 'document error: $doc');
       return null;

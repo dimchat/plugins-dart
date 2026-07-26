@@ -37,7 +37,7 @@ class CryptoKeyGeneralFactory implements GeneralCryptoHelper,
   final Map<String, PublicKeyFactory>       _publicKeyFactories = {};
 
   @override
-  String? getKeyAlgorithm(Map key, [String? defaultValue]) {
+  String? getKeyAlgorithm(Mapping key, [String? defaultValue]) {
     return Converter.getString(key['algorithm'], defaultValue);
   }
 
@@ -69,7 +69,7 @@ class CryptoKeyGeneralFactory implements GeneralCryptoHelper,
     } else if (key is SymmetricKey) {
       return key;
     }
-    Map? info = Wrapper.getMap(key);
+    MutableMapping? info = Wrapper.getMap(key);
     if (info == null) {
       assert(false, 'symmetric key error: $key');
       return null;
@@ -113,7 +113,7 @@ class CryptoKeyGeneralFactory implements GeneralCryptoHelper,
     } else if (key is PrivateKey) {
       return key;
     }
-    Map? info = Wrapper.getMap(key);
+    MutableMapping? info = Wrapper.getMap(key);
     if (info == null) {
       assert(false, 'private key error: $key');
       return null;
@@ -150,7 +150,7 @@ class CryptoKeyGeneralFactory implements GeneralCryptoHelper,
     } else if (key is PublicKey) {
       return key;
     }
-    Map? info = Wrapper.getMap(key);
+    MutableMapping? info = Wrapper.getMap(key);
     if (info == null) {
       assert(false, 'public key error: $key');
       return null;

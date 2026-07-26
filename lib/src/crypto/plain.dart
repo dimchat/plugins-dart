@@ -32,25 +32,27 @@ import 'keys.dart';
 
 ///  Symmetric key for broadcast message,
 ///  which will do nothing when en/decoding message data
-class PlainKey extends BaseSymmetricKey {
+final class PlainKey extends BaseSymmetricKey {
   PlainKey([super.dict]);
 
   @override
   TransportableData get data => PlainData.zero();
 
   @override
-  Uint8List? decrypt(Uint8List ciphertext, [Map? params]) {
+  Uint8List? decrypt(Uint8List ciphertext, [Mapping? params]) {
     return ciphertext;
   }
 
   @override
-  Uint8List encrypt(Uint8List plaintext, [Map? extra]) {
+  Uint8List encrypt(Uint8List plaintext, [MutableMapping? extra]) {
     return plaintext;
   }
 
   //-------- Singleton --------
 
-  static final PlainKey _instance = PlainKey({'algorithm': SymmetricAlgorithms.PLAIN});
+  static final PlainKey _instance = PlainKey({
+    'algorithm': SymmetricAlgorithms.PLAIN
+  }.asMapping());
   factory PlainKey.getInstance() => _instance;
 }
 
@@ -62,7 +64,7 @@ class PlainKeyFactory implements SymmetricKeyFactory {
   }
 
   @override
-  SymmetricKey? parseSymmetricKey(Map key) {
+  SymmetricKey? parseSymmetricKey(Mapping key) {
     // check 'algorithm'
     String algorithm = BaseKey.getKeyAlgorithm(key);
     if (algorithm != SymmetricAlgorithms.PLAIN) {

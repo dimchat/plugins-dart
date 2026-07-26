@@ -30,6 +30,7 @@
  */
 import 'dart:math';
 
+import 'package:dimp/crypto.dart';
 import 'package:dimp/protocol.dart';
 import 'package:dimp/dkd.dart';
 
@@ -68,7 +69,7 @@ class MessageFactory implements EnvelopeFactory, InstantMessageFactory, SecureMe
   }
 
   @override
-  Envelope? parseEnvelope(Map env) {
+  Envelope? parseEnvelope(Mapping env) {
     // check 'sender'
     if (!env.containsKey('sender')) {
       // env.sender should not empty
@@ -96,7 +97,7 @@ class MessageFactory implements EnvelopeFactory, InstantMessageFactory, SecureMe
   }
 
   @override
-  InstantMessage? parseInstantMessage(Map msg) {
+  InstantMessage? parseInstantMessage(Mapping msg) {
     // check 'sender', 'content'
     if (!msg.containsKey('sender') || !msg.containsKey('content')) {
       // msg.sender should not be empty
@@ -112,7 +113,7 @@ class MessageFactory implements EnvelopeFactory, InstantMessageFactory, SecureMe
   ///
 
   @override
-  SecureMessage? parseSecureMessage(Map msg) {
+  SecureMessage? parseSecureMessage(Mapping msg) {
     // check 'sender', 'data'
     if (!msg.containsKey('sender') || !msg.containsKey('data')) {
       // msg.sender should not be empty
@@ -132,7 +133,7 @@ class MessageFactory implements EnvelopeFactory, InstantMessageFactory, SecureMe
   ///
 
   @override
-  ReliableMessage? parseReliableMessage(Map msg) {
+  ReliableMessage? parseReliableMessage(Mapping msg) {
     // check 'sender', 'data', 'signature',
     if (!msg.containsKey('sender') || !msg.containsKey('data') || !msg.containsKey('signature')) {
       // msg.sender should not be empty

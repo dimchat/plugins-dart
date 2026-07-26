@@ -23,6 +23,7 @@
  * SOFTWARE.
  * =============================================================================
  */
+import 'package:dimp/crypto.dart';
 import 'package:dimp/dkd.dart';
 
 import 'dkd/cmd_fact.dart';
@@ -143,15 +144,15 @@ mixin MessageFactoryExtensions {
 }
 
 
-typedef ContentCreator = Content? Function(Map dict);
-typedef CommandCreator = Command? Function(Map dict);
+typedef ContentCreator = Content? Function(Mapping dict);
+typedef CommandCreator = Command? Function(Mapping dict);
 
 class ContentParser implements ContentFactory {
   ContentParser(this._builder);
   final ContentCreator _builder;
 
   @override
-  Content? parseContent(Map content) {
+  Content? parseContent(Mapping content) {
     // check 'sn'
     if (!content.containsKey('sn')) {
       // content.sn should not be empty
@@ -168,7 +169,7 @@ class CommandParser implements CommandFactory {
   final CommandCreator _builder;
 
   @override
-  Command? parseCommand(Map content) {
+  Command? parseCommand(Mapping content) {
     // check 'sn', 'command'
     if (!content.containsKey('sn') || !content.containsKey('command')) {
       // content.sn should not be empty

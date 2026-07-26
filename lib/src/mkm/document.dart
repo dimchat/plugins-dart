@@ -99,7 +99,7 @@ class GeneralDocumentFactory implements DocumentFactory {
   }
 
   @override
-  Document? parseDocument(Map doc) {
+  Document? parseDocument(Mapping doc) {
     // check 'did', 'data', 'signature'
     if (!doc.containsKey('data') || !doc.containsKey('signature')) {
       // doc.data should not be empty

@@ -47,7 +47,7 @@ class MessageGeneralFactory implements GeneralMessageHelper,
   ReliableMessageFactory? _reliableMessageFactory;
 
   @override
-  String? getContentType(Map content, [String? defaultValue]) {
+  String? getContentType(Mapping content, [String? defaultValue]) {
     return Converter.getString(content['type'], defaultValue);
   }
 
@@ -72,7 +72,7 @@ class MessageGeneralFactory implements GeneralMessageHelper,
     } else if (content is Content) {
       return content;
     }
-    Map? info = Wrapper.getMap(content);
+    MutableMapping? info = Wrapper.getMap(content);
     if (info == null) {
       assert(false, 'content error: $content');
       return null;
@@ -117,7 +117,7 @@ class MessageGeneralFactory implements GeneralMessageHelper,
     } else if (env is Envelope) {
       return env;
     }
-    Map? info = Wrapper.getMap(env);
+    MutableMapping? info = Wrapper.getMap(env);
     if (info == null) {
       assert(false, 'envelope error: $env');
       return null;
@@ -155,7 +155,7 @@ class MessageGeneralFactory implements GeneralMessageHelper,
     } else if (msg is InstantMessage) {
       return msg;
     }
-    Map? info = Wrapper.getMap(msg);
+    MutableMapping? info = Wrapper.getMap(msg);
     if (info == null) {
       assert(false, 'instant message error: $msg');
       return null;
@@ -193,7 +193,7 @@ class MessageGeneralFactory implements GeneralMessageHelper,
     } else if (msg is SecureMessage) {
       return msg;
     }
-    Map? info = Wrapper.getMap(msg);
+    MutableMapping? info = Wrapper.getMap(msg);
     if (info == null) {
       assert(false, 'secure message error: $msg');
       return null;
@@ -224,7 +224,7 @@ class MessageGeneralFactory implements GeneralMessageHelper,
     } else if (msg is ReliableMessage) {
       return msg;
     }
-    Map? info = Wrapper.getMap(msg);
+    MutableMapping? info = Wrapper.getMap(msg);
     if (info == null) {
       assert(false, 'reliable message error: $msg');
       return null;

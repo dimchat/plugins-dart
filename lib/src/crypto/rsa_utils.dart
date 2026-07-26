@@ -34,7 +34,8 @@ import 'package:pointycastle/export.dart' as pc;
 import 'package:dimp/crypto.dart' as dim;
 
 
-class RSAKeyUtils {
+final class RSAKeyUtils {
+  RSAKeyUtils._();
 
   static Uint8List encrypt(Uint8List plaintext, RSAPublicKey publicKey) {
     Encrypter cipher = Encrypter(RSA(publicKey: publicKey));
