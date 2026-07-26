@@ -63,7 +63,7 @@ class AESKey extends BaseSymmetricKey {
       'data': ted.serialize(),
       // 'mod': 'CBC',
       // 'padding': 'PKCS7',
-    }.asMapping());
+    });
     key._keyData = ted;
     return key;
   }

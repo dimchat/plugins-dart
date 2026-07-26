@@ -79,7 +79,7 @@ void testEncode() {
 void testAES() {
   debugLog('======== testAES ========');
 
-  MutableMapping extra = {}.asMutableMapping();
+  MutableMapping extra = {};
 
   Map dictionary = {
     'algorithm': 'AES',
@@ -138,7 +138,7 @@ void testAES() {
 void testRSA() {
   debugLog('======== testRSA ========');
 
-  MutableMapping extra = {}.asMutableMapping();
+  MutableMapping extra = {};
 
   PrivateKey sKey;
   PublicKey pKey;

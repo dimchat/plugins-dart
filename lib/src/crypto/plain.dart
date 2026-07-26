@@ -52,7 +52,7 @@ final class PlainKey extends BaseSymmetricKey {
 
   static final PlainKey _instance = PlainKey({
     'algorithm': SymmetricAlgorithms.PLAIN
-  }.asMapping());
+  });
   factory PlainKey.getInstance() => _instance;
 }
 

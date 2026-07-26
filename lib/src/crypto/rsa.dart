@@ -91,7 +91,7 @@ class RSAPrivateKey extends BasePrivateKey implements DecryptKey {
       'mode': 'ECB',
       'padding': 'PKCS1',
       'digest': 'SHA256',
-    }.asMapping());
+    });
   }
 
   // protected

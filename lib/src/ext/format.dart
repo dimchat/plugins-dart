@@ -114,7 +114,7 @@ class FormatGeneralFactory implements TransportableFileHelper,
     if (pnf is Mapper) {
       return pnf.toMap();
     } else if (pnf is Map) {
-      return pnf.asMapping();
+      return pnf;
     }
     String? text = Wrapper.getString(pnf);
     if (text == null || text.length < 8) {
@@ -124,7 +124,7 @@ class FormatGeneralFactory implements TransportableFileHelper,
       // decode JSON string
       assert(text.endsWith('}'), 'PNF json error: $pnf');
       Map? info = JSONMap.decode(text);
-      return info?.asMapping();
+      return info;
     }
     Map content = {};
 
@@ -132,7 +132,7 @@ class FormatGeneralFactory implements TransportableFileHelper,
     int pos = text.indexOf('://');
     if (0 < pos && pos < 8) {
       content['URL'] = text;
-      return content.asMapping();
+      return content;
     }
 
     content['data'] = text;
@@ -147,7 +147,7 @@ class FormatGeneralFactory implements TransportableFileHelper,
     //   // 3. check for Base-64 encoded string?
     // }
 
-    return content.asMapping();
+    return content;
   }
 
 }

@@ -92,7 +92,7 @@ class ECCPrivateKey extends BasePrivateKey {
       'data': pem,
       'curve': 'SECP256k1',
       'digest': 'SHA256',
-    }.asMapping());
+    });
   }
 
   // private
