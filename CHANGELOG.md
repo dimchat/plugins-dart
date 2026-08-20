@@ -1,3 +1,7 @@
+## 2.1.0
+
+- Focused on algorithms.
+
 ## 2.0.0
 
 - Mapping.

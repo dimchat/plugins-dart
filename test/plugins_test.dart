@@ -1,10 +1,12 @@
 import 'dart:typed_data';
 
-import 'package:dimp/dimp.dart';
 import 'package:test/test.dart';
 
-import 'digest.dart';
-import 'loader.dart';
+import 'package:dimp/crypto.dart';
+
+import '../example/digest.dart';
+import '../example/loader.dart';
+
 
 void debugAssert(bool cond, String msg) {
   if (cond) {
@@ -248,7 +250,7 @@ void main() {
     setUp(() {
       // Additional setup goes here.
 
-      var loader = ClientPluginLoader();
+      var loader = CommonPluginLoader();
       loader.load();
 
     });

@@ -51,7 +51,7 @@ import 'package:dimp/dimp.dart';
 import 'package:dimap/dimap.dart';
 
 
-class CompatiblePluginLoader extends PluginLoader {
+class CommonPluginLoader extends PluginLoader {
 
   @override
   void registerBase64Coder() {
