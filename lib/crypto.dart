@@ -3,7 +3,7 @@
 /// 1. Crypto Keys
 /// 2. Data Digest
 /// 3. Data Format
-library dim_plugins;
+library dimap;
 
 export 'package:dimp/crypto.dart';
 

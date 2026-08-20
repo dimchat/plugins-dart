@@ -1,7 +1,7 @@
 /// DIMP
 /// ~~~~
 /// Decentralized Instant Messaging Protocol
-library dim_plugins;
+library dimap;
 
 export 'package:dimp/crypto.dart';
 

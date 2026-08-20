@@ -1,12 +1,10 @@
-/// DIMP
-/// ~~~~
-/// Decentralized Instant Messaging Plugins
-library dim_plugins;
+/// DIM-AP
+/// ~~~~~~
+/// DIM Algorithm Plugins
+library dimap;
 
 export 'dimp.dart';
 
 export 'crypto.dart';
-export 'mkm.dart';
-export 'dkd.dart';
 
 export 'ext.dart';

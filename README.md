@@ -1,4 +1,4 @@
-# DIM Plugins (Dart)
+# DIM Algorithm Plugins (Dart)
 
 [![License](https://img.shields.io/github/license/dimchat/plugins-dart)](https://github.com/dimchat/plugins-dart/blob/main/LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/dimchat/plugins-dart/pulls)
@@ -6,12 +6,22 @@
 [![Issues](https://img.shields.io/github/issues/dimchat/plugins-dart)](https://github.com/dimchat/plugins-dart/issues)
 [![Repo Size](https://img.shields.io/github/repo-size/dimchat/plugins-dart)](https://github.com/dimchat/plugins-dart/archive/refs/heads/main.zip)
 [![Tags](https://img.shields.io/github/tag/dimchat/plugins-dart)](https://github.com/dimchat/plugins-dart/tags)
-[![Version](https://img.shields.io/pub/v/dim_plugins)](https://pub.dev/packages/dim_plugins)
+[![Version](https://img.shields.io/pub/v/dimap)](https://pub.dev/packages/dimap)
 
 [![Watchers](https://img.shields.io/github/watchers/dimchat/plugins-dart)](https://github.com/dimchat/plugins-dart/watchers)
 [![Forks](https://img.shields.io/github/forks/dimchat/plugins-dart)](https://github.com/dimchat/plugins-dart/forks)
 [![Stars](https://img.shields.io/github/stars/dimchat/plugins-dart)](https://github.com/dimchat/plugins-dart/stargazers)
 [![Followers](https://img.shields.io/github/followers/dimchat)](https://github.com/orgs/dimchat/followers)
+
+## Dependencies
+
+* Latest Versions
+
+| Name | Version | Description |
+|------|---------|-------------|
+| [Ming Ke Ming (名可名)](https://github.com/dimchat/mkm-dart) | [![Version](https://img.shields.io/pub/v/mkm)](https://pub.dev/packages/mkm) | Decentralized User Identity Authentication |
+| [Dao Ke Dao (道可道)](https://github.com/dimchat/dkd-dart) | [![Version](https://img.shields.io/pub/v/dkd)](https://pub.dev/packages/dkd) | Universal Message Module |
+| [DIMP (去中心化通讯协议)](https://github.com/dimchat/core-dart) | [![Version](https://img.shields.io/pub/v/dimp)](https://pub.dev/packages/dimp) | Decentralized Instant Messaging Protocol |
 
 ## Plugins
 
@@ -24,8 +34,6 @@
    * PNF _(Portable Network File)_
    * TED _(Transportable Encoded Data)_
 2. Digest Digest
-   * MD-5
-   * SHA-1
    * SHA-256
    * Keccak-256
    * RipeMD-160
@@ -33,209 +41,14 @@
    * AES-256 _(AES/CBC/PKCS7Padding)_
    * RSA-1024 _(RSA/ECB/PKCS1Padding)_, _(SHA256withRSA)_
    * ECC _(Secp256k1)_
-4. Address
-   * BTC
-   * ETH
-5. Meta
-   * MKM _(Default)_
-   * BTC
-   * ETH
-6. Document
-   * Visa _(User)_
-   * Profile
-   * Bulletin _(Group)_
-
-## Extends
-
-### Address
-
-```dart
-import 'package:dimp/dimp.dart';
-import 'package:dim_plugins/mkm.dart';
-
-
-class CompatibleAddressFactory extends BaseAddressFactory {
-
-  @override
-  Address? parse(String address) {
-    int len = address.length;
-    if (len == 0) {
-      assert(false, 'address empty');
-      return null;
-    } else if (len == 8) {
-      // "anywhere"
-      String lower = address.toLowerCase();
-      if (lower == Address.ANYWHERE.toString()) {
-        return Address.ANYWHERE;
-      }
-    } else if (len == 10) {
-      // "everywhere"
-      String lower = address.toLowerCase();
-      if (lower == Address.EVERYWHERE.toString()) {
-        return Address.EVERYWHERE;
-      }
-    }
-    Address? res;
-    if (26 <= len && len <= 35) {
-      res = BTCAddress.parse(address);
-    } else if (len == 42) {
-      res = ETHAddress.parse(address);
-    } else {
-      // throw AssertionError('invalid address: $address');
-      res = null;
-    }
-    //
-    //  TODO: parse for other types of address
-    //
-    if (res == null && 4 <= len && len <= 64) {
-      res = UnknownAddress(address);
-    }
-    assert(res != null, 'invalid address: $address');
-    return res;
-  }
-
-}
-
-
-/// Unsupported Address
-/// ~~~~~~~~~~~~~~~~~~~
-class UnknownAddress extends ConstantString implements Address {
-  UnknownAddress(super.string);
-
-  @override
-  int get network => 0;  // EntityType.USER;
-
-}
-```
-
-### Meta
-
-```dart
-import 'package:dimp/crypto.dart';
-import 'package:dimp/mkm.dart';
-import 'package:dimp/ext.dart';
-import 'package:dim_plugins/mkm.dart';
-
-
-class CompatibleMetaFactory extends BaseMetaFactory {
-  CompatibleMetaFactory(super.type);
-
-  @override
-  Meta? parseMeta(Map meta) {
-    Meta out;
-    var helper = sharedAccountExtensions.helper;
-    String? version = helper?.getMetaType(meta);
-    switch (version) {
-
-      case 'MKM':
-      case 'mkm':
-      case '1':
-        out = DefaultMeta(meta);
-        break;
-
-      case 'BTC':
-      case 'btc':
-      case '2':
-        out = BTCMeta(meta);
-        break;
-
-      case 'ETH':
-      case 'eth':
-      case '4':
-        out = ETHMeta(meta);
-        break;
-
-      default:
-        // TODO: other types of meta
-        throw Exception('unknown meta type: $type');
-    }
-    return out.isValid ? out : null;
-  }
-
-}
-```
-
-### ExtensionLoader
-
-```dart
-import 'package:dimp/ext.dart';
-
-import '../../common/protocol/handshake.dart';
-
-
-/// Extensions Loader
-/// ~~~~~~~~~~~~~~~~~
-class CommonExtensionLoader extends ExtensionLoader {
-
-  @override
-  void registerAddressFactory() {
-
-    Address.setFactory(CompatibleAddressFactory());
-
-  }
-
-  @override
-  void registerMetaFactories() {
-
-    var mkm = CompatibleMetaFactory(Meta.MKM);
-    var btc = CompatibleMetaFactory(Meta.BTC);
-    var eth = CompatibleMetaFactory(Meta.ETH);
-
-    Meta.setFactory('1', mkm);
-    Meta.setFactory('2', btc);
-    Meta.setFactory('4', eth);
-
-    Meta.setFactory('mkm', mkm);
-    Meta.setFactory('btc', btc);
-    Meta.setFactory('eth', eth);
-
-    Meta.setFactory('MKM', mkm);
-    Meta.setFactory('BTC', btc);
-    Meta.setFactory('ETH', eth);
-
-  }
-
-  @override
-  void registerContentFactories() {
-    super.registerContentFactories();
-
-    registerCustomizedFactories();
-
-  }
-
-  void registerCustomizedFactories() {
-
-    // Application Customized
-    var factory = ContentParser((dict) => AppCustomizedContent(dict));
-    setContentFactory(ContentType.APPLICATION, factory: factory);
-    setContentFactory(ContentType.CUSTOMIZED, factory: factory);
-    
-  }
-
-  @override
-  void registerCommandFactories() {
-    super.registerCommandFactories();
-
-    // Handshake
-    setCommandFactory(HandshakeCommand.HANDSHAKE, creator: (dict) => BaseHandshakeCommand(dict));
-
-  }
-
-}
-```
 
 ### Plugin Loader
 
 ```dart
 import 'dart:typed_data';
 
-import 'package:dimp/crypto.dart';
-import 'package:dimp/mkm.dart';
-import 'package:dim_plugins/format.dart';
-import 'package:dim_plugins/plugins.dart';
-
-import 'compat_address.dart';
-import 'compat_meta.dart';
+import 'package:dimp/dimp.dart';
+import 'package:dimap/dimap.dart';
 
 
 class CompatiblePluginLoader extends PluginLoader {
@@ -271,59 +84,7 @@ class _PatchBase64Coder extends Base64Coder {
 }
 ```
 
-## Usage
-
-You must load all plugins before your business run:
-
-```dart
-import 'package:dimp/ext.dart';
-
-import 'compat_loader.dart';
-
-
-class LibraryLoader {
-  LibraryLoader({ExtensionLoader? extensionLoader, PluginLoader? pluginLoader}) {
-    this.extensionLoader = extensionLoader ?? CommonExtensionLoader();
-    this.pluginLoader = pluginLoader ?? CompatiblePluginLoader();
-  }
-
-  late final ExtensionLoader extensionLoader;
-  late final PluginLoader pluginLoader;
-
-  bool _loaded = false;
-
-  void run() {
-     if (_loaded) {
-        // no need to load it again
-        return;
-     } else {
-        // mark it to loaded
-        _loaded = true;
-     }
-     // try to load all plugins
-     load();
-  }
-
-  // protected
-  void load() {
-     extensionLoader.load();
-     pluginLoader.load();
-  }
-
-}
-
-
-void main() {
-
-  var loader = LibraryLoader();
-  loader.run();
-  
-  // do your jobs after all extensions & plugins loaded
-  
-}
-```
-
-You must ensure that every ```Address``` you extend has a ```Meta``` type that can correspond to it one by one.
+This library is primarily designed to implement various algorithms in a plug-in manner, allowing you to further develop additional algorithms tailored to your specific applications.
 
 ----
 
