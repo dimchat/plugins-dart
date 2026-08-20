@@ -50,9 +50,9 @@ final class PlainKey extends BaseSymmetricKey {
 
   //-------- Singleton --------
 
-  static final PlainKey _instance = PlainKey({
+  static final PlainKey _instance = PlainKey(<String, dynamic>{
     'algorithm': SymmetricAlgorithms.PLAIN
-  });
+  }.asMapping());
   factory PlainKey.getInstance() => _instance;
 }
 

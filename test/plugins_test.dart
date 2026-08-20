@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:dim_plugins/dimp.dart';
+import 'package:dimp/dimp.dart';
 import 'package:test/test.dart';
 
 import 'digest.dart';
@@ -79,9 +79,9 @@ void testEncode() {
 void testAES() {
   debugLog('======== testAES ========');
 
-  MutableMapping extra = {};
+  MutableMapping<String, dynamic> extra = <String, dynamic>{}.asMutableMapping();
 
-  Map dictionary = {
+  Map<String, dynamic> dictionary = {
     'algorithm': 'AES',
     'data': 'C2+xGizLL1G1+z9QLPYNdp/bPP/seDvNw45SXPAvQqk=',
     // 'iv': 'SxPwi6u4+ZLXLdAFJezvSQ==',
@@ -138,7 +138,7 @@ void testAES() {
 void testRSA() {
   debugLog('======== testRSA ========');
 
-  MutableMapping extra = {};
+  MutableMapping<String, dynamic> extra = <String, dynamic>{}.asMutableMapping();
 
   PrivateKey sKey;
   PublicKey pKey;
@@ -248,8 +248,8 @@ void main() {
     setUp(() {
       // Additional setup goes here.
 
-      var loader = LibraryLoader();
-      loader.run();
+      var loader = ClientPluginLoader();
+      loader.load();
 
     });
 

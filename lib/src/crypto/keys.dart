@@ -92,7 +92,7 @@ abstract class BaseSymmetricKey extends Dictionary implements SymmetricKey {
       // compare with inner map
       other = other.toMap();
     }
-    return other is Map && Comparator.mapEquals(other, toMap());
+    return other is Map && Comparator.mapEquals(other, toMap().asMap());
   }
 
   @override
@@ -133,7 +133,7 @@ abstract class BasePrivateKey extends Dictionary implements PrivateKey {
       // compare with inner map
       other = other.toMap();
     }
-    return other is Map && Comparator.mapEquals(other, toMap());
+    return other is Map && Comparator.mapEquals(other, toMap().asMap());
   }
 
   @override

@@ -27,19 +27,31 @@ import 'crypto/digest.dart';
 import 'format/coders.dart';
 import 'format/trans.dart';
 
+import 'plugin_core.dart';
 import 'plugin_keys.dart';
 
 
-class PluginLoader with CoderPlugins, TransportablePlugins, DigestPlugins, CryptoPlugins {
+class PluginLoader with CorePlugins, CoderPlugins, TransportablePlugins, DigestPlugins, CryptoPlugins {
 
   /// Register plugins
   void load() {
+
+    loadCoreHelpers();
 
     loadCoders();
 
     loadDigesters();
 
     loadCryptoKeyFactories();
+
+  }
+
+  ///  Core extensions
+  // protected
+  void loadCoreHelpers() {
+
+    registerCryptoHelpers();
+    registerFormatHelpers();
 
   }
 

@@ -85,13 +85,13 @@ class RSAPrivateKey extends BasePrivateKey implements DecryptKey {
   factory RSAPrivateKey.newKey() {
     var privateKey = RSAKeyUtils.generatePrivateKey();
     String pem = RSAKeyUtils.encodeKey(privateKey: privateKey);
-    return RSAPrivateKey({
+    return RSAPrivateKey(<String, dynamic>{
       'algorithm': AsymmetricAlgorithms.RSA,
       'data': pem,
       'mode': 'ECB',
       'padding': 'PKCS1',
       'digest': 'SHA256',
-    });
+    }.asMapping());
   }
 
   // protected
@@ -112,7 +112,7 @@ class RSAPrivateKey extends BasePrivateKey implements DecryptKey {
     if (pubKey == null) {
       var key = RSAKeyUtils.publicKeyFromPrivateKey(rsaPriKey);
       String pem = RSAKeyUtils.encodeKey(publicKey: key);
-      Map info = {
+      Map<String, dynamic> info = {
         'algorithm': AsymmetricAlgorithms.RSA,
         'data': pem,
         'mode': 'ECB',

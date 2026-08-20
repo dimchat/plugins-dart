@@ -87,12 +87,12 @@ class ECCPrivateKey extends BasePrivateKey {
   factory ECCPrivateKey.newKey() {
     var privateKey = ECCKeyUtils.generatePrivateKey();
     String pem = ECCKeyUtils.encodeKey(privateKey: privateKey);
-    return ECCPrivateKey({
+    return ECCPrivateKey(<String, dynamic>{
       'algorithm': AsymmetricAlgorithms.ECC,
       'data': pem,
       'curve': 'SECP256k1',
       'digest': 'SHA256',
-    });
+    }.asMapping());
   }
 
   // private
@@ -116,7 +116,7 @@ class ECCPrivateKey extends BasePrivateKey {
     if (pubKey == null) {
       var key = ECCKeyUtils.publicKeyFromPrivateKey(eccPriKey);
       String pem = ECCKeyUtils.encodeKey(publicKey: key);
-      Map info = {
+      Map<String, dynamic> info = {
         'algorithm': algorithm, // AsymmetricAlgorithms.ECC,
         'data': pem,
         'curve': curveName,

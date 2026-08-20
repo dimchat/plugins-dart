@@ -1,21 +1,9 @@
 import 'dart:typed_data';
 
-import 'package:dim_plugins/dimp.dart';
-import 'package:dim_plugins/crypto.dart';
-import 'package:dim_plugins/ext.dart';
+import 'package:dimap/crypto.dart';
+import 'package:dimap/ext.dart';
 
-import 'address.dart';
 import 'digest.dart';
-
-
-class ClientExtensionLoader extends ExtensionLoader {
-
-  @override
-  void registerAddressFactory() {
-    Address.setFactory(CompatibleAddressFactory());
-  }
-
-}
 
 
 class ClientPluginLoader extends PluginLoader {
@@ -63,38 +51,6 @@ class PatchBase64Coder extends Base64Coder {
       b64 = b64.replaceAll(' ', '');
     }
     return b64.trim();
-  }
-
-}
-
-
-class LibraryLoader {
-  LibraryLoader({ExtensionLoader? extensionLoader, PluginLoader? pluginLoader}) {
-    this.extensionLoader = extensionLoader ?? ClientExtensionLoader();
-    this.pluginLoader = pluginLoader ?? ClientPluginLoader();
-  }
-
-  late final ExtensionLoader extensionLoader;
-  late final PluginLoader pluginLoader;
-
-  bool _loaded = false;
-
-  void run() {
-    if (_loaded) {
-      // no need to load it again
-      return;
-    } else {
-      // mark it to loaded
-      _loaded = true;
-    }
-    // try to load all plugins
-    load();
-  }
-
-  // protected
-  void load() {
-    extensionLoader.load();
-    pluginLoader.load();
   }
 
 }

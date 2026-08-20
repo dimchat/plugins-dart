@@ -58,12 +58,12 @@ class AESKey extends BaseSymmetricKey {
   factory AESKey.newKey([int size = 32]) {
     var data = _randomData(size);
     var ted = Base64Data.createWithBytes(data);
-    var key = AESKey({
+    var key = AESKey(<String, dynamic>{
       'algorithm': SymmetricAlgorithms.AES,
       'data': ted.serialize(),
       // 'mod': 'CBC',
       // 'padding': 'PKCS7',
-    });
+    }.asMapping());
     key._keyData = ted;
     return key;
   }
