@@ -37,6 +37,12 @@ class FormatGeneralFactory implements TransportableFileHelper,
 
   TransportableFileFactory? _pnfFactory;
 
+  // protected
+  String getString(Object str) {
+    String? text = Wrapper.getString(str);
+    return text ?? '';
+  }
+
   ///
   ///   TED - Transportable Encoded Data
   ///
@@ -59,14 +65,14 @@ class FormatGeneralFactory implements TransportableFileHelper,
       return ted;
     }
     // unwrap
-    String? str = Wrapper.getString(ted);
-    if (str == null) {
+    String text = getString(ted);
+    if (text.isEmpty) {
       assert(false, 'TED error: $ted');
       return null;
     }
-    var factory = getTransportableDataFactory();
+    final factory = getTransportableDataFactory();
     assert(factory != null, 'default TED factory not found');
-    return factory?.parseTransportableData(str);
+    return factory?.parseTransportableData(text);
   }
 
   ///
@@ -116,8 +122,8 @@ class FormatGeneralFactory implements TransportableFileHelper,
     } else if (pnf is Map) {
       return pnf.asMapping();
     }
-    String? text = Wrapper.getString(pnf);
-    if (text == null || text.length < 8) {
+    String text = getString(pnf);
+    if (text.length < 8) {
       // assert(false, 'PNF error: $pnf');
       return null;
     } else if (text.startsWith('{')) {

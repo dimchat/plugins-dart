@@ -43,6 +43,12 @@ class CryptoKeyGeneralFactory implements GeneralCryptoHelper,
     return Converter.getString(key['algorithm'], defaultValue);
   }
 
+  // protected
+  MutableMapping? getMap(Object dict) {
+    Map? info = Wrapper.getMap(dict);
+    return info?.asMutableMapping();
+  }
+
   ///
   ///   SymmetricKey
   ///
@@ -71,7 +77,7 @@ class CryptoKeyGeneralFactory implements GeneralCryptoHelper,
     } else if (key is SymmetricKey) {
       return key;
     }
-    MutableMapping? info = Wrapper.getMap(key);
+    MutableMapping? info = getMap(key);
     if (info == null) {
       assert(false, 'symmetric key error: $key');
       return null;
@@ -115,7 +121,7 @@ class CryptoKeyGeneralFactory implements GeneralCryptoHelper,
     } else if (key is PrivateKey) {
       return key;
     }
-    MutableMapping? info = Wrapper.getMap(key);
+    MutableMapping? info = getMap(key);
     if (info == null) {
       assert(false, 'private key error: $key');
       return null;
@@ -152,7 +158,7 @@ class CryptoKeyGeneralFactory implements GeneralCryptoHelper,
     } else if (key is PublicKey) {
       return key;
     }
-    MutableMapping? info = Wrapper.getMap(key);
+    MutableMapping? info = getMap(key);
     if (info == null) {
       assert(false, 'public key error: $key');
       return null;

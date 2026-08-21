@@ -1,3 +1,7 @@
+## 2.2.0
+
+- Upgrade for map wrapper.
+
 ## 2.1.0
 
 - Focused on algorithms.

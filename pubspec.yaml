@@ -1,6 +1,6 @@
 name: dimap
 description: DIM Algorithm Plugins
-version: 2.1.0
+version: 2.2.0
 homepage: https://github.com/dimchat/plugins-dart
 repository: https://github.com/dimchat/plugins-dart
 issue_tracker: https://github.com/dimchat/plugins-dart/issues
@@ -10,7 +10,7 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
-  dimp: ^2.4.1
+  dimp: ^2.4.2
 
   fast_base58: ^0.2.1
   encrypt: ^5.0.1
