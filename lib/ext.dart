@@ -9,7 +9,6 @@ export 'package:dimp/ext.dart';
 //  Extensions
 //
 export 'src/ext/crypto.dart';
-export 'src/ext/format.dart';
 
 //
 //  Loader

@@ -25,13 +25,12 @@
  */
 import 'crypto/digest.dart';
 import 'format/coders.dart';
-import 'format/trans.dart';
 
 import 'plugin_core.dart';
 import 'plugin_keys.dart';
 
 
-class PluginLoader with CorePlugins, CoderPlugins, TransportablePlugins, DigestPlugins, CryptoPlugins {
+class PluginLoader with CorePlugins, CoderPlugins, DigestPlugins, CryptoPlugins {
 
   /// Register plugins
   void load() {
@@ -51,7 +50,6 @@ class PluginLoader with CorePlugins, CoderPlugins, TransportablePlugins, DigestP
   void loadCoreHelpers() {
 
     registerCryptoHelpers();
-    registerFormatHelpers();
 
   }
 
@@ -65,9 +63,6 @@ class PluginLoader with CorePlugins, CoderPlugins, TransportablePlugins, DigestP
 
     registerUTF8Coder();
     registerJSONCoder();
-
-    registerPNFFactory();
-    registerTEDFactory();
 
   }
 
