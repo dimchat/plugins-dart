@@ -2,7 +2,8 @@ import 'dart:typed_data';
 
 import 'package:test/test.dart';
 
-import 'package:dimp/crypto.dart';
+import 'package:dimax/ext.dart';
+import 'package:dimap/crypto.dart';
 
 import '../example/digest.dart';
 import '../example/loader.dart';
@@ -204,14 +205,14 @@ PrivateKey _checkECCKeys(String secret, String? pub) {
 }
 
 PrivateKey _getECCPrivateKey(String pem) {
-  return PrivateKey.parse({
+  return PrivateKey.parse(<String, dynamic>{
     'algorithm': 'ECC',
     'data': pem,
   })!;
 }
 
 PublicKey _getECCPublicKey(String pem) {
-  return PublicKey.parse({
+  return PublicKey.parse(<String, dynamic>{
     'algorithm': 'ECC',
     'data': pem,
   })!;
@@ -250,8 +251,11 @@ void main() {
     setUp(() {
       // Additional setup goes here.
 
-      var loader = CommonPluginLoader();
-      loader.load();
+      var ext = ExtensionLoader();
+      ext.load();
+
+      var plugins = CommonPluginLoader();
+      plugins.load();
 
     });
 

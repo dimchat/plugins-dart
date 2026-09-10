@@ -10,8 +10,8 @@ import 'digest.dart';
 class CommonPluginLoader extends PluginLoader {
 
   @override
-  void loadDigesters() {
-    super.loadDigesters();
+  void loadDigestPlugins() {
+    super.loadDigestPlugins();
 
     registerMD5Digester();
     registerSHA1Digester();

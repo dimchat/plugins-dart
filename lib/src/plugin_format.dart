@@ -24,17 +24,19 @@
  * ==============================================================================
  */
 import 'package:dimp/crypto.dart';
+import 'package:dimp/ext.dart';
 
 import 'format/factories.dart';
+import 'format/helper.dart';
 
 
-mixin TransportableExtensions {
+mixin FormatPlugins {
 
   /// set TED factory
   // protected
   void registerTEDFactory() {
 
-    var ted = BaseNetworkDataFactory();
+    final ted = BaseNetworkDataFactory();
     TransportableData.setFactory(ted);
 
   }
@@ -43,8 +45,17 @@ mixin TransportableExtensions {
   // protected
   void registerPNFFactory() {
 
-    var pnf = BaseNetworkFileFactory();
+    final pnf = BaseNetworkFileFactory();
     TransportableFile.setFactory(pnf);
+
+  }
+
+  /// set PNF Wrapper factory
+  // protected
+  void registerPNFWrapperFactory() {
+
+    final wrapper = PNFWrapperFactory();
+    sharedFormatExtensions.pnfWrapperFactory = wrapper;
 
   }
 

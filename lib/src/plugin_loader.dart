@@ -27,27 +27,30 @@ import 'crypto/digest.dart';
 import 'format/coders.dart';
 
 import 'plugin_core.dart';
+import 'plugin_format.dart';
 import 'plugin_keys.dart';
 
 
-class PluginLoader with CorePlugins, CoderPlugins, DigestPlugins, CryptoPlugins {
+class PluginLoader with CorePlugins, CoderPlugins, DigestPlugins, FormatPlugins, CryptoPlugins {
 
   /// Register plugins
   void load() {
 
-    loadCoreHelpers();
+    loadCorePlugins();
 
-    loadCoders();
+    loadDigestPlugins();
+    loadCoderPlugins();
+    loadFormatPlugins();
 
-    loadDigesters();
-
-    loadCryptoKeyFactories();
+    loadCryptoPlugins();
 
   }
 
   ///  Core extensions
   // protected
-  void loadCoreHelpers() {
+  void loadCorePlugins() {
+
+    registerFormatHelpers();
 
     registerCryptoHelpers();
 
@@ -55,7 +58,7 @@ class PluginLoader with CorePlugins, CoderPlugins, DigestPlugins, CryptoPlugins 
 
   ///  Data coders
   // protected
-  void loadCoders() {
+  void loadCoderPlugins() {
 
     registerBase58Coder();
     registerBase64Coder();
@@ -68,7 +71,7 @@ class PluginLoader with CorePlugins, CoderPlugins, DigestPlugins, CryptoPlugins 
 
   ///  Message digesters
   // protected
-  void loadDigesters() {
+  void loadDigestPlugins() {
 
     registerSHA256Digester();
 
@@ -78,9 +81,19 @@ class PluginLoader with CorePlugins, CoderPlugins, DigestPlugins, CryptoPlugins 
 
   }
 
+  // protected
+  void loadFormatPlugins() {
+
+    registerTEDFactory();
+
+    registerPNFFactory();
+    registerPNFWrapperFactory();
+
+  }
+
   ///  Crypto key parsers
   // protected
-  void loadCryptoKeyFactories() {
+  void loadCryptoPlugins() {
 
     // Symmetric keys
     registerAESKeyFactory();

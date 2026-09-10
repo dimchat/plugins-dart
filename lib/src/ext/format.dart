@@ -32,8 +32,8 @@ import 'package:dimp/ext.dart';
 /// Format GeneralFactory
 /// ~~~~~~~~~~~~~~~~~~~~~
 
-class FormatGeneralFactory implements TransportableFileHelper,
-    TransportableDataHelper {
+class GeneralFormatHelper implements TransportableFileHelper,
+                                     TransportableDataHelper {
 
   TransportableDataFactory? _tedFactory;
 
