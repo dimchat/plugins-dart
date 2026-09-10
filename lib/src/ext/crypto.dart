@@ -30,7 +30,7 @@ import 'package:dimp/ext.dart';
 /// CryptographyKey GeneralFactory
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-class CryptoKeyGeneralFactory implements GeneralCryptoHelper,
+class CryptoKeyGeneralFactory implements CryptoKeyHandler,
                                          SymmetricKeyHelper,
                                          PrivateKeyHelper, PublicKeyHelper {
 

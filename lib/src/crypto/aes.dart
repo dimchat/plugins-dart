@@ -30,6 +30,9 @@ import 'package:encrypt/encrypt.dart';
 
 import 'package:dimp/crypto.dart';
 
+import '../format/base64_data.dart';
+
+import 'algorithms.dart';
 import 'keys.dart';
 
 

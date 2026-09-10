@@ -10,6 +10,7 @@ export 'package:dimp/crypto.dart';
 //
 //  Keys
 //
+export 'src/crypto/algorithms.dart';
 export 'src/crypto/keys.dart';
 
 export 'src/crypto/aes.dart';
@@ -29,4 +30,10 @@ export 'src/crypto/digest.dart';
 //
 //  Format
 //
+export 'src/format/base64_data.dart';
 export 'src/format/coders.dart';
+export 'src/format/embed.dart';
+export 'src/format/factories.dart';
+export 'src/format/helper.dart';
+export 'src/format/pnf.dart';
+export 'src/format/pnf_wrapper.dart';

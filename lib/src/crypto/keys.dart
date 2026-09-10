@@ -41,16 +41,16 @@ abstract class BaseKey extends Dictionary implements CryptographyKey {
   //
 
   static String getKeyAlgorithm(Mapping key) {
-    var helper = sharedCryptoExtensions.helper;
-    return helper!.getKeyAlgorithm(key) ?? '';
+    var handler = sharedCryptoExtensions.handler;
+    return handler!.getKeyAlgorithm(key) ?? '';
   }
 
   static bool matchEncryptKey(EncryptKey pKey, DecryptKey sKey) {
-    return GeneralCryptoHelper.matchSymmetricKeys(pKey, sKey);
+    return CryptoKeyHandler.matchSymmetricKeys(pKey, sKey);
   }
 
   static bool matchSignKey(SignKey sKey, VerifyKey pKey) {
-    return GeneralCryptoHelper.matchAsymmetricKeys(sKey, pKey);
+    return CryptoKeyHandler.matchAsymmetricKeys(sKey, pKey);
   }
 
   static bool symmetricKeysEqual(SymmetricKey a, SymmetricKey b) {

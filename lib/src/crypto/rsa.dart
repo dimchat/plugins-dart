@@ -27,6 +27,7 @@ import 'dart:typed_data';
 
 import 'package:dimp/crypto.dart';
 
+import 'algorithms.dart';
 import 'keys.dart';
 import 'rsa_utils.dart';
 

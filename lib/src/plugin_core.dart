@@ -38,7 +38,7 @@ mixin CorePlugins {
     sharedCryptoExtensions.symmetricHelper = cryptoHelper;
     sharedCryptoExtensions.privateHelper   = cryptoHelper;
     sharedCryptoExtensions.publicHelper    = cryptoHelper;
-    sharedCryptoExtensions.helper          = cryptoHelper;
+    sharedCryptoExtensions.handler          = cryptoHelper;
 
   }
 
