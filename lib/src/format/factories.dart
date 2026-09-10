@@ -57,7 +57,8 @@ class BaseNetworkDataFactory implements TransportableDataFactory {
     // check data uri
     if (ted.startsWith('data:')) {
       // "data:image/jpeg;base64,..."
-      var uri = UriData.parse(ted);
+      final uri = UriData.parse(ted);
+      assert(uri.isBase64, 'TED encoding error: ${uri.parameters}');
       return EmbedData.createWithUri(uri);
     }
     // TODO: check Base-64 format
@@ -82,7 +83,7 @@ class BaseNetworkFileFactory implements TransportableFileFactory {
   @override
   TransportableFile? parseTransportableFile(Mapping pnf) {
     // check 'data', 'URL', 'filename'
-    if (!pnf.containsKey('data') && !pnf.containsKey('URL') && !pnf.containsKey('filename')) {
+    if (pnf['data'] == null && pnf['URL'] == null && pnf['filename'] == null) {
       // pnf.data and pnf.URL and pnf.filename should not be empty at the same time
       assert(false, 'PNF error: $pnf');
       return null;

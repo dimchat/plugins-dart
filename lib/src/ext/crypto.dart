@@ -30,9 +30,9 @@ import 'package:dimp/ext.dart';
 /// CryptographyKey GeneralFactory
 /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-class CryptoKeyGeneralFactory implements CryptoKeyHandler,
-                                         SymmetricKeyHelper,
-                                         PrivateKeyHelper, PublicKeyHelper {
+class GeneralCryptoHelper implements CryptoKeyHandler,
+                                     SymmetricKeyHelper,
+                                     PrivateKeyHelper, PublicKeyHelper {
 
   final Map<String, SymmetricKeyFactory> _symmetricKeyFactories = {};
   final Map<String, PrivateKeyFactory>     _privateKeyFactories = {};
@@ -83,12 +83,11 @@ class CryptoKeyGeneralFactory implements CryptoKeyHandler,
       return null;
     }
     String? algo = getKeyAlgorithm(info);
-    assert(algo != null, 'symmetric key error: $key');
     var factory = algo == null ? null : getSymmetricKeyFactory(algo);
     if (factory == null) {
       // unknown algorithm, get default key factory
       factory = getSymmetricKeyFactory('*');  // unknown
-      assert(factory != null, 'default symmetric key factory not found');
+      assert(factory != null, 'default symmetric key factory not found: $key');
     }
     return factory?.parseSymmetricKey(info);
   }
@@ -127,12 +126,11 @@ class CryptoKeyGeneralFactory implements CryptoKeyHandler,
       return null;
     }
     String? algo = getKeyAlgorithm(info);
-    assert(algo != null, 'private key error: $key');
     var factory = algo == null ? null : getPrivateKeyFactory(algo);
     if (factory == null) {
       // unknown algorithm, get default key factory
       factory = getPrivateKeyFactory('*');  // unknown
-      assert(factory != null, 'default private key factory not found');
+      assert(factory != null, 'default private key factory not found: $key');
     }
     return factory?.parsePrivateKey(info);
   }
@@ -164,12 +162,11 @@ class CryptoKeyGeneralFactory implements CryptoKeyHandler,
       return null;
     }
     String? algo = getKeyAlgorithm(info);
-    assert(algo != null, 'public key error: $key');
     var factory = algo == null ? null : getPublicKeyFactory(algo);
     if (factory == null) {
       // unknown algorithm, get default key factory
       factory = getPublicKeyFactory('*');  // unknown
-      assert(factory != null, 'default public key factory not found');
+      assert(factory != null, 'default public key factory not found: $key');
     }
     return factory?.parsePublicKey(info);
   }

@@ -59,19 +59,19 @@ final class RSAKeyUtils {
   }
 
   static pc.SecureRandom getSecureRandom({String name = 'Fortuna', int length = 32}) {
-    var random = Random.secure();
+    final random = Random.secure();
     List<int> seeds = List<int>.generate(32, (_) => random.nextInt(256));
-    var secureRandom = pc.SecureRandom(name);
+    final secureRandom = pc.SecureRandom(name);
     secureRandom.seed(pc.KeyParameter(Uint8List.fromList(seeds)));
     return secureRandom;
   }
 
   /// Generate RSA private key
   static RSAPrivateKey generatePrivateKey({int bitLength = 1024}) {
-    var params = pc.RSAKeyGeneratorParameters(BigInt.parse('65537'), bitLength, 64);
-    var paramsWithRandom = pc.ParametersWithRandom(params, getSecureRandom());
-    var generator = pc.RSAKeyGenerator()..init(paramsWithRandom);
-    var keyPair = generator.generateKeyPair();
+    final params = pc.RSAKeyGeneratorParameters(BigInt.parse('65537'), bitLength, 64);
+    final paramsWithRandom = pc.ParametersWithRandom(params, getSecureRandom());
+    final generator = pc.RSAKeyGenerator()..init(paramsWithRandom);
+    final keyPair = generator.generateKeyPair();
     return keyPair.privateKey as RSAPrivateKey;
   }
 
@@ -120,25 +120,18 @@ final class RSAKeyUtils {
   static const String _rsaPriBeginTag8 =     '-----BEGIN PRIVATE KEY-----';
   static const String _rsaPriEndTag8   =       '-----END PRIVATE KEY-----';
 
-  /// Encode Public/Private key to PEM Format
-  static String encodeKey({RSAPublicKey? publicKey, RSAPrivateKey? privateKey}) {
-    String pem = '';
-    Uint8List data;
-    String b64;
-    if (publicKey != null) {
-      data = encodePublicKeyData(publicKey);
-      b64 = dim.Base64.encode(data);
-      pem += '-----BEGIN RSA PUBLIC KEY-----\r\n$b64\r\n-----END RSA PUBLIC KEY-----';
-    }
-    if (privateKey != null) {
-      if (pem.isNotEmpty) {
-        pem += '\r\n';
-      }
-      data = encodePrivateKeyData(privateKey);
-      b64 = dim.Base64.encode(data);
-      pem += '-----BEGIN RSA PRIVATE KEY-----\r\n$b64\r\n-----END RSA PRIVATE KEY-----';
-    }
-    return pem;
+  /// Encode RSA public key to PEM format (PKCS#1)
+  static String encodePublicKey(RSAPublicKey publicKey) {
+    Uint8List data = encodePublicKeyData(publicKey);
+    String b64 = dim.Base64.encode(data);
+    return '-----BEGIN RSA PUBLIC KEY-----\r\n$b64\r\n-----END RSA PUBLIC KEY-----';
+  }
+
+  /// Encode RSA private key to PEM format (PKCS#1)
+  static String encodePrivateKey(RSAPrivateKey privateKey) {
+    Uint8List data = encodePrivateKeyData(privateKey);
+    String b64 = dim.Base64.encode(data);
+    return '-----BEGIN RSA PRIVATE KEY-----\r\n$b64\r\n-----END RSA PRIVATE KEY-----';
   }
 
   /// Encode RSA private key

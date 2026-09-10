@@ -85,19 +85,19 @@ class ECCPrivateKey extends BasePrivateKey {
 
   PublicKey? _publicKey;
 
-  factory ECCPrivateKey.newKey() {
-    var privateKey = ECCKeyUtils.generatePrivateKey();
-    String pem = ECCKeyUtils.encodeKey(privateKey: privateKey);
+  factory ECCPrivateKey.newKey([String curveName = 'secp256k1']) {
+    final privateKey = ECCKeyUtils.generatePrivateKey(curve: curveName);
+    String pem = ECCKeyUtils.encodePrivateKey(privateKey);
     return ECCPrivateKey(<String, dynamic>{
       'algorithm': AsymmetricAlgorithms.ECC,
       'data': pem,
-      'curve': 'SECP256k1',
+      'curve': curveName,
       'digest': 'SHA256',
     }.asMapping());
   }
 
   // private
-  String get curveName => getString('curve') ?? 'SECP256k1';
+  String get curveName => getString('curve') ?? 'secp256k1';
 
   // protected
   get eccPriKey {
@@ -115,19 +115,18 @@ class ECCPrivateKey extends BasePrivateKey {
   PublicKey get publicKey {
     PublicKey? pubKey = _publicKey;
     if (pubKey == null) {
-      var key = ECCKeyUtils.publicKeyFromPrivateKey(eccPriKey);
-      String pem = ECCKeyUtils.encodeKey(publicKey: key);
+      final key = ECCKeyUtils.publicKeyFromPrivateKey(eccPriKey);
+      String pem = ECCKeyUtils.encodePublicKey(key);
       Map<String, dynamic> info = {
         'algorithm': algorithm, // AsymmetricAlgorithms.ECC,
         'data': pem,
         'curve': curveName,
         'digest': 'SHA256',
       };
-      pubKey = PublicKey.parse(info);
-      assert(pubKey != null, 'failed to get ECC public key: $info');
+      pubKey = ECCPublicKey(info.asMapping());
       _publicKey = pubKey;
     }
-    return pubKey!;
+    return pubKey;
   }
 
   @override
@@ -145,7 +144,7 @@ class ECCPublicKeyFactory implements PublicKeyFactory {
   @override
   PublicKey? parsePublicKey(Mapping key) {
     // check 'data', 'algorithm'
-    if (!key.containsKey('data') || !key.containsKey('algorithm')) {
+    if (key['data'] == null || key['algorithm'] == null) {
       // key.data should not be empty
       // key.algorithm should not be empty
       assert(false, 'ECC key error: $key');
@@ -165,7 +164,7 @@ class ECCPrivateKeyFactory implements PrivateKeyFactory {
   @override
   PrivateKey? parsePrivateKey(Mapping key) {
     // check 'data', 'algorithm'
-    if (!key.containsKey('data') || !key.containsKey('algorithm')) {
+    if (key['data'] == null || key['algorithm'] == null) {
       // key.data should not be empty
       // key.algorithm should not be empty
       assert(false, 'ECC key error: $key');

@@ -109,8 +109,8 @@ class EmbedData extends BaseData {
       return value;
     }
     switch (name.toLowerCase()) {
-      // case 'encoding':
-      //   return encoding;
+      case 'encoding':
+        return encoding;
       case 'mime-type':
         return mimeType;
       case 'content-type':
@@ -148,8 +148,14 @@ class EmbedData extends BaseData {
       assert(bin.isNotEmpty, 'embed data empty');
       // encode body
       String body = Base64.encode(bin);
+      assert(body.isNotEmpty, 'failed to encode ${bin.length} byte(s)');
       // build header
-      String header = _mimeType ?? 'text/plain';
+      String mimeType = _mimeType ?? '';
+      if (mimeType.isEmpty) {
+        // make sure 'mime-type' is the first header
+        mimeType = 'text/plain';
+      }
+      String header = mimeType;
       _parameters?.forEach((key, value) {
         header += ';$key=$value';
       });

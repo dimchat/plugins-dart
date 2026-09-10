@@ -85,7 +85,7 @@ class GeneralFormatHelper implements TransportableFileHelper,
       return null;
     }
     final factory = getTransportableDataFactory();
-    assert(factory != null, 'default TED factory not found');
+    assert(factory != null, 'TED factory not ready');
     return factory?.parseTransportableData(text);
   }
 
@@ -121,7 +121,7 @@ class GeneralFormatHelper implements TransportableFileHelper,
     // unwrap
     Mapping? info = getTransportableFileContent(pnf);
     if (info == null) {
-      // assert(false, 'PNF error: $pnf');
+      assert(false, 'PNF error: $pnf');
       return null;
     }
     TransportableFileFactory? factory = getTransportableFileFactory();
@@ -138,7 +138,7 @@ class GeneralFormatHelper implements TransportableFileHelper,
     }
     String text = getString(pnf);
     if (text.length < 8) {
-      // assert(false, 'PNF error: $pnf');
+      assert(false, 'PNF error: $pnf');
       return null;
     } else if (text.startsWith('{')) {
       // decode JSON string
@@ -157,15 +157,17 @@ class GeneralFormatHelper implements TransportableFileHelper,
 
     content['data'] = text;
     // 2. check for data URI: 'data:image/jpeg;base64,...'
-    UriData? uri = UriData.parse(text);
-    // if (uri != null) {
-    String? filename = uri.parameters['filename'];
-    if (filename != null) {
-      content['filename'] = filename;
+    if (text.startsWith('data:')) {
+      UriData uri = UriData.parse(text);
+      // if (uri != null) {
+      String? filename = uri.parameters['filename'];
+      if (filename != null) {
+        content['filename'] = filename;
+      // } else {
+      //   // 3. check for Base-64 encoded string?
+      // }
+      }
     }
-    // } else {
-    //   // 3. check for Base-64 encoded string?
-    // }
 
     return content.asMapping();
   }

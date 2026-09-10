@@ -44,7 +44,7 @@ mixin CorePlugins {
   void registerCryptoHelpers() {
 
     // crypto
-    final cryptoHelper = CryptoKeyGeneralFactory();
+    final cryptoHelper = GeneralCryptoHelper();
     sharedCryptoExtensions.symmetricHelper = cryptoHelper;
     sharedCryptoExtensions.privateHelper   = cryptoHelper;
     sharedCryptoExtensions.publicHelper    = cryptoHelper;

@@ -41,6 +41,12 @@ import 'rsa_utils.dart';
 class RSAPublicKey extends BasePublicKey implements EncryptKey {
   RSAPublicKey([super.dict]);
 
+  // private
+  int keySize() {
+    // TODO: get from key
+    return getInt('keySize') ?? 128;  // 1024 / 8
+  }
+
   // protected
   get rsaPubKey {
     String data = getString('data') ?? '';
@@ -55,6 +61,9 @@ class RSAPublicKey extends BasePublicKey implements EncryptKey {
 
   @override
   Uint8List encrypt(Uint8List plaintext, [MutableMapping? extra]) {
+    if (plaintext.length > keySize() - 11) {
+      throw ArgumentError('RSA plain text length error: ${plaintext.length}');
+    }
     return RSAKeyUtils.encrypt(plaintext, rsaPubKey);
   }
 
@@ -83,16 +92,28 @@ class RSAPrivateKey extends BasePrivateKey implements DecryptKey {
 
   PublicKey? _publicKey;
 
-  factory RSAPrivateKey.newKey() {
-    var privateKey = RSAKeyUtils.generatePrivateKey();
-    String pem = RSAKeyUtils.encodeKey(privateKey: privateKey);
+  factory RSAPrivateKey.newKey([int sizeInBits = 1024]) {
+    final privateKey = RSAKeyUtils.generatePrivateKey(bitLength: sizeInBits);
+    final publicKey = RSAKeyUtils.publicKeyFromPrivateKey(privateKey);
+    // -----BEGIN PUBLIC KEY-----
+    String pkString = RSAKeyUtils.encodePublicKey(publicKey);
+    // -----END PUBLIC KEY-----
+    // -----BEGIN RSA PRIVATE KEY-----
+    String skString = RSAKeyUtils.encodePrivateKey(privateKey);
+    // -----END RSA PRIVATE KEY-----
     return RSAPrivateKey(<String, dynamic>{
       'algorithm': AsymmetricAlgorithms.RSA,
-      'data': pem,
+      'data': '$pkString\r\n$skString',
       'mode': 'ECB',
       'padding': 'PKCS1',
       'digest': 'SHA256',
     }.asMapping());
+  }
+
+  // private
+  int keySize() {
+    // TODO: get from key
+    return getInt('keySize') ?? 128;  // 1024 / 8
   }
 
   // protected
@@ -111,20 +132,19 @@ class RSAPrivateKey extends BasePrivateKey implements DecryptKey {
   PublicKey get publicKey {
     PublicKey? pubKey = _publicKey;
     if (pubKey == null) {
-      var key = RSAKeyUtils.publicKeyFromPrivateKey(rsaPriKey);
-      String pem = RSAKeyUtils.encodeKey(publicKey: key);
+      final key = RSAKeyUtils.publicKeyFromPrivateKey(rsaPriKey);
+      String pem = RSAKeyUtils.encodePublicKey(key);
       Map<String, dynamic> info = {
-        'algorithm': AsymmetricAlgorithms.RSA,
+        'algorithm': algorithm, // AsymmetricAlgorithms.RSA,
         'data': pem,
         'mode': 'ECB',
         'padding': 'PKCS1',
         'digest': 'SHA256',
       };
-      pubKey = PublicKey.parse(info);
-      assert(pubKey != null, 'failed to get RSA public key: $info');
+      pubKey = RSAPublicKey(info.asMapping());
       _publicKey = pubKey;
     }
-    return pubKey!;
+    return pubKey;
   }
 
   @override
@@ -134,6 +154,9 @@ class RSAPrivateKey extends BasePrivateKey implements DecryptKey {
 
   @override
   Uint8List? decrypt(Uint8List ciphertext, [Mapping? params]) {
+    if (ciphertext.length != keySize()) {
+      throw ArgumentError('RSA cipher text length error: ${ciphertext.length}');
+    }
     try {
       return RSAKeyUtils.decrypt(ciphertext, rsaPriKey);
     } catch (e, st) {
@@ -157,7 +180,7 @@ class RSAPublicKeyFactory implements PublicKeyFactory {
   @override
   PublicKey? parsePublicKey(Mapping key) {
     // check 'data', 'algorithm'
-    if (!key.containsKey('data') || !key.containsKey('algorithm')) {
+    if (key['data'] == null || key['algorithm'] == null) {
       // key.data should not be empty
       // key.algorithm should not be empty
       assert(false, 'RSA key error: $key');
@@ -177,7 +200,7 @@ class RSAPrivateKeyFactory implements PrivateKeyFactory {
   @override
   PrivateKey? parsePrivateKey(Mapping key) {
     // check 'data', 'algorithm'
-    if (!key.containsKey('data') || !key.containsKey('algorithm')) {
+    if (key['data'] == null || key['algorithm'] == null) {
       // key.data should not be empty
       // key.algorithm should not be empty
       assert(false, 'RSA key error: $key');

@@ -83,13 +83,16 @@ class PortableNetworkFile extends Dictionary implements TransportableFile {
         // and it is a data URI,
         // so return the URI string here.
         return text;
-      } else if (count == 2) {
-        // check filename
+      } else if (count == 2 && containsKey('filename')) {
+        // check 'filename'
         String? filename = getString('filename');
-        if (filename != null && filename.isNotEmpty) {
-          // TODO: add 'filename' to data URI
+        if (filename == null || filename.isEmpty) {
+          // nothing changed
           return text;
         }
+        // add 'filename' to data URI
+        text = newDataURI(text, filename);
+        return text;
       }
       // this PNF info contains other params,
       // cannot serialize it as a string.
@@ -99,6 +102,37 @@ class PortableNetworkFile extends Dictionary implements TransportableFile {
     // so there is just a 'filename' here,
     // cannot build URI string
     return '';
+  }
+
+  // protected
+  String newDataURI(String text, String filename) {
+    UriData uri = UriData.parse(text);
+    // copy extra values
+    Map<String, String> extra = Map.of(uri.parameters);
+    if (filename.isEmpty) {
+      // erase 'filename'
+      extra.remove('filename');
+    } else {
+      // update 'filename'
+      extra['filename'] = filename;
+    }
+    // build header
+    String mimeType = uri.mimeType;
+    if (mimeType.isEmpty) {
+      // make sure 'mime-type' is the first header
+      mimeType = 'text/plain';
+    }
+    String header = mimeType;
+    extra.forEach((name, value) {
+      header += ';$name=$value';
+    });
+    if (uri.isBase64) {
+      header += ';base64';
+    }
+    // build new data URI
+    int pos = text.indexOf(',');
+    String body = text.substring(pos + 1);
+    return 'data:$header,$body';
   }
 
   @override

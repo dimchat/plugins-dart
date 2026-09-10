@@ -59,9 +59,9 @@ class AESKey extends BaseSymmetricKey {
   TransportableData? _keyData;
 
   factory AESKey.newKey([int size = 32]) {
-    var data = _randomData(size);
-    var ted = Base64Data.createWithBytes(data);
-    var key = AESKey(<String, dynamic>{
+    final data = _randomData(size);
+    final ted = Base64Data.createWithBytes(data);
+    final key = AESKey(<String, dynamic>{
       'algorithm': SymmetricAlgorithms.AES,
       'data': ted.serialize(),
       // 'mod': 'CBC',
@@ -78,16 +78,22 @@ class AESKey extends BaseSymmetricKey {
   }
 
   // protected
+  int getDefaultBlockSize() {
+    // TODO: get from cipher instance
+    return 16;
+  }
+
+  // protected
   int getBlockSize() {
     // TODO: get from iv data
-    return getInt('blockSize') ?? 16;  // cipher.getBlockSize();
+    return getInt('blockSize') ?? getDefaultBlockSize();
   }
 
   @override
   TransportableData get data {
     var ted = _keyData;
     if (ted == null) {
-      var base64 = this['data'];
+      final base64 = this['data'];
       assert(base64 != null, 'key data not found: $this');
       ted = _keyData = TransportableData.parse(base64);
       assert(ted != null, 'key data error: $base64');
@@ -115,7 +121,7 @@ class AESKey extends BaseSymmetricKey {
       base64 ??= getString('IV');
     }
     // decode IV data
-    var ted = TransportableData.parse(base64);
+    final ted = TransportableData.parse(base64);
     Uint8List? ivData = ted?.bytes;
     if (ivData == null || ivData.isEmpty) {
       assert(base64 == null, 'IV data error: $base64');
@@ -139,7 +145,7 @@ class AESKey extends BaseSymmetricKey {
     if (extra == null) {
       assert(false, 'extra dict must provided to store IV for AES');
     } else {
-      var ted = Base64Data.createWithBytes(ivData);
+      final ted = Base64Data.createWithBytes(ivData);
       extra['IV'] = ted.serialize();
     }
     // OK
@@ -198,7 +204,7 @@ class AESKeyFactory implements SymmetricKeyFactory {
   @override
   SymmetricKey? parseSymmetricKey(Mapping key) {
     // check 'data', 'algorithm'
-    if (!key.containsKey('data') || !key.containsKey('algorithm')) {
+    if (key['data'] == null || key['algorithm'] == null) {
       // key.data should not be empty
       // key.algorithm should not be empty
       assert(false, 'AES key error: $key');

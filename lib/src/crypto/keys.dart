@@ -41,7 +41,7 @@ abstract class BaseKey extends Dictionary implements CryptographyKey {
   //
 
   static String getKeyAlgorithm(Mapping key) {
-    var handler = sharedCryptoExtensions.handler;
+    final handler = sharedCryptoExtensions.handler;
     return handler!.getKeyAlgorithm(key) ?? '';
   }
 
@@ -53,7 +53,7 @@ abstract class BaseKey extends Dictionary implements CryptographyKey {
     return CryptoKeyHandler.matchAsymmetricKeys(sKey, pKey);
   }
 
-  static bool symmetricKeysEqual(SymmetricKey a, SymmetricKey b) {
+  static bool symmetricKeyEquals(SymmetricKey a, SymmetricKey b) {
     if (identical(a, b)) {
       // same object
       return true;
@@ -62,7 +62,7 @@ abstract class BaseKey extends Dictionary implements CryptographyKey {
     return matchEncryptKey(a, b);
   }
 
-  static bool privateKeysEqual(PrivateKey a, PrivateKey b) {
+  static bool privateKeyEquals(PrivateKey a, PrivateKey b) {
     if (identical(a, b)) {
       // same object
       return true;
@@ -87,7 +87,7 @@ abstract class BaseSymmetricKey extends Dictionary implements SymmetricKey {
         // same object
         return true;
       } else if (other is SymmetricKey) {
-        return BaseKey.symmetricKeysEqual(other, this);
+        return BaseKey.symmetricKeyEquals(other, this);
       }
       // compare with inner map
       other = other.toMap();
@@ -128,7 +128,7 @@ abstract class BasePrivateKey extends Dictionary implements PrivateKey {
         // same object
         return true;
       } else if (other is PrivateKey) {
-        return BaseKey.privateKeysEqual(other, this);
+        return BaseKey.privateKeyEquals(other, this);
       }
       // compare with inner map
       other = other.toMap();
