@@ -31,6 +31,11 @@ import 'plugin_format.dart';
 import 'plugin_keys.dart';
 
 
+/// Core Plugins Loader
+///
+/// Loads all plugins of the DimPlugins library by registering
+/// the data coders, message digesters, key factories and
+/// TED/PNF factories into the corresponding extension holders.
 class PluginLoader with CorePlugins, CoderPlugins, DigestPlugins, FormatPlugins, CryptoPlugins {
 
   /// Register plugins
@@ -81,6 +86,7 @@ class PluginLoader with CorePlugins, CoderPlugins, DigestPlugins, FormatPlugins,
 
   }
 
+  /// Load the format plugins.
   // protected
   void loadFormatPlugins() {
 

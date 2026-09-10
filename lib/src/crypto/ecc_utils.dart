@@ -33,9 +33,18 @@ import 'package:pointycastle/export.dart' as pc;
 import 'package:dimp/crypto.dart' as dim;
 
 
+/// ECC Key Utils
+///
+/// Utility class for ECC key operations:
+/// - Generate key pair / derive public key from private key
+/// - Sign data and verify signatures
+/// - Encode/decode keys between PEM text and native objects
 final class ECCKeyUtils {
   ECCKeyUtils._();
 
+  /// Verify [signature] of [data] with the [publicKey].
+  ///
+  /// Returns true if the signature is valid.
   static bool verify(Uint8List data, Uint8List signature, ECPublicKey publicKey) {
     final params = pc.PublicKeyParameter(publicKey);
     final signer = pc.Signer('SHA-256/ECDSA')..init(false, params);
@@ -45,6 +54,9 @@ final class ECCKeyUtils {
     return signer.verifySignature(data, pc.ECSignature(r!, s!));
   }
 
+  /// Sign [data] with the [privateKey].
+  ///
+  /// Returns the ECDSA signature (r, s encoded as ASN.1).
   static Uint8List sign(Uint8List data, ECPrivateKey privateKey) {
     final params = pc.PrivateKeyParameter(privateKey);
     final paramsWithRandom = pc.ParametersWithRandom(params, getSecureRandom());
@@ -57,6 +69,12 @@ final class ECCKeyUtils {
     ]).encode();
   }
 
+  /// Get a seeded secure random generator.
+  ///
+  /// [name]   - algorithm name of the secure random, default is "Fortuna".
+  /// [length] - seed length in bytes, default is 32.
+  ///
+  /// Returns a [pc.SecureRandom] instance seeded with random bytes.
   static pc.SecureRandom getSecureRandom({String name = 'Fortuna', int length = 32}) {
     final random = Random.secure();
     List<int> seeds = List<int>.generate(32, (_) => random.nextInt(256));
@@ -130,7 +148,12 @@ final class ECCKeyUtils {
     return dim.Hex.decode(hex)!;
   }
 
-  /// Encode ECC public key
+  /// Encode ECC public key to raw bytes.
+  ///
+  /// [compressed] - whether to use the compressed point format,
+  ///                 default is true.
+  ///
+  /// Returns the encoded key point data.
   static Uint8List encodePublicKeyData(ECPublicKey publicKey, {bool compressed = true}) {
     return publicKey.Q!.getEncoded(compressed);
   }

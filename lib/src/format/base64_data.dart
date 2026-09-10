@@ -34,15 +34,24 @@ import '../crypto/algorithms.dart';
 ///  Base-64 encoding
 ///
 
+///  A [TransportableData] wrapper whose encoded string is
+///  a Base-64 encoded text.
 class Base64Data extends BaseData {
   Base64Data(super.encoded, super.bytes);
 
+  /// Create a Base-64 data with both the encoded string and the bytes.
   factory Base64Data.create(String encoded, Uint8List bytes)=>
       Base64Data(encoded, bytes);
 
+  /// Create a Base-64 data from the encoded string only.
+  ///
+  /// The binary data will be decoded lazily when accessed.
   factory Base64Data.createWithString(String encoded) =>
       Base64Data(encoded, null);
 
+  /// Create a Base-64 data from the binary bytes only.
+  ///
+  /// The encoded string will be generated lazily when accessed.
   factory Base64Data.createWithBytes(Uint8List bytes) =>
       Base64Data('', bytes);
 

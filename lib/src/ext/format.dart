@@ -29,9 +29,15 @@ import 'package:dimp/crypto.dart';
 import 'package:dimp/ext.dart';
 
 
-/// Format GeneralFactory
-/// ~~~~~~~~~~~~~~~~~~~~~
-
+/// Format General Helper
+///
+/// Default implementation of [TransportableDataHelper] and
+/// [TransportableFileHelper], which manages the factories for:
+/// - TED (Transportable Encoded Data)
+/// - PNF (Portable Network File)
+///
+/// Creates/parses TED and PNF objects by delegating to the
+/// registered factories.
 class GeneralFormatHelper implements TransportableFileHelper,
                                      TransportableDataHelper {
 
@@ -39,6 +45,9 @@ class GeneralFormatHelper implements TransportableFileHelper,
 
   TransportableFileFactory? _pnfFactory;
 
+  /// Unwrap an object into a string.
+  ///
+  /// Returns an empty string if the object is not a string.
   // protected
   String getString(Object str) {
     String? text = Wrapper.getString(str);
@@ -129,6 +138,14 @@ class GeneralFormatHelper implements TransportableFileHelper,
     return factory?.parseTransportableFile(info);
   }
 
+    /// Unwrap a PNF object into its content dictionary.
+  ///
+  /// The object may be a dictionary, a JSON string, a URL string
+  /// or a data URI string.
+  ///
+  /// [pnf] - the raw PNF object to unwrap.
+  ///
+  /// Returns the content dictionary, or null if invalid.
   // protected
   Mapping? getTransportableFileContent(Object pnf) {
     if (pnf is Mapper) {

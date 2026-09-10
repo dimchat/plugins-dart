@@ -34,19 +34,26 @@ import 'rsa_utils.dart';
 
 ///  RSA Public Key
 ///
-///      keyInfo format : {
-///          algorithm  : "RSA",
-///          data       : "..." // base64_encode()
-///      }
+///  keyInfo format: {
+///      algorithm  : "RSA",
+///      data       : "..." // base64_encode()
+///  }
 class RSAPublicKey extends BasePublicKey implements EncryptKey {
   RSAPublicKey([super.dict]);
 
+  /// Get the RSA key size (bytes).
+  ///
+  /// The size is read from the 'keySize' field of the key info,
+  /// default is 128 bytes (1024 bits).
   // private
   int keySize() {
     // TODO: get from key
     return getInt('keySize') ?? 128;  // 1024 / 8
   }
 
+  /// Get the native RSA public key object.
+  ///
+  /// The key data (PEM encoded) is decoded by [RSAKeyUtils].
   // protected
   get rsaPubKey {
     String data = getString('data') ?? '';
@@ -92,6 +99,15 @@ class RSAPrivateKey extends BasePrivateKey implements DecryptKey {
 
   PublicKey? _publicKey;
 
+  /// Generate a random RSA key pair.
+  ///
+  /// The key data contains both the public key and the private key
+  /// (PEM encoded, separated by a newline), so that the public key
+  /// can be derived from the private key data directly.
+  ///
+  /// [sizeInBits] - key size in bits, default is 1024.
+  ///
+  /// Returns a new [RSAPrivateKey] instance.
   factory RSAPrivateKey.newKey([int sizeInBits = 1024]) {
     final privateKey = RSAKeyUtils.generatePrivateKey(bitLength: sizeInBits);
     final publicKey = RSAKeyUtils.publicKeyFromPrivateKey(privateKey);
@@ -110,12 +126,19 @@ class RSAPrivateKey extends BasePrivateKey implements DecryptKey {
     }.asMapping());
   }
 
+  /// Get the RSA key size (bytes).
+  ///
+  /// The size is read from the 'keySize' field of the key info,
+  /// default is 128 bytes (1024 bits).
   // private
   int keySize() {
     // TODO: get from key
     return getInt('keySize') ?? 128;  // 1024 / 8
   }
 
+  /// Get the native RSA private key object.
+  ///
+  /// The key data (PEM encoded) is decoded by [RSAKeyUtils].
   // protected
   get rsaPriKey {
     String data = getString('data') ?? '';
@@ -175,6 +198,9 @@ class RSAPrivateKey extends BasePrivateKey implements DecryptKey {
 //  RSA Key Factories
 //
 
+/// RSA Public Key Factory
+///
+/// Parses a dictionary into an [RSAPublicKey] instance.
 class RSAPublicKeyFactory implements PublicKeyFactory {
 
   @override
@@ -190,6 +216,10 @@ class RSAPublicKeyFactory implements PublicKeyFactory {
   }
 }
 
+/// RSA Private Key Factory
+///
+/// Generates a new [RSAPrivateKey] or parses a dictionary
+/// into an [RSAPrivateKey] instance.
 class RSAPrivateKeyFactory implements PrivateKeyFactory {
 
   @override

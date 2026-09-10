@@ -30,6 +30,8 @@ import 'package:dimp/ext.dart';
 /// Base Keys
 ///
 
+/// Provides common helper methods for key comparison and algorithm
+/// detection, shared by all key types (symmetric/asymmetric).
 abstract class BaseKey extends Dictionary implements CryptographyKey {
   BaseKey([super.dict]);
 
@@ -40,19 +42,36 @@ abstract class BaseKey extends Dictionary implements CryptographyKey {
   //  Conveniences
   //
 
+  /// Get algorithm name from key info.
+  ///
+  /// The key algorithm is detected by the registered [CryptoKeyHandler],
+  /// which parses the key data to figure out the algorithm name
+  /// (e.g. "AES", "ECC", "RSA", ...).
   static String getKeyAlgorithm(Mapping key) {
     final handler = sharedCryptoExtensions.handler;
     return handler!.getKeyAlgorithm(key) ?? '';
   }
 
+  /// Check whether [pKey] can encrypt data for [sKey] to decrypt.
+  ///
+  /// Returns true if they are a matched symmetric key pair
+  /// (i.e. both keys are equal).
   static bool matchEncryptKey(EncryptKey pKey, DecryptKey sKey) {
     return CryptoKeyHandler.matchSymmetricKeys(pKey, sKey);
   }
 
+  /// Check whether [sKey] can sign data for [pKey] to verify.
+  ///
+  /// Returns true if they are a matched asymmetric key pair
+  /// (i.e. the private key matches the public key).
   static bool matchSignKey(SignKey sKey, VerifyKey pKey) {
     return CryptoKeyHandler.matchAsymmetricKeys(sKey, pKey);
   }
 
+  /// Compare two symmetric keys.
+  ///
+  /// Returns true if [a] and [b] are the same object,
+  /// or they can encrypt/decrypt data for each other.
   static bool symmetricKeyEquals(SymmetricKey a, SymmetricKey b) {
     if (identical(a, b)) {
       // same object
@@ -62,6 +81,10 @@ abstract class BaseKey extends Dictionary implements CryptographyKey {
     return matchEncryptKey(a, b);
   }
 
+  /// Compare two private keys.
+  ///
+  /// Returns true if [a] and [b] are the same object,
+  /// or their public keys are matched by signature.
   static bool privateKeyEquals(PrivateKey a, PrivateKey b) {
     if (identical(a, b)) {
       // same object
@@ -77,6 +100,8 @@ abstract class BaseKey extends Dictionary implements CryptographyKey {
 /// Symmetric Key
 ///
 
+/// Base class for symmetric keys (e.g. AES, Plain),
+/// which use the same key for both encryption and decryption.
 abstract class BaseSymmetricKey extends Dictionary implements SymmetricKey {
   BaseSymmetricKey([super.dict]);
 
@@ -110,6 +135,8 @@ abstract class BaseSymmetricKey extends Dictionary implements SymmetricKey {
 /// Asymmetric Keys
 ///
 
+/// Base classes for asymmetric key pairs (private key & public key),
+/// which are used for signing/verifying and encrypting/decrypting.
 abstract class BaseAsymmetricKey extends Dictionary implements AsymmetricKey {
   BaseAsymmetricKey([super.dict]);
 
@@ -118,6 +145,8 @@ abstract class BaseAsymmetricKey extends Dictionary implements AsymmetricKey {
 }
 
 
+/// Base class for private keys (e.g. ECC, RSA),
+/// which can decrypt data and sign messages.
 abstract class BasePrivateKey extends Dictionary implements PrivateKey {
   BasePrivateKey([super.dict]);
 
@@ -144,6 +173,8 @@ abstract class BasePrivateKey extends Dictionary implements PrivateKey {
 }
 
 
+/// Base class for public keys (e.g. ECC, RSA),
+/// which can encrypt data and verify signatures.
 abstract class BasePublicKey extends Dictionary implements PublicKey {
   BasePublicKey([super.dict]);
 

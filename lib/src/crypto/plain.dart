@@ -51,12 +51,19 @@ final class PlainKey extends BaseSymmetricKey {
 
   //-------- Singleton --------
 
+  /// Get the singleton PlainKey instance.
+  ///
+  /// PlainKey is a stateless key which does nothing when
+  /// encrypting/decrypting, so there is only one global instance.
   static final PlainKey _instance = PlainKey(<String, dynamic>{
     'algorithm': SymmetricAlgorithms.PLAIN
   }.asMapping());
   factory PlainKey.getInstance() => _instance;
 }
 
+/// Plain Key Factory
+///
+/// Generates/parses the singleton [PlainKey] for broadcast messages.
 class PlainKeyFactory implements SymmetricKeyFactory {
 
   @override

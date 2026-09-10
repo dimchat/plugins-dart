@@ -26,6 +26,10 @@
 import 'package:dimp/crypto.dart';
 
 
+/// Portable Network File Wrapper
+///
+/// Wraps the PNF dictionary to manage the file properties:
+/// file data, file name, download URL and decrypt key.
 class PortableNetworkFileWrapper implements TransportableFileWrapper {
   PortableNetworkFileWrapper(Mapping dict)
       : _map = dict is Mapper ? dict.toMap()
@@ -54,6 +58,10 @@ class PortableNetworkFileWrapper implements TransportableFileWrapper {
   String? getString(String key, [String? defaultValue]) =>
       Converter.getString(_map[key], defaultValue);
 
+  /// Set a map value into the wrapper dictionary.
+  ///
+  /// [key]    - the field name.
+  /// [mapper] - the map value to set (null to remove).
   void setMap(String key, Mapper? mapper) {
     if (mapper == null) {
       _map.remove(key);

@@ -30,12 +30,14 @@ import 'package:dimp/crypto.dart';
 import '../crypto/algorithms.dart';
 
 
-///  RFC 2397
-///  ~~~~~~~~
-///  https://www.rfc-editor.org/rfc/rfc2397
+///  Data URI for embed image/audio.
+///
+///  RFC 2397: https://www.rfc-editor.org/rfc/rfc2397
 ///
 ///      data:[<mime type>][;charset=<charset>][;<encoding>],<encoded data>
 
+///  The encoded string is a data URI which embeds the binary data
+///  with its mime-type, charset and encoding parameters.
 class EmbedData extends BaseData {
   EmbedData(super.encoded, super.bytes);
 
@@ -45,6 +47,13 @@ class EmbedData extends BaseData {
   String? _mimeType;  // default is "text/plain"
   Mapping<String, String>? _parameters;
 
+  /// Create an EmbedData with the encoded string and optional headers.
+  ///
+  /// [encoded]    - the data URI string (may be empty to encode later).
+  /// [bytes]      - the binary data (may be null to decode later).
+  /// [uri]        - the parsed data URI, if available.
+  /// [mimeType]   - the mime type header, default is "text/plain".
+  /// [parameters] - extra URI parameters (charset, filename, ...).
   EmbedData.from(String? encoded, Uint8List? bytes, {
     UriData? uri,
     String? mimeType,
@@ -55,6 +64,7 @@ class EmbedData extends BaseData {
     _parameters = parameters ?? uri?.parameters.asMapping();
   }
 
+  /// Create an EmbedData with the data URI string and the bytes.
   factory EmbedData.create(String dataUri, Uint8List bytes, {UriData? uri}) =>
       EmbedData.from(dataUri, bytes,
         uri: uri,
@@ -62,6 +72,7 @@ class EmbedData extends BaseData {
         parameters: uri?.parameters.asMapping(),
       );
 
+  /// Create an EmbedData from a parsed data URI.
   factory EmbedData.createWithUri(UriData uri) =>
       EmbedData.from(uri.toString(), null,
         uri: uri,
@@ -69,9 +80,17 @@ class EmbedData extends BaseData {
         parameters: uri.parameters.asMapping(),
       );
 
+  /// Create an EmbedData from the data URI string only.
+  ///
+  /// The binary data will be decoded lazily when accessed.
   factory EmbedData.createWithString(String dataUri) =>
       EmbedData.from(dataUri, null);
 
+  /// Create an EmbedData from the binary bytes with a mime type.
+  ///
+  /// [bytes]    - the binary data.
+  /// [mimeType] - the mime type header (e.g. "image/jpeg").
+  /// [filename] - optional filename parameter.
   factory EmbedData.createWithBytes(Uint8List bytes, {
     required String mimeType,
     String? filename,
@@ -91,9 +110,17 @@ class EmbedData extends BaseData {
   //      "data:audio/mp4;base64,{BASE64_ENCODE}"
   //
 
+  /// Create an image EmbedData (mime type "image/jpeg").
+  ///
+  /// [jpeg]     - the JPEG image data.
+  /// [filename] - optional filename parameter.
   factory EmbedData.image(Uint8List jpeg, {String? filename}) =>
       EmbedData.createWithBytes(jpeg, mimeType: 'image/jpeg', filename: filename);
 
+  /// Create an audio EmbedData (mime type "audio/mp4").
+  ///
+  /// [mp4]      - the MP4 audio data.
+  /// [filename] - optional filename parameter.
   factory EmbedData.audio(Uint8List mp4, {String? filename}) =>
       EmbedData.createWithBytes(mp4, mimeType: 'audio/mp4', filename: filename);
 
@@ -101,6 +128,11 @@ class EmbedData extends BaseData {
   //  Uri Headers
   //
 
+  /// Get a header value by name.
+  ///
+  /// Returns the URI parameter with the exact [name] first, then
+  /// falls back to the standard headers: "encoding", "mime-type"
+  /// and "content-type".
   String? getHeader(String name) {
     String? value = parameters?[name];
     if (value != null) {
@@ -119,19 +151,22 @@ class EmbedData extends BaseData {
     return null;
   }
 
+  /// Get all URI parameters.
   Mapping<String, String>? get parameters =>
       _parameters ?? (dataUri?.parameters.asMapping());
 
-  // default is "text/plain"
+  /// Get the mime type header, default is "text/plain".
   String? get mimeType => _mimeType ?? (dataUri?.mimeType);
-  // default is "us-ascii"
+  /// Get the charset header, default is "us-ascii".
   String? get charset => parameters?['charset'] ?? (dataUri?.charset);
-  // "avatar.png"
+  /// Get the filename parameter, e.g. "avatar.png".
   String? get filename => parameters?['filename'];
 
   //
   //  Build Data URI: "data:.../...;base64,..."
   //
+  /// If the encoded string is empty, encode the binary data lazily
+  /// to build the URI with the mime type and parameters.
   UriData? get dataUri {
     UriData? uri = _dataUri;
     if (uri != null) {

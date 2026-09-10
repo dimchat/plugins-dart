@@ -26,7 +26,19 @@
 import 'package:dimp/crypto.dart';
 
 
+///  PNF - Portable Network File
+///
+///  A file which can be transmitted over the network, containing
+///  any one (or more) of:
+///  - file data (embedded as data URI)
+///  - file name
+///  - download URL (CDN)
+///  - password (decrypt key for the data downloaded from CDN)
+///
+///  It is serialized as a string (URI) when possible, or as a
+///  dictionary otherwise.
 class PortableNetworkFile extends Dictionary implements TransportableFile {
+  /// Create a PNF with the content dictionary and optional properties.
   PortableNetworkFile(Mapping? content, {
     TransportableData? data,
     String? filename,
@@ -41,6 +53,7 @@ class PortableNetworkFile extends Dictionary implements TransportableFile {
 
   late TransportableFileWrapper _wrapper;
 
+  /// Create a PNF with the raw properties directly.
   PortableNetworkFile.from(TransportableData? data, String? filename,
       Uri? url, DecryptKey? password) {
     _wrapper = TransportableFileWrapper.create(super.toMap(),
@@ -48,12 +61,18 @@ class PortableNetworkFile extends Dictionary implements TransportableFile {
     );
   }
 
+  /// Create a PNF with the file [data] and optional [filename].
   factory PortableNetworkFile.createWithData(TransportableData data, String? filename) =>
       PortableNetworkFile.from(data, filename, null, null);
 
+  /// Create a PNF with a download [url] and the [password] to decrypt it.
   factory PortableNetworkFile.createWithURL(Uri url, DecryptKey? password) =>
       PortableNetworkFile.from(null, null, url, password);
 
+  /// Serialize this PNF into a URI string.
+  ///
+  /// Returns the data URI / URL string if this PNF can be represented
+  /// by a single URI, otherwise returns an empty string.
   // protected
   String get uriString {
     // serialize
@@ -104,6 +123,12 @@ class PortableNetworkFile extends Dictionary implements TransportableFile {
     return '';
   }
 
+  /// Build a new data URI by updating the 'filename' parameter.
+  ///
+  /// [text]     - the original data URI string.
+  /// [filename] - the new filename to set (empty to remove it).
+  ///
+  /// Returns the rebuilt data URI.
   // protected
   String newDataURI(String text, String filename) {
     UriData uri = UriData.parse(text);

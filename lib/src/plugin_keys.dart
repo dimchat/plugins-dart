@@ -32,12 +32,19 @@ import 'crypto/plain.dart';
 import 'crypto/rsa.dart';
 
 
+/// Crypto Plugins
+///
+/// Registers the symmetric/asymmetric key factories
+/// (AES, Plain, RSA, ECC) into the key factory holders.
 mixin CryptoPlugins {
 
+  /// Register the AES key factory.
+  ///
+  /// Registers [AESKeyFactory] for both "AES" and "AES/CBC/PKCS7Padding".
   // protected
   void registerAESKeyFactory() {
 
-    /// AES
+    // AES
     final aes = AESKeyFactory();
     SymmetricKey.setFactory(SymmetricAlgorithms.AES, aes);
     SymmetricKey.setFactory(AESKey.AES_CBC_PKCS7, aes);
@@ -45,18 +52,26 @@ mixin CryptoPlugins {
 
   }
 
+  /// Register the Plain key factory.
+  ///
+  /// Registers [PlainKeyFactory] for the "PLAIN" algorithm
+  /// (broadcast message key).
   // protected
   void registerPlainKeyFactory() {
 
-    /// Plain
+    // Plain
     SymmetricKey.setFactory(SymmetricAlgorithms.PLAIN, PlainKeyFactory());
 
   }
 
+  /// Register the RSA key factories.
+  ///
+  /// Registers [RSAPublicKeyFactory] and [RSAPrivateKeyFactory]
+  /// for "RSA", "SHA256withRSA" and "RSA/ECB/PKCS1Padding".
   // protected
   void registerRSAKeyFactories() {
 
-    /// RSA
+    // RSA
     final rsaPub = RSAPublicKeyFactory();
     PublicKey.setFactory(AsymmetricAlgorithms.RSA, rsaPub);
     PublicKey.setFactory('SHA256withRSA', rsaPub);
@@ -69,10 +84,14 @@ mixin CryptoPlugins {
 
   }
 
+  /// Register the ECC key factories.
+  ///
+  /// Registers [ECCPublicKeyFactory] and [ECCPrivateKeyFactory]
+  /// for "ECC" and "SHA256withECDSA".
   // protected
   void registerECCKeyFactories() {
 
-    /// ECC
+    // ECC
     final eccPub = ECCPublicKeyFactory();
     PublicKey.setFactory(AsymmetricAlgorithms.ECC, eccPub);
     PublicKey.setFactory('SHA256withECDSA', eccPub);

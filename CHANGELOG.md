@@ -1,3 +1,7 @@
+## 2.4.0
+
+- Move TED, PNF to extensions.
+
 ## 2.3.0
 
 - Move TED, PNF to extensions.

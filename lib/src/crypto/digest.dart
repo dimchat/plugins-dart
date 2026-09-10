@@ -38,6 +38,9 @@ Uint8List _hash(Uint8List data, Digest digester) {
   return digester.process(data);
 }
 
+/// SHA-256 message digester.
+///
+/// Computes the SHA-256 hash of the input data (32 bytes).
 class SHA256Digester implements MessageDigester {
 
   @override
@@ -46,6 +49,9 @@ class SHA256Digester implements MessageDigester {
   }
 }
 
+/// Keccak-256 message digester.
+///
+/// Computes the Keccak-256 hash of the input data (32 bytes).
 class KECCAK256Digester implements MessageDigester {
 
   @override
@@ -54,6 +60,9 @@ class KECCAK256Digester implements MessageDigester {
   }
 }
 
+/// RIPEMD-160 message digester.
+///
+/// Computes the RIPEMD-160 hash of the input data (20 bytes).
 class RIPEMD160Digester implements MessageDigester {
 
   @override
@@ -63,9 +72,14 @@ class RIPEMD160Digester implements MessageDigester {
 }
 
 
+/// Digest Plugins
+///
+/// Registers the message digesters (SHA-256, Keccak-256,
+/// RIPEMD-160) into the global digester holders.
 mixin DigestPlugins {
 
   /// set SHA-256 digester
+  // protected
   void registerSHA256Digester() {
 
     SHA256.digester = SHA256Digester();
@@ -73,6 +87,7 @@ mixin DigestPlugins {
   }
 
   /// set Keccak-256 digester
+  // protected
   void registerKECCAK256Digester() {
 
     KECCAK256.digester = KECCAK256Digester();
@@ -80,6 +95,7 @@ mixin DigestPlugins {
   }
 
   /// set RipeMD-160 digester
+  // protected
   void registerRIPEMD160Digester() {
 
     RIPEMD160.digester = RIPEMD160Digester();

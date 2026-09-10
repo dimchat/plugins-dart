@@ -27,9 +27,16 @@ import 'package:dimp/crypto.dart';
 import 'package:dimp/ext.dart';
 
 
-/// CryptographyKey GeneralFactory
-/// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+/// CryptographyKey General Helper
+///
+/// Default implementation of [CryptoKeyHandler] and the key helpers,
+/// which manages the key factories by algorithm name:
+/// - symmetric key factories (AES, PLAIN, ...)
+/// - private key factories (ECC, RSA, ...)
+/// - public key factories (ECC, RSA, ...)
+///
+/// The key factories are registered with their algorithm names,
+/// and the parser/generator dispatches to them accordingly.
 class GeneralCryptoHelper implements CryptoKeyHandler,
                                      SymmetricKeyHelper,
                                      PrivateKeyHelper, PublicKeyHelper {
@@ -43,6 +50,11 @@ class GeneralCryptoHelper implements CryptoKeyHandler,
     return Converter.getString(key['algorithm'], defaultValue);
   }
 
+  /// Unwrap an object into a mutable dictionary.
+  ///
+  /// [dict] - a [Mapper], [Map] or [Dictionary] instance.
+  ///
+  /// Returns null if the object is not a dictionary.
   // protected
   MutableMapping? getMap(Object dict) {
     Map? info = Wrapper.getMap(dict);

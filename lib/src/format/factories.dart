@@ -34,6 +34,11 @@ import 'embed.dart';
 import 'pnf.dart';
 
 
+/// Transportable Data Factory (TED)
+///
+/// Creates a [TransportableData] from raw bytes with optional
+/// encoding/mime-type parameters, or parses a data URI / Base-64
+/// string back into a [TransportableData] instance.
 class BaseNetworkDataFactory implements TransportableDataFactory {
 
   @override
@@ -69,6 +74,10 @@ class BaseNetworkDataFactory implements TransportableDataFactory {
 }
 
 
+/// Portable Network File Factory (PNF)
+///
+/// Creates a [PortableNetworkFile] from data/filename/URL/password,
+/// or parses a PNF dictionary into a [PortableNetworkFile] instance.
 class BaseNetworkFileFactory implements TransportableFileFactory {
 
   @override

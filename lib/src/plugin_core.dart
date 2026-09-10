@@ -29,8 +29,15 @@ import 'ext/crypto.dart';
 import 'ext/format.dart';
 
 
+/// Core Plugins
+///
+/// Registers the general helpers (crypto & format) into the
+/// shared extension holders.
 mixin CorePlugins {
 
+  /// Register the format helpers.
+  ///
+  /// Sets a [GeneralFormatHelper] as the default TED/PNF helper.
   // format
   void registerFormatHelpers() {
 
@@ -40,6 +47,10 @@ mixin CorePlugins {
 
   }
 
+  /// Register the crypto helpers.
+  ///
+  /// Sets a [GeneralCryptoHelper] as the default key handler
+  /// and symmetric/private/public key helpers.
   // protected
   void registerCryptoHelpers() {
 

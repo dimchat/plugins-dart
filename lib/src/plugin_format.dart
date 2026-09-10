@@ -30,6 +30,10 @@ import 'format/factories.dart';
 import 'format/helper.dart';
 
 
+/// Format Plugins
+///
+/// Registers the TED factory, PNF factory and PNF wrapper
+/// factory into the corresponding factory holders.
 mixin FormatPlugins {
 
   /// set TED factory

@@ -38,11 +38,11 @@ import 'keys.dart';
 
 ///  AES Key
 ///
-///      keyInfo format: {
-///          algorithm: "AES",
-///          keySize  : 32,                // optional
-///          data     : "{BASE64_ENCODE}}" // key data
-///      }
+///  keyInfo format: {
+///      algorithm: "AES",
+///      keySize  : 32,                // optional
+///      data     : "{BASE64_ENCODE}}" // key data
+///  }
 class AESKey extends BaseSymmetricKey {
   AESKey([super.dict]) {
     // TODO: check algorithm parameters
@@ -58,6 +58,13 @@ class AESKey extends BaseSymmetricKey {
 
   TransportableData? _keyData;
 
+  /// Generate a random AES key with the given size (bytes).
+  ///
+  /// The key data is stored as a base64 encoded string in the 'data' field.
+  ///
+  /// [size] - key size in bytes, default is 32 (256 bits).
+  ///
+  /// Returns a new [AESKey] instance.
   factory AESKey.newKey([int size = 32]) {
     final data = _randomData(size);
     final ted = Base64Data.createWithBytes(data);
@@ -71,18 +78,29 @@ class AESKey extends BaseSymmetricKey {
     return key;
   }
 
+  /// Get key size (bytes).
+  ///
+  /// The size is read from the 'keySize' field of the key info,
+  /// default is 32 bytes (256 bits).
   // protected
   int getKeySize() {
     // TODO: get from key data
     return getInt('keySize') ?? 32;
   }
 
+  /// Get the default block size of AES (16 bytes).
+  ///
+  /// The block size is used to generate the IV data.
   // protected
   int getDefaultBlockSize() {
     // TODO: get from cipher instance
     return 16;
   }
 
+  /// Get block size for IV.
+  ///
+  /// The size is read from the 'blockSize' field of the key info,
+  /// default is the [getDefaultBlockSize] (16 bytes).
   // protected
   int getBlockSize() {
     // TODO: get from iv data
@@ -101,10 +119,21 @@ class AESKey extends BaseSymmetricKey {
     return ted!;
   }
 
+  /// Get the AES cipher key.
+  ///
+  /// Returns the raw key data as a [Key] for the encrypt package.
   // protected
   Key getCipherKey() => Key(data.bytes!);
 
-  /// get IV from params
+  /// Get the IV data from params.
+  ///
+  /// The IV is read from the 'IV'/'iv' field of [params],
+  /// or from the 'iv'/'IV' field of the key info (for compatibility).
+  ///
+  /// [params] - extra parameters containing the encoded IV,
+  ///            should not be null for AES.
+  ///
+  /// Returns null if no IV data found.
   // protected
   IV? getInitVector(Mapping? params) {
     // get base64 encoded IV from params
@@ -129,6 +158,8 @@ class AESKey extends BaseSymmetricKey {
     }
     return IV(ivData);
   }
+
+  /// Get an empty (zero) IV with the block size.
   // protected
   IV zeroInitVector() {
     // zero IV
@@ -136,6 +167,13 @@ class AESKey extends BaseSymmetricKey {
     Uint8List ivData = Uint8List(blockSize);
     return IV(ivData);
   }
+
+  /// Generate a random IV and store it into [extra] as 'IV'.
+  ///
+  /// [extra] - mutable extra params to store the encoded IV data,
+  ///           should not be null for AES encryption.
+  ///
+  /// Returns the random IV data.
   // protected
   IV newInitVector(MutableMapping? extra) {
     // random IV data
@@ -194,6 +232,10 @@ Uint8List _randomData(int size) {
   return data;
 }
 
+/// AES Key Factory
+///
+/// Generates a random [AESKey] or parses a dictionary
+/// into an [AESKey] instance.
 class AESKeyFactory implements SymmetricKeyFactory {
 
   @override

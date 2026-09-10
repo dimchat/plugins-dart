@@ -34,30 +34,54 @@ import 'package:pointycastle/export.dart' as pc;
 import 'package:dimp/crypto.dart' as dim;
 
 
+/// RSA Key Utils
+///
+/// Utility class for RSA key operations:
+/// - Generate key pair / derive public key from private key
+/// - Encrypt/decrypt data and sign/verify signatures
+/// - Encode/decode keys between PEM text and native objects
 final class RSAKeyUtils {
   RSAKeyUtils._();
 
+  /// Encrypt [plaintext] with the [publicKey] (PKCS#1).
+  ///
+  /// Returns the ciphertext.
   static Uint8List encrypt(Uint8List plaintext, RSAPublicKey publicKey) {
     Encrypter cipher = Encrypter(RSA(publicKey: publicKey));
     return cipher.encryptBytes(plaintext).bytes;
   }
 
+  /// Verify [signature] of [data] with the [publicKey].
+  ///
+  /// Returns true if the signature is valid.
   static bool verify(Uint8List data, Uint8List signature, RSAPublicKey publicKey) {
     Signer signer = Signer((RSASigner(RSASignDigest.SHA256, publicKey: publicKey)));
     return signer.verifyBytes(data, Encrypted(signature));
   }
 
+  /// Decrypt [ciphertext] with the [privateKey] (PKCS#1).
+  ///
+  /// Returns the plaintext.
   static Uint8List decrypt(Uint8List ciphertext, RSAPrivateKey privateKey) {
     Encrypter cipher = Encrypter(RSA(privateKey: privateKey));
     List<int> result = cipher.decryptBytes(Encrypted(ciphertext));
     return Uint8List.fromList(result);
   }
 
+  /// Sign [data] with the [privateKey].
+  ///
+  /// Returns the signature.
   static Uint8List sign(Uint8List data, RSAPrivateKey privateKey) {
     Signer signer = Signer((RSASigner(RSASignDigest.SHA256, privateKey: privateKey)));
     return signer.signBytes(data).bytes;
   }
 
+  /// Get a seeded secure random generator.
+  ///
+  /// [name]   - algorithm name of the secure random, default is "Fortuna".
+  /// [length] - seed length in bytes, default is 32.
+  ///
+  /// Returns a [pc.SecureRandom] instance seeded with random bytes.
   static pc.SecureRandom getSecureRandom({String name = 'Fortuna', int length = 32}) {
     final random = Random.secure();
     List<int> seeds = List<int>.generate(32, (_) => random.nextInt(256));
@@ -134,7 +158,9 @@ final class RSAKeyUtils {
     return '-----BEGIN RSA PRIVATE KEY-----\r\n$b64\r\n-----END RSA PRIVATE KEY-----';
   }
 
-  /// Encode RSA private key
+  /// Encode RSA private key to raw bytes (PKCS#1 ASN.1).
+  ///
+  /// Returns the DER-encoded private key data.
   static Uint8List encodePrivateKeyData(RSAPrivateKey privateKey) {
     BigInt n = privateKey.modulus!;
     BigInt e = privateKey.publicExponent!;
@@ -161,7 +187,9 @@ final class RSAKeyUtils {
     return sequence.encode();
   }
 
-  /// Encode RSA public key
+  /// Encode RSA public key to raw bytes (PKCS#1 ASN.1).
+  ///
+  /// Returns the DER-encoded public key data.
   static Uint8List encodePublicKeyData(RSAPublicKey publicKey) {
     BigInt n = publicKey.modulus!;
     BigInt e = publicKey.publicExponent!;

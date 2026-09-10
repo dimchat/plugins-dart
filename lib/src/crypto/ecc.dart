@@ -34,17 +34,24 @@ import 'keys.dart';
 
 ///  ECC Public Key
 ///
-///      keyInfo format : {
-///          algorithm  : "ECC",
-///          curve      : "secp256k1",
-///          data       : "...", // base64_encode(),
-///          compressed : 0
-///      }
+///  keyInfo format: {
+///      algorithm  : "ECC",
+///      curve      : "secp256k1",
+///      data       : "...", // base64_encode(),
+///      compressed : 0
+///  }
 class ECCPublicKey extends BasePublicKey {
   ECCPublicKey([super.dict]);
 
+  /// Whether the public key data is encoded in compressed format.
+  ///
+  /// The value is read from the 'compressed' field of the key info,
+  /// default is false (uncompressed).
   bool get compressed => getBool('compressed') ?? false;
 
+  /// Get the native ECC public key object.
+  ///
+  /// The key data (PEM encoded) is decoded by [ECCKeyUtils].
   // protected
   get eccPubKey {
     String data = getString('data') ?? '';
@@ -85,6 +92,15 @@ class ECCPrivateKey extends BasePrivateKey {
 
   PublicKey? _publicKey;
 
+  /// Generate a random ECC key pair.
+  ///
+  /// The private key is stored in the key info as PEM data,
+  /// with 'curve' and 'digest' fields for the parameters.
+  ///
+  /// [curveName] - name of the elliptic curve,
+  ///               default is "secp256k1".
+  ///
+  /// Returns a new [ECCPrivateKey] instance.
   factory ECCPrivateKey.newKey([String curveName = 'secp256k1']) {
     final privateKey = ECCKeyUtils.generatePrivateKey(curve: curveName);
     String pem = ECCKeyUtils.encodePrivateKey(privateKey);
@@ -96,9 +112,16 @@ class ECCPrivateKey extends BasePrivateKey {
     }.asMapping());
   }
 
+  /// Get the curve name of this key.
+  ///
+  /// The value is read from the 'curve' field of the key info,
+  /// default is "secp256k1".
   // private
   String get curveName => getString('curve') ?? 'secp256k1';
 
+  /// Get the native ECC private key object.
+  ///
+  /// The key data (PEM encoded) is decoded by [ECCKeyUtils].
   // protected
   get eccPriKey {
     String data = getString('data') ?? '';
@@ -139,6 +162,9 @@ class ECCPrivateKey extends BasePrivateKey {
 //  ECC Key Factories
 //
 
+/// ECC Public Key Factory
+///
+/// Parses a dictionary into an [ECCPublicKey] instance.
 class ECCPublicKeyFactory implements PublicKeyFactory {
 
   @override
@@ -154,6 +180,10 @@ class ECCPublicKeyFactory implements PublicKeyFactory {
   }
 }
 
+/// ECC Private Key Factory
+///
+/// Generates a new [ECCPrivateKey] or parses a dictionary
+/// into an [ECCPrivateKey] instance.
 class ECCPrivateKeyFactory implements PrivateKeyFactory {
 
   @override
