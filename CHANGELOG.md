@@ -1,3 +1,7 @@
+## 2.5.0
+
+- String parameters for URI (TED).
+
 ## 2.4.0
 
 - Move TED, PNF to extensions.

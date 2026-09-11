@@ -45,7 +45,7 @@ class BaseNetworkDataFactory implements TransportableDataFactory {
   TransportableData createTransportableData(Uint8List data, {
     String? encoding,
     String? mimeType,
-    MutableMapping? parameters,
+    Mapping<String, String>? parameters,
   }) {
     if (encoding == null) {
       return Base64Data.createWithBytes(data);

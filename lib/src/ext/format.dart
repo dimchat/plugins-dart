@@ -72,7 +72,7 @@ class GeneralFormatHelper implements TransportableFileHelper,
   TransportableData createTransportableData(Uint8List data, {
     String? encoding,
     String? mimeType,
-    MutableMapping? parameters,
+    Mapping<String, String>? parameters,
   }) {
     TransportableDataFactory? factory = getTransportableDataFactory();
     assert(factory != null, 'TED factory not ready');
