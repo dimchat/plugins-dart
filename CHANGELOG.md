@@ -1,3 +1,7 @@
+## 2.5.1
+
+- URI parameters.
+
 ## 2.5.0
 
 - String parameters for URI (TED).

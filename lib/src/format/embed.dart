@@ -45,7 +45,7 @@ class EmbedData extends BaseData {
 
   // data uri headers
   String? _mimeType;  // default is "text/plain"
-  Mapping<String, String>? _parameters;
+  Map<String, String>? _parameters;
 
   /// Create an EmbedData with the encoded string and optional headers.
   ///
@@ -57,11 +57,11 @@ class EmbedData extends BaseData {
   EmbedData.from(String? encoded, Uint8List? bytes, {
     UriData? uri,
     String? mimeType,
-    Mapping<String, String>? parameters,
+    Map<String, String>? parameters,
   }) : super(encoded ?? '', bytes) {
     _dataUri = uri;
     _mimeType = mimeType;
-    _parameters = parameters ?? uri?.parameters.asMapping();
+    _parameters = parameters ?? uri?.parameters;
   }
 
   /// Create an EmbedData with the data URI string and the bytes.
@@ -69,7 +69,7 @@ class EmbedData extends BaseData {
       EmbedData.from(dataUri, bytes,
         uri: uri,
         mimeType: uri?.mimeType,
-        parameters: uri?.parameters.asMapping(),
+        parameters: uri?.parameters,
       );
 
   /// Create an EmbedData from a parsed data URI.
@@ -77,7 +77,7 @@ class EmbedData extends BaseData {
       EmbedData.from(uri.toString(), null,
         uri: uri,
         mimeType: uri.mimeType,
-        parameters: uri.parameters.asMapping(),
+        parameters: uri.parameters,
       );
 
   /// Create an EmbedData from the data URI string only.
@@ -98,9 +98,9 @@ class EmbedData extends BaseData {
     if (filename == null || filename.isEmpty) {
       return EmbedData.from('', bytes, mimeType: mimeType);
     }
-    return EmbedData.from('', bytes, mimeType: mimeType, parameters: <String, String>{
+    return EmbedData.from('', bytes, mimeType: mimeType, parameters: {
       'filename': filename,
-    }.asMapping());
+    });
   }
 
   //
@@ -152,8 +152,7 @@ class EmbedData extends BaseData {
   }
 
   /// Get all URI parameters.
-  Mapping<String, String>? get parameters =>
-      _parameters ?? (dataUri?.parameters.asMapping());
+  Map<String, String>? get parameters => _parameters ?? (dataUri?.parameters);
 
   /// Get the mime type header, default is "text/plain".
   String? get mimeType => _mimeType ?? (dataUri?.mimeType);
