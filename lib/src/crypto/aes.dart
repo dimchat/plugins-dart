@@ -30,8 +30,6 @@ import 'package:encrypt/encrypt.dart';
 
 import 'package:dimp/crypto.dart';
 
-import '../format/base64_data.dart';
-
 import 'algorithms.dart';
 import 'keys.dart';
 
@@ -67,7 +65,7 @@ class AESKey extends BaseSymmetricKey {
   /// Returns a new [AESKey] instance.
   factory AESKey.newKey([int size = 32]) {
     final data = _randomData(size);
-    final ted = Base64Data.createWithBytes(data);
+    final ted = TransportableData.create(data);
     final key = AESKey(<String, dynamic>{
       'algorithm': SymmetricAlgorithms.AES,
       'data': ted.serialize(),
@@ -183,7 +181,7 @@ class AESKey extends BaseSymmetricKey {
     if (extra == null) {
       assert(false, 'extra dict must provided to store IV for AES');
     } else {
-      final ted = Base64Data.createWithBytes(ivData);
+      final ted = TransportableData.create(ivData);
       extra['IV'] = ted.serialize();
     }
     // OK

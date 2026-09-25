@@ -50,10 +50,10 @@ class BaseNetworkDataFactory implements TransportableDataFactory {
     if (encoding == null) {
       return Base64Data.createWithBytes(data);
     }
+    mimeType ??= 'text/plain';
     assert(EncodeAlgorithms.BASE_64 == encoding, 'TED encoding error: $encoding');
     String encoded = base64Encode(data);
-    String mediatype = mimeType ?? 'text/plain';
-    String uri = 'data:$mediatype;$encoding,$encoded';
+    String uri = 'data:$mimeType;$encoding,$encoded';
     return EmbedData.createWithUri(UriData.parse(uri));
   }
 

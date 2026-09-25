@@ -29,7 +29,7 @@ import 'package:pointycastle/api.dart';
 import 'package:pointycastle/digests/md5.dart';
 import 'package:pointycastle/digests/sha1.dart';
 
-import 'package:dimp/crypto.dart';
+import 'package:dimap/crypto.dart';
 
 
 class MD5 {

@@ -39,9 +39,9 @@ import '../crypto/algorithms.dart';
 class Base64Data extends BaseData {
   Base64Data(super.encoded, super.bytes);
 
-  /// Create a Base-64 data with both the encoded string and the bytes.
-  factory Base64Data.create(String encoded, Uint8List bytes)=>
-      Base64Data(encoded, bytes);
+  // /// Create a Base-64 data with both the encoded string and the bytes.
+  // factory Base64Data.create(String encoded, Uint8List bytes)=>
+  //     Base64Data(encoded, bytes);
 
   /// Create a Base-64 data from the encoded string only.
   ///

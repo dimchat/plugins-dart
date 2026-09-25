@@ -1,3 +1,7 @@
+## 2.5.2
+
+- PlainKey.
+
 ## 2.5.1
 
 - URI parameters.

@@ -80,6 +80,6 @@ class PlainKeyFactory implements SymmetricKeyFactory {
       assert(false, 'Plain key error: $key');
       return null;
     }
-    return PlainKey.getInstance();
+    return PlainKey(key);
   }
 }

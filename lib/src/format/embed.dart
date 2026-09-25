@@ -183,12 +183,9 @@ class EmbedData extends BaseData {
       // encode body
       String body = Base64.encode(bin);
       assert(body.isNotEmpty, 'failed to encode ${bin.length} byte(s)');
+      // make sure 'mime-type' is the first header
+      String mimeType = _mimeType ?? 'text/plain';
       // build header
-      String mimeType = _mimeType ?? '';
-      if (mimeType.isEmpty) {
-        // make sure 'mime-type' is the first header
-        mimeType = 'text/plain';
-      }
       String header = mimeType;
       _parameters?.forEach((key, value) {
         header += ';$key=$value';

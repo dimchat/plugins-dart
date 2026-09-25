@@ -105,7 +105,10 @@ final class ECCKeyUtils {
 
   /// Decode ECC public key from PEM text
   static ECPublicKey decodePublicKey(String pem) {
-    if (pem.length == 130 || pem.length == 66) {
+    final size = pem.length;
+    if (size == 0) {
+      throw ArgumentError('ECC public key data not found');
+    } else if (size == 66 || size == 130/* || size == 128*/) {
       // hex(4 + Q.x + Q.y)
       // hex(3 + Q.x)
       // hex(2 + Q.x)
