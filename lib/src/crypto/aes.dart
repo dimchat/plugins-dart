@@ -221,9 +221,11 @@ class AESKey extends BaseSymmetricKey {
 
 }
 
+/// Random bytes for keys and IVs: [Random.secure] is the platform's
+/// cryptographic generator; plain [Random] is not suitable for key material.
 Uint8List _randomData(int size) {
   Uint8List data = Uint8List(size);
-  Random r = Random();
+  Random r = Random.secure();
   for (int i = 0; i < size; ++i) {
     data[i] = r.nextInt(256);
   }
